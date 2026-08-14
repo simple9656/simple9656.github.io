@@ -1,0 +1,423 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>hack the box tier0 Redeemer | joke的小世界</title><meta name="author" content="joke"><meta name="copyright" content="joke"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="HTB WP -Redeemertask1:12Which TCP port is open on the machine?机器上哪个 TCP 端口是开放的？  开扫： 1nmap -sV 10.129.91.201    可惜这1000个端口没扫到（这里不是网络问题，既然能扫1000个端口说明已经连上了） 那就只能扩大端口范围了： 1nmap -p- 10.129.91.201  其中：  -p">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hack the box tier0 Redeemer">
+<meta property="og:url" content="https://simple9656.github.io/2026/08/15/hack-the-box-tier0-Redeemer/index.html">
+<meta property="og:site_name" content="joke的小世界">
+<meta property="og:description" content="HTB WP -Redeemertask1:12Which TCP port is open on the machine?机器上哪个 TCP 端口是开放的？  开扫： 1nmap -sV 10.129.91.201    可惜这1000个端口没扫到（这里不是网络问题，既然能扫1000个端口说明已经连上了） 那就只能扩大端口范围了： 1nmap -p- 10.129.91.201  其中：  -p">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://picsum.photos/1920/1080?random=2">
+<meta property="article:published_time" content="2026-08-14T19:37:10.000Z">
+<meta property="article:modified_time" content="2026-08-14T19:37:33.061Z">
+<meta property="article:author" content="joke">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://picsum.photos/1920/1080?random=2"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "hack the box tier0 Redeemer",
+  "url": "https://simple9656.github.io/2026/08/15/hack-the-box-tier0-Redeemer/",
+  "image": "https://picsum.photos/1920/1080?random=2",
+  "datePublished": "2026-08-14T19:37:10.000Z",
+  "dateModified": "2026-08-14T19:37:33.061Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "joke",
+      "url": "https://simple9656.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/9.jpg"><link rel="canonical" href="https://simple9656.github.io/2026/08/15/hack-the-box-tier0-Redeemer/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.3"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'hack the box tier0 Redeemer',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="https://npm.elemecdn.com/lxgw-wenkai-screen-webfont/style.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="/css/transparent.css"><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 8.1.1"></head><body><script>window.paceOptions = {
+  restartOnPushState: false
+}
+
+btf.addGlobalFn('pjaxSend', () => {
+  Pace.restart()
+}, 'pace_restart')
+
+</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/themes/pink/pace-theme-minimal.css"/><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><div class="bg-animation" id="web_bg" style="background-color: #eee;"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/9.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-inbox"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://picsum.photos/1920/1080?random=2);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/img/9.jpg" alt="Logo"><span class="site-name">joke的小世界</span></a><a class="nav-page-title" href="/"><span class="site-name">hack the box tier0 Redeemer</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-inbox"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">hack the box tier0 Redeemer</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-08-14T19:37:10.000Z" title="发表于 2026-08-15 03:37:10">2026-08-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-08-14T19:37:33.061Z" title="更新于 2026-08-15 03:37:33">2026-08-15</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="HTB-WP-Redeemer"><a href="#HTB-WP-Redeemer" class="headerlink" title="HTB WP -Redeemer"></a>HTB WP -Redeemer</h1><h2 id="task1"><a href="#task1" class="headerlink" title="task1:"></a>task1:</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Which TCP port is open on the machine?</span><br><span class="line">机器上哪个 TCP 端口是开放的？</span><br></pre></td></tr></table></figure>
+
+<p>开扫：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap -sV 10.129.91.201</span><br></pre></td></tr></table></figure>
+
+<img src="/2026/08/15/hack-the-box-tier0-Redeemer/image-20260712092810662.png" class="" title="image-20260712092810662">
+
+<p>可惜这1000个端口没扫到（这里不是网络问题，既然能扫1000个端口说明已经连上了）</p>
+<p>那就只能扩大端口范围了：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap -p- 10.129.91.201</span><br></pre></td></tr></table></figure>
+
+<p>其中：</p>
+<ul>
+<li><code>-p-</code>：表示扫描全部 TCP 端口，也就是 1-65535，等价于 -p1-65535。</li>
+</ul>
+<p>但是效果很慢。</p>
+<img src="/2026/08/15/hack-the-box-tier0-Redeemer/image-20260712094041726.png" class="" title="image-20260712094041726">
+
+<p>可以尝试等，或者换种更快的。</p>
+<p>决定换一个：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap -Pn -sS -T4 --min-rate 100 -p- 10.129.91.207 </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">其中：</span><br><span class="line">-Pn（可选）：跳过主机发现（不先 ping），直接假设目标在线。</span><br><span class="line">-sS（可选）：SYN 半开放扫描，只发起握手不完成，速度快。</span><br><span class="line">-T4：扫描速度模板，T0~T5：T3 默认，T4 较快，T5 很激进。</span><br><span class="line">--min-rate 100：最低发包速率，每秒至少发送 100 个探测包。</span><br></pre></td></tr></table></figure>
+
+<img src="/2026/08/15/hack-the-box-tier0-Redeemer/image-20260712100531748.png" class="" title="image-20260712100531748">
+
+<p>发包频率尽量小点，不然给容器扫炸了。</p>
+<p>得到端口6379:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PORT     STATE SERVICE</span><br><span class="line">6379/tcp open  redis</span><br></pre></td></tr></table></figure>
+
+<h2 id="task2"><a href="#task2" class="headerlink" title="task2:"></a>task2:</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Which service is running on the port that is open on the machine?</span><br><span class="line">机器上打开的端口正在运行哪个服务？</span><br></pre></td></tr></table></figure>
+
+<p>回答：</p>
+<p>就是上面扫出来那个</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis</span><br></pre></td></tr></table></figure>
+
+<h2 id="task3"><a href="#task3" class="headerlink" title="task3:"></a>task3:</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">What type of database is Redis? Choose from the following options: (i) In-memory Database, (ii) Traditional Database</span><br><span class="line">Redis是什么类型的数据库？请从以下选项中选择：（i）内存数据库，（ii）传统数据库</span><br></pre></td></tr></table></figure>
+
+<p>回答：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">In-memory Database</span><br><span class="line">与传统数据库（如 MySQL 或 PostgreSQL，主要将数据存在机械硬盘或 SSD 等外存上）不同，Redis 直接将所有数据保存在服务器的主内存（RAM）中。</span><br></pre></td></tr></table></figure>
+
+<h2 id="task4"><a href="#task4" class="headerlink" title="task4:"></a>task4:</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Which command-line utility is used to interact with the Redis server? Enter the program name you would enter into the terminal without any arguments.</span><br><span class="line">哪个命令行工具用于与 Redis 服务器交互？请输入您在终端中输入的程序名称（不带任何参数）。</span><br></pre></td></tr></table></figure>
+
+<p>回答：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-cli</span><br></pre></td></tr></table></figure>
+
+<h2 id="task5"><a href="#task5" class="headerlink" title="task5:"></a>task5:</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Which flag is used with the Redis command-line utility to specify the hostname?</span><br><span class="line">在 Redis 命令行工具中，使用哪个标志来指定主机名？</span><br></pre></td></tr></table></figure>
+
+<p>回答：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-h</span><br></pre></td></tr></table></figure>
+
+<h2 id="task6"><a href="#task6" class="headerlink" title="task6:"></a>task6:</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Once connected to a Redis server, which command is used to obtain the information and statistics about the Redis server?</span><br><span class="line">连接到 Redis 服务器后，使用哪个命令可以获取有关 Redis 服务器的信息和统计信息？</span><br></pre></td></tr></table></figure>
+
+<p>回答：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">info</span><br></pre></td></tr></table></figure>
+
+<h2 id="task7"><a href="#task7" class="headerlink" title="task7:"></a>task7:</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">What is the version of the Redis server being used on the target machine?</span><br><span class="line">目标机器上使用的 Redis 服务器版本是什么？</span><br></pre></td></tr></table></figure>
+
+<p>回答：</p>
+<p>根据之前的端口，用-sV 确定版本</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap -Pn -sV -p6379 10.129.91.207</span><br></pre></td></tr></table></figure>
+
+<img src="/2026/08/15/hack-the-box-tier0-Redeemer/image-20260712101801119.png" class="" title="image-20260712101801119">
+
+<p>得到版本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Redis key-value store 5.0.7</span><br><span class="line">5.0.7就是答案</span><br></pre></td></tr></table></figure>
+
+<p>或者可以连那个服务再确定版本（为后面获得flag做铺垫）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-cli -h 10.129.91.207 -p 6379</span><br></pre></td></tr></table></figure>
+
+<img src="/2026/08/15/hack-the-box-tier0-Redeemer/image-20260712102126207.png" class="" title="image-20260712102126207">
+
+<p>输入info看信息：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br></pre></td><td class="code"><pre><span class="line">10.129.91.207:6379&gt; info</span><br><span class="line"># Server</span><br><span class="line">redis_version:5.0.7</span><br><span class="line">redis_git_sha1:00000000</span><br><span class="line">redis_git_dirty:0</span><br><span class="line">redis_build_id:66bd629f924ac924</span><br><span class="line">redis_mode:standalone</span><br><span class="line">os:Linux 5.4.0-77-generic x86_64</span><br><span class="line">arch_bits:64</span><br><span class="line">multiplexing_api:epoll</span><br><span class="line">atomicvar_api:atomic-builtin</span><br><span class="line">gcc_version:9.3.0</span><br><span class="line">process_id:750</span><br><span class="line">run_id:e6cc5d448a486bdefa4e65e4acc91a6f46b63d77</span><br><span class="line">tcp_port:6379</span><br><span class="line">uptime_in_seconds:1839</span><br><span class="line">uptime_in_days:0</span><br><span class="line">hz:10</span><br><span class="line">configured_hz:10</span><br><span class="line">lru_clock:5438003</span><br><span class="line">executable:/usr/bin/redis-server</span><br><span class="line">config_file:/etc/redis/redis.conf</span><br><span class="line"></span><br><span class="line"># Clients</span><br><span class="line">connected_clients:1</span><br><span class="line">client_recent_max_input_buffer:2</span><br><span class="line">client_recent_max_output_buffer:0</span><br><span class="line">blocked_clients:0</span><br><span class="line"></span><br><span class="line"># Memory</span><br><span class="line">used_memory:859624</span><br><span class="line">used_memory_human:839.48K</span><br><span class="line">used_memory_rss:5820416</span><br><span class="line">used_memory_rss_human:5.55M</span><br><span class="line">used_memory_peak:859624</span><br><span class="line">used_memory_peak_human:839.48K</span><br><span class="line">used_memory_peak_perc:100.00%</span><br><span class="line">used_memory_overhead:846142</span><br><span class="line">used_memory_startup:796224</span><br><span class="line">used_memory_dataset:13482</span><br><span class="line">used_memory_dataset_perc:21.26%</span><br><span class="line">allocator_allocated:1584120</span><br><span class="line">allocator_active:1937408</span><br><span class="line">allocator_resident:9158656</span><br><span class="line">total_system_memory:2084024320</span><br><span class="line">total_system_memory_human:1.94G</span><br><span class="line">used_memory_lua:41984</span><br><span class="line">used_memory_lua_human:41.00K</span><br><span class="line">used_memory_scripts:0</span><br><span class="line">used_memory_scripts_human:0B</span><br><span class="line">number_of_cached_scripts:0</span><br><span class="line">maxmemory:0</span><br><span class="line">maxmemory_human:0B</span><br><span class="line">maxmemory_policy:noeviction</span><br><span class="line">allocator_frag_ratio:1.22</span><br><span class="line">allocator_frag_bytes:353288</span><br><span class="line">allocator_rss_ratio:4.73</span><br><span class="line">allocator_rss_bytes:7221248</span><br><span class="line">rss_overhead_ratio:0.64</span><br><span class="line">rss_overhead_bytes:-3338240</span><br><span class="line">mem_fragmentation_ratio:7.12</span><br><span class="line">mem_fragmentation_bytes:5002800</span><br><span class="line">mem_not_counted_for_evict:0</span><br><span class="line">mem_replication_backlog:0</span><br><span class="line">mem_clients_slaves:0</span><br><span class="line">mem_clients_normal:49694</span><br><span class="line">mem_aof_buffer:0</span><br><span class="line">mem_allocator:jemalloc-5.2.1</span><br><span class="line">active_defrag_running:0</span><br><span class="line">lazyfree_pending_objects:0</span><br><span class="line"></span><br><span class="line"># Persistence</span><br><span class="line">loading:0</span><br><span class="line">rdb_changes_since_last_save:0</span><br><span class="line">rdb_bgsave_in_progress:0</span><br><span class="line">rdb_last_save_time:1783821961</span><br><span class="line">rdb_last_bgsave_status:ok</span><br><span class="line">rdb_last_bgsave_time_sec:0</span><br><span class="line">rdb_current_bgsave_time_sec:-1</span><br><span class="line">rdb_last_cow_size:413696</span><br><span class="line">aof_enabled:0</span><br><span class="line">aof_rewrite_in_progress:0</span><br><span class="line">aof_rewrite_scheduled:0</span><br><span class="line">aof_last_rewrite_time_sec:-1</span><br><span class="line">aof_current_rewrite_time_sec:-1</span><br><span class="line">aof_last_bgrewrite_status:ok</span><br><span class="line">aof_last_write_status:ok</span><br><span class="line">aof_last_cow_size:0</span><br><span class="line"></span><br><span class="line"># Stats</span><br><span class="line">total_connections_received:6</span><br><span class="line">total_commands_processed:8</span><br><span class="line">instantaneous_ops_per_sec:0</span><br><span class="line">total_net_input_bytes:358</span><br><span class="line">total_net_output_bytes:15418</span><br><span class="line">instantaneous_input_kbps:0.00</span><br><span class="line">instantaneous_output_kbps:0.00</span><br><span class="line">rejected_connections:0</span><br><span class="line">sync_full:0</span><br><span class="line">sync_partial_ok:0</span><br><span class="line">sync_partial_err:0</span><br><span class="line">expired_keys:0</span><br><span class="line">expired_stale_perc:0.00</span><br><span class="line">expired_time_cap_reached_count:0</span><br><span class="line">evicted_keys:0</span><br><span class="line">keyspace_hits:0</span><br><span class="line">keyspace_misses:0</span><br><span class="line">pubsub_channels:0</span><br><span class="line">pubsub_patterns:0</span><br><span class="line">latest_fork_usec:222</span><br><span class="line">migrate_cached_sockets:0</span><br><span class="line">slave_expires_tracked_keys:0</span><br><span class="line">active_defrag_hits:0</span><br><span class="line">active_defrag_misses:0</span><br><span class="line">active_defrag_key_hits:0</span><br><span class="line">active_defrag_key_misses:0</span><br><span class="line"></span><br><span class="line"># Replication</span><br><span class="line">role:master</span><br><span class="line">connected_slaves:0</span><br><span class="line">master_replid:fffd8b6b99a1c05e55a31a6ec8e95819c798c4f5</span><br><span class="line">master_replid2:0000000000000000000000000000000000000000</span><br><span class="line">master_repl_offset:0</span><br><span class="line">second_repl_offset:-1</span><br><span class="line">repl_backlog_active:0</span><br><span class="line">repl_backlog_size:1048576</span><br><span class="line">repl_backlog_first_byte_offset:0</span><br><span class="line">repl_backlog_histlen:0</span><br><span class="line"></span><br><span class="line"># CPU</span><br><span class="line">used_cpu_sys:1.113860</span><br><span class="line">used_cpu_user:0.990695</span><br><span class="line">used_cpu_sys_children:0.000000</span><br><span class="line">used_cpu_user_children:0.001001</span><br><span class="line"></span><br><span class="line"># Cluster</span><br><span class="line">cluster_enabled:0</span><br><span class="line"></span><br><span class="line"># Keyspace</span><br><span class="line">db0:keys=4,expires=0,avg_ttl=0</span><br><span class="line">(0.77s)</span><br></pre></td></tr></table></figure>
+
+<p>可以看到：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis_version:5.0.7</span><br></pre></td></tr></table></figure>
+
+<p>或者直接输入：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">info server</span><br></pre></td></tr></table></figure>
+
+<p>得到：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">10.129.91.207:6379&gt; info server</span><br><span class="line"># Server</span><br><span class="line">redis_version:5.0.7</span><br><span class="line">redis_git_sha1:00000000</span><br><span class="line">redis_git_dirty:0</span><br><span class="line">redis_build_id:66bd629f924ac924</span><br><span class="line">redis_mode:standalone</span><br><span class="line">os:Linux 5.4.0-77-generic x86_64</span><br><span class="line">arch_bits:64</span><br><span class="line">multiplexing_api:epoll</span><br><span class="line">atomicvar_api:atomic-builtin</span><br><span class="line">gcc_version:9.3.0</span><br><span class="line">process_id:750</span><br><span class="line">run_id:e6cc5d448a486bdefa4e65e4acc91a6f46b63d77</span><br><span class="line">tcp_port:6379</span><br><span class="line">uptime_in_seconds:1949</span><br><span class="line">uptime_in_days:0</span><br><span class="line">hz:10</span><br><span class="line">configured_hz:10</span><br><span class="line">lru_clock:5438113</span><br><span class="line">executable:/usr/bin/redis-server</span><br><span class="line">config_file:/etc/redis/redis.conf</span><br></pre></td></tr></table></figure>
+
+<h2 id="task8"><a href="#task8" class="headerlink" title="task8:"></a>task8:</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Which command is used to select the desired database in Redis?</span><br><span class="line">在 Redis 中，使用哪个命令来选择所需的数据库？</span><br></pre></td></tr></table></figure>
+
+<p>回答：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select</span><br></pre></td></tr></table></figure>
+
+<p>和SQl数据库的选择命令一样</p>
+<h2 id="task9"><a href="#task9" class="headerlink" title="task9:"></a>task9:</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">How many keys are present inside the database with index 0?</span><br><span class="line">数据库中索引为 0 的键有多少个？</span><br></pre></td></tr></table></figure>
+
+<p>回答：</p>
+<p>前面info里有</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># Keyspace</span><br><span class="line">db0:keys=4,expires=0,avg_ttl=0</span><br><span class="line">(0.77s)</span><br></pre></td></tr></table></figure>
+
+<p>键就是keyspace，所以有4个</p>
+<p>或者直接输入：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">info keyspace</span><br></pre></td></tr></table></figure>
+
+<p>得到：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">10.129.91.207:6379&gt; info keyspace</span><br><span class="line"># Keyspace</span><br><span class="line">db0:keys=4,expires=0,avg_ttl=0</span><br><span class="line">(1.46s)</span><br></pre></td></tr></table></figure>
+
+<p>或者输入：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select 0</span><br></pre></td></tr></table></figure>
+
+<img src="/2026/08/15/hack-the-box-tier0-Redeemer/image-20260712103029352-1783823430360-1.png" class="" title="image-20260712103029352">
+
+<p>切换至 0 号库（但其实默认连接索引为 0 的数据库）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dbsize</span><br></pre></td></tr></table></figure>
+
+<img src="/2026/08/15/hack-the-box-tier0-Redeemer/image-20260712103113613.png" class="" title="image-20260712103113613">
+
+<h2 id="task10"><a href="#task10" class="headerlink" title="task10:"></a>task10:</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Which command is used to obtain all the keys in a database?</span><br><span class="line">哪个命令可以用来获取数据库中的所有键？</span><br></pre></td></tr></table></figure>
+
+<p>回答：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keys *</span><br></pre></td></tr></table></figure>
+
+<h2 id="task11"><a href="#task11" class="headerlink" title="task11:"></a>task11:</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Submit root flag</span><br></pre></td></tr></table></figure>
+
+<p>回答：</p>
+<p>先连到服务：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-cli -h 10.129.91.207 -p 6379</span><br></pre></td></tr></table></figure>
+
+<p>这个命令里没有ls,而redis是数据库，所以依照ls的思想，把这个数据库里的所有键列出来：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keys *</span><br></pre></td></tr></table></figure>
+
+<img src="/2026/08/15/hack-the-box-tier0-Redeemer/image-20260712103953365.png" class="" title="image-20260712103953365">
+
+<p>看到flag键了，先用 <code>type</code> 命令确定 flag 的类型：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">type flag</span><br></pre></td></tr></table></figure>
+
+<img src="/2026/08/15/hack-the-box-tier0-Redeemer/image-20260712104051230-1783824051968-3.png" class="" title="image-20260712104051230">
+
+<p>接着直接用 <code>get</code> 命令获取指定键（Key）的字符串（String）值。：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">get flag</span><br></pre></td></tr></table></figure>
+
+<p>得到flag:</p>
+<img src="/2026/08/15/hack-the-box-tier0-Redeemer/image-20260712104231715.png" class="" title="image-20260712104231715">
+
+<p>这些命令啥的多积累，要用的时候拿出来看即可</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://simple9656.github.io">joke</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://simple9656.github.io/2026/08/15/hack-the-box-tier0-Redeemer/">https://simple9656.github.io/2026/08/15/hack-the-box-tier0-Redeemer/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://simple9656.github.io" target="_blank">joke的小世界</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="https://picsum.photos/1920/1080?random=2" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/08/15/hack-the-box-tier1-Three/" title="hack the box tier1 Three"><img class="cover" src="https://picsum.photos/1920/1080?random=1" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">hack the box tier1 Three</div></div><div class="info-2"><div class="info-item-1">HTB WP -Threetask 112How many TCP ports are open?有多少个TCP端口是开放的？  这个需要用nmap扫一下端口： 12nmap -sV 10.129.121.197nmap -F 10.129.121.197(或者你想快一点,用fast参数)      但是两者对于端口的详细程度是不一样的。 回答： 12  task 212What is the domain of the email address provided in the &quot;Contact&quot; section of the website?该网站“联系我们”（或“联系方式”）部分提供的电子邮箱地址的域名是什么？  因为这个IP开了http端口，所以我们直接访问一下IP：   我们点contact（联系我们），email给了个域名：   1thetoppers.htb  task 312In the absence of a DNS server, which Linux file can we use to resolve hostnames to IP...</div></div></div></a><a class="pagination-related" href="/2026/08/15/hack-the-box-tier0-Dancing/" title="hack the box tier0 Dancing"><img class="cover" src="https://picsum.photos/1920/1080?random=3" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">hack the box tier0 Dancing</div></div><div class="info-2"><div class="info-item-1">HTB WP -Dancingtask1:12What does the 3-letter acronym SMB stand for?SMB这三个字母的缩写代表什么？  回答： 12Server Message Block服务器消息块，是一种网络文件共享协议。  task2:12What port does SMB use to operate at?SMB协议使用哪个端口运行？  回答： 1445  task3:12What is the service name for port 445 that came up in our Nmap scan?我们在 Nmap 扫描中发现的 445 端口的服务名称是什么？  回答： nmap扫一下：   1nmap -sV 10.129.90.154    扫出来几个端口，其中445端口的服务名称是 1microsoft-ds  这就是答案（注意那个问号其实是后面version对应的只不过因为缩进跑到前面来了） task4:12What is the &#x27;flag&#x27; or &#x27;switch&#x27; that...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/9.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">joke</div><div class="author-info-description">来摆烂ing</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/simple9656"><i class="fab fa-github"></i><span>click me</span></a><div class="card-info-social-icons"><a class="social-icon" href="/h" target="_blank" title=""><i></i></a><a class="social-icon" href="/t" target="_blank" title=""><i class="1"></i></a><a class="social-icon" href="/t" target="_blank" title=""><i class="2"></i></a><a class="social-icon" href="/p" target="_blank" title=""><i class="3"></i></a><a class="social-icon" href="/s" target="_blank" title=""><i class="4"></i></a><a class="social-icon" href="/:" target="_blank" title=""><i class="5"></i></a><a class="social-icon" href="/" target="_blank" title=""><i class="6"></i></a><a class="social-icon" href="/" target="_blank" title=""><i class="7"></i></a><a class="social-icon" href="/g" target="_blank" title=""><i class="8"></i></a><a class="social-icon" href="/i" target="_blank" title=""><i class="9"></i></a><a class="social-icon" href="/t" target="_blank" title=""><i class="10"></i></a><a class="social-icon" href="/h" target="_blank" title=""><i class="11"></i></a><a class="social-icon" href="/u" target="_blank" title=""><i class="12"></i></a><a class="social-icon" href="/b" target="_blank" title=""><i class="13"></i></a><a class="social-icon" href="/." target="_blank" title=""><i class="14"></i></a><a class="social-icon" href="/c" target="_blank" title=""><i class="15"></i></a><a class="social-icon" href="/o" target="_blank" title=""><i class="16"></i></a><a class="social-icon" href="/m" target="_blank" title=""><i class="17"></i></a><a class="social-icon" href="/" target="_blank" title=""><i class="18"></i></a><a class="social-icon" href="/s" target="_blank" title=""><i class="19"></i></a><a class="social-icon" href="/i" target="_blank" title=""><i class="20"></i></a><a class="social-icon" href="/m" target="_blank" title=""><i class="21"></i></a><a class="social-icon" href="/p" target="_blank" title=""><i class="22"></i></a><a class="social-icon" href="/l" target="_blank" title=""><i class="23"></i></a><a class="social-icon" href="/e" target="_blank" title=""><i class="24"></i></a><a class="social-icon" href="/9" target="_blank" title=""><i class="25"></i></a><a class="social-icon" href="/6" target="_blank" title=""><i class="26"></i></a><a class="social-icon" href="/5" target="_blank" title=""><i class="27"></i></a><a class="social-icon" href="/6" target="_blank" title=""><i class="28"></i></a><a class="social-icon" href="/" target="_blank" title=""><i class="29"></i></a><a class="social-icon" href="/%7C" target="_blank" title=""><i class="30"></i></a><a class="social-icon" href="/%7C" target="_blank" title=""><i class="31"></i></a><a class="social-icon" href="/" target="_blank" title=""><i class="32"></i></a><a class="social-icon" href="/G" target="_blank" title=""><i class="33"></i></a><a class="social-icon" href="/i" target="_blank" title=""><i class="34"></i></a><a class="social-icon" href="/t" target="_blank" title=""><i class="35"></i></a><a class="social-icon" href="/h" target="_blank" title=""><i class="36"></i></a><a class="social-icon" href="/u" target="_blank" title=""><i class="37"></i></a><a class="social-icon" href="/b" target="_blank" title=""><i class="38"></i></a><a class="social-icon" href="/" target="_blank" title=""><i class="39"></i></a><a class="social-icon" href="/%7C" target="_blank" title=""><i class="40"></i></a><a class="social-icon" href="/%7C" target="_blank" title=""><i class="41"></i></a><a class="social-icon" href="/" target="_blank" title=""><i class="42"></i></a><a class="social-icon" href="/'" target="_blank" title=""><i class="43"></i></a><a class="social-icon" href="#" target="_blank" title=""><i class="44"></i></a><a class="social-icon" href="/2" target="_blank" title=""><i class="45"></i></a><a class="social-icon" href="/4" target="_blank" title=""><i class="46"></i></a><a class="social-icon" href="/2" target="_blank" title=""><i class="47"></i></a><a class="social-icon" href="/9" target="_blank" title=""><i class="48"></i></a><a class="social-icon" href="/2" target="_blank" title=""><i class="49"></i></a><a class="social-icon" href="/e" target="_blank" title=""><i class="50"></i></a><a class="social-icon" href="/'" target="_blank" title=""><i class="51"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">你是我生命里的意外惊喜，不需要言语，却能治愈我所有的疲惫。每一次低落，都是因为你，我才重新找到力量。你是我不曾预料的温暖，直接击中心脏。你，是我的全世界。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#HTB-WP-Redeemer"><span class="toc-number">1.</span> <span class="toc-text">HTB WP -Redeemer</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#task1"><span class="toc-number">1.1.</span> <span class="toc-text">task1:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#task2"><span class="toc-number">1.2.</span> <span class="toc-text">task2:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#task3"><span class="toc-number">1.3.</span> <span class="toc-text">task3:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#task4"><span class="toc-number">1.4.</span> <span class="toc-text">task4:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#task5"><span class="toc-number">1.5.</span> <span class="toc-text">task5:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#task6"><span class="toc-number">1.6.</span> <span class="toc-text">task6:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#task7"><span class="toc-number">1.7.</span> <span class="toc-text">task7:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#task8"><span class="toc-number">1.8.</span> <span class="toc-text">task8:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#task9"><span class="toc-number">1.9.</span> <span class="toc-text">task9:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#task10"><span class="toc-number">1.10.</span> <span class="toc-text">task10:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#task11"><span class="toc-number">1.11.</span> <span class="toc-text">task11:</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/08/15/hack-the-box-tier2-Vaccine/" title="hack the box tier2 Vaccine"><img src="https://picsum.photos/1920/1080?random=1" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="hack the box tier2 Vaccine"/></a><div class="content"><a class="title" href="/2026/08/15/hack-the-box-tier2-Vaccine/" title="hack the box tier2 Vaccine">hack the box tier2 Vaccine</a><time datetime="2026-08-14T20:07:10.000Z" title="发表于 2026-08-15 04:07:10">2026-08-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/08/15/hack-the-box-tier2-Oopsie/" title="hack the box tier2 Oopsie"><img src="https://picsum.photos/1920/1080?random=2" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="hack the box tier2 Oopsie"/></a><div class="content"><a class="title" href="/2026/08/15/hack-the-box-tier2-Oopsie/" title="hack the box tier2 Oopsie">hack the box tier2 Oopsie</a><time datetime="2026-08-14T20:04:22.000Z" title="发表于 2026-08-15 04:04:22">2026-08-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/08/15/hack-the-box-tier2-Archetype/" title="hack the box tier2 Archetype"><img src="https://picsum.photos/1920/1080?random=2" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="hack the box tier2 Archetype"/></a><div class="content"><a class="title" href="/2026/08/15/hack-the-box-tier2-Archetype/" title="hack the box tier2 Archetype">hack the box tier2 Archetype</a><time datetime="2026-08-14T20:01:26.000Z" title="发表于 2026-08-15 04:01:26">2026-08-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/08/15/hack-the-box-tier1-Appointment/" title="hack the box tier1 Appointment"><img src="https://picsum.photos/1920/1080?random=2" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="hack the box tier1 Appointment"/></a><div class="content"><a class="title" href="/2026/08/15/hack-the-box-tier1-Appointment/" title="hack the box tier1 Appointment">hack the box tier1 Appointment</a><time datetime="2026-08-14T19:58:48.000Z" title="发表于 2026-08-15 03:58:48">2026-08-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/08/15/hack-the-box-tier1-Crocodile/" title="hack the box tier1 Crocodile"><img src="https://picsum.photos/1920/1080?random=1" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="hack the box tier1 Crocodile"/></a><div class="content"><a class="title" href="/2026/08/15/hack-the-box-tier1-Crocodile/" title="hack the box tier1 Crocodile">hack the box tier1 Crocodile</a><time datetime="2026-08-14T19:56:05.000Z" title="发表于 2026-08-15 03:56:05">2026-08-15</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By joke</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.3</a></span></div><div class="footer_custom_text">你和我的一切有关</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.3"></script><script src="/js/main.js?v=5.5.3"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://jokeblogcomments.vercel.app',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(res => {
+      countELement.textContent = res[0].count
+    }).catch(err => {
+      console.error(err)
+    })
+  }
+
+  const init = (el = document, path = location.pathname) => {
+    twikoo.init({
+      el: el.querySelector('#twikoo-wrap'),
+      envId: 'https://jokeblogcomments.vercel.app',
+      region: '',
+      onCommentLoaded: () => {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      },
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || path
+    })
+
+    
+
+    isShuoshuo && (window.shuoshuoComment.destroyTwikoo = () => {
+      if (el.children.length) {
+        el.innerHTML = ''
+        el.classList.add('no-comment')
+      }
+    })
+  }
+
+  const loadTwikoo = (el, path) => {
+    if (typeof twikoo === 'object') setTimeout(() => init(el, path), 0)
+    else btf.getScript('https://cdn.jsdelivr.net/npm/twikoo@1.6.44/dist/twikoo.all.min.js').then(() => init(el, path))
+  }
+
+  if (isShuoshuo) {
+    'Twikoo' === 'Twikoo'
+      ? window.shuoshuoComment = { loadComment: loadTwikoo }
+      : window.loadOtherComment = loadTwikoo
+    return
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = loadTwikoo
+  }
+})()</script></div><script src="/js/random_bg.js"></script><script src="/js/sakura.js"></script><script src="/js/music_card.js"></script><script src="/js/runtime.js"></script><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/fireworks.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => {
+      try {
+        fn()
+      } catch (err) {
+        console.debug('Pjax callback failed:', err)
+      }
+    })
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || item.innerHTML || ""
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    if (e.request.status === 404) {
+      false
+        ? pjax.loadUrl('/404.html')
+        : window.location.href = e.request.responseURL
+    }
+  })
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章喵...hhh你找到我了吗" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.3"></script></div></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body></html>

