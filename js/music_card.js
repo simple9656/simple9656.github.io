@@ -175,6 +175,13 @@ script.onload = function() {
                 url: '/music/Phone Kisses.mp3',
                 cover: '/music/cover.jpg',
                 lrc: '[00:00.00]Phone Kisses\n[00:05.00]suhmeduh'
+            },
+            {
+                name: '雨夹雪',
+                artist: 'seto',
+                url: '/music/雨夹雪.mp3',
+                cover: '/music/cover.jpg',
+                lrc: '[00:00.00]雨夹雪\n[00:05.00]seto'
             }
         ]
     });
